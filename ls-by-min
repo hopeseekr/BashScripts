@@ -1,0 +1,21 @@
+#!/bin/bash
+################# ls-by-min ################
+##  List By Min File Size                 ##
+##  Copyright (c) 2020 Theodore R. Smith  ##
+##  License: MIT                          ##
+
+if [ -z "$1" ]; then
+    echo "Error: You must specify a minimum file size (in MB)."
+    exit 1
+fi
+
+FILE_SIZE=$1
+
+if [ "$2" = "-r" ]; then
+	MAXDEPTH=512
+else
+	MAXDEPTH=1
+fi
+
+find . -maxdepth ${MAXDEPTH} -type f -size "+${FILE_SIZE}M" -exec du -sm {} \; | sort -rnk1 | sed 's/^[0-9]\+\t*//g' 
+

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+rsync -rv --remove-source-files --exclude=composer /home/*/.cache/ /run/media/sinkhole/
+for user in `ls /home`; do
+    find /home/$user/.cache/ -type d -empty -delete
+done
+

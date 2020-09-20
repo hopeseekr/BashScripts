@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cd /tmp
+
+# Remove PHP temporary files
+rm -f $(ls /tmp | grep -P '^[a-zA-Z0-9]{6}$')
+
+# Remove PHPUnit temp files
+rm -f /tmp/tmp.*
+
+# Remove phpstan temp files
+rm -rf /tmp/phpstan

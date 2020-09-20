@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd /code/bettergist-collector/database/backups
+sudo -u postgres pg_dump bettergist | xz -9 --threads=0 > bettergist-$(date +"%Y%m%d.%H").sql.xz
+
+# Delete dupes. https://unix.stackexchange.com/a/192712/15780
+md5sum bettergist*sql.xz | sort | awk 'BEGIN{lasthash = ""} $1 == lasthash {print $2} {lasthash = $1}' | xargs rm
