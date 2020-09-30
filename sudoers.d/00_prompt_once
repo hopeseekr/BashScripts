@@ -1,0 +1,5 @@
+## Only ask for the password once for all TTYs per reboot.
+## See https://askubuntu.com/a/643146
+Defaults !tty_tickets
+Defaults timestamp_timeout = -1
+
