@@ -1,5 +1,8 @@
 #!/bin/bash
 
+## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
+## License: MIT
+
 cd /tmp
 
 # Remove PHP temporary files

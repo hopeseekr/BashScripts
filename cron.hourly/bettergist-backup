@@ -1,5 +1,8 @@
 #!/bin/bash
 
+## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
+## License: MIT
+
 cd /code/bettergist-collector/database/backups
 sudo -u postgres pg_dump bettergist | xz -9 --threads=0 > bettergist-$(date +"%Y%m%d.%H").sql.xz
 

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+## ffmpeg: Transcode to h265 HEVC via the Intel graphics card.
+## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
+## License: MIT
+
 mkdir -p x265
 VIDEO=${1%.*}
 #time ffmpeg -y -hide_banner -hwaccel qsv -hwaccel_device /dev/dri/renderD128 -i "$1" -c:v libx265 -preset faster -x265-params crf=27 -c:a copy "x265/${VIDEO}.mkv"

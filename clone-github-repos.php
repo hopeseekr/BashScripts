@@ -1,6 +1,9 @@
 #!/bin/env php
 <?php
 
+## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro
+## License: MIT
+
 $sanity = function (string $username) {
     if (empty($username)) {
         echo "Error: Please provide a GitHub username or organization.\n";

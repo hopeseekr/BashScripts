@@ -1,5 +1,8 @@
-#! /bin/bash
+#!/bin/bash
 #
+## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
+## License: MIT
+
 # Diffusion youtube avec ffmpeg
 
 # Configurer youtube avec une résolution 720p. La vidéo n'est pas scalée.

@@ -1,1 +1,8 @@
+#!/bin/bash
+## Sync Watch: See how much data still needs to be written to disk(s).
+## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
+## License: MIT
+
+
+
 watch -d grep -e Dirty: -e Writeback: /proc/meminfo

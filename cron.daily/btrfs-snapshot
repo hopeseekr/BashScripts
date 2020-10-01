@@ -1,5 +1,8 @@
 #!/bin/bash
 
+## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
+## License: MIT
+
 # @see https://serverfault.com/a/37836/56309
 if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     echo "Error: You *MUST* run this as sudo or root!"
@@ -13,7 +16,7 @@ mkdir -p /snaps/daily
 DATE=$(date +"%Y-%m-%d")
 YESTERDAY=$(date --date=yesterday +"%Y-%m-%d")
 
-SUBVOLUMES=$(btrfs subvol list / | grep @snapshots/daily/${YESTERDAY}/[0-9]* | awk '{ print $9 }')
+SUBVOLUMES=$(btrfs subvol list / | grep @snapshots/daily/${YESTERDAY}/[0-9]* | awk '{ print $9 }'  | sed -e 's/@snapshots/\/snaps/')
 
 for snapshot in ${SUBVOLUMES}; do
     btrfs subvolume delete --commit-after ${snapshot}
