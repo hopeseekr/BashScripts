@@ -6,6 +6,11 @@
 # Ease-of-use Aliases
 
 alias ..="cd .."
+
+# Colorized grep and less!
+alias grep='grep --color=auto'
+alias less="less -r"
+
 alias ls="ls -CF --color=auto --block-size=MB"
 alias ll="ls -lisa --color=auto"
 alias lsl="ls -lhFA | less"
@@ -13,10 +18,16 @@ alias mkdir="mkdir -pv"
 alias userlist="cut -d: -f1 /etc/passwd"
 alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
 alias wget="wget -c"
+# Instantly grabs your EXTERNAL IP from a 3rd party service.
 alias myip="curl http://ipecho.net/plain; echo"
 alias logs="find /var/log -type f -exec file {} \; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | xargs tail -f"
 alias folders='find . -maxdepth 1 -type d -print0 | xargs -0 du -sk | sort -rn'
-alias grep='grep --color=auto'
+
+alias free="free -m"
+## Shows full ISO dates to the nanosecond:
+## -rwxr-xr-x 1 tsmith tsmith 1MB 2020-10-01 00:48:49.759629612 -0500 bash_rc.aliases*
+## -rwxr-xr-x 1 tsmith tsmith 1MB 2020-10-01 00:24:46.749613559 -0500 clone-github-repos.php*
+alias lsdate="ls -l --time-style=full-iso"
 
 # Creates an archive (*.tar.gz) from given directory.
 function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }
@@ -32,12 +43,9 @@ mcd () {
 
 
 # Dev aliases
-alias free="free -m"
-alias cda='cd /code/api.starfish.com/'
-alias csup='(containers up -d && containers logs -ft)'
+alias csup='(docker-compose up -d && docker-compose logs -ft)'
 alias art='php artisan'
 alias rdb='art migrate:refresh; art db:seed'
-alias ip='init_project'
 alias pu='phpunit'
 alias puf='phpunit --filter='
 alias puh='phpunit --coverage-html coverage'
@@ -54,8 +62,6 @@ alias gd='git diff'
 alias ga='git add'
 alias gco='git checkout --ours'
 alias pf='php-cs-fixer fix'
-alias lsdate="ls -l --time-style=full-iso"
-alias less="less -r"
 
 # System performance
 alias opti='optimus-manager --print-mode'
