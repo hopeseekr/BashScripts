@@ -14,6 +14,19 @@ web app software much more efficient and streamlined.
 
 Go check it out! [bash_rc.aliases](bash_rc.aliases)
 
+## changelog-maker-lite
+
+Easily creates [CHANGELOGs](CHANGELOG.md) based upon concise git commit logs:
+
+    [2020-10-01 00:23:15 CDT] - [x265.sh] Use VAAPI for encoding using Intel graphics cards.
+    [2020-10-01 00:30:00 CDT] - Created a README.md.
+    [2020-10-01 00:37:07 CDT] - [random-file] renamed for more clarity.
+    [2020-10-01 00:44:34 CDT] - Flushed out the README.
+    [2020-10-01 00:49:44 CDT] - [bash_rc.aliases] Added a whole slew of webdev aliases.
+    [2020-10-01 00:58:00 CDT] - [bash_rc.aliases] Added some more descriptions.
+    [2020-10-01 01:10:26 CDT] - [.gitconfig] Added a whole bunch of my git aliases. tag: v1.0.0
+    [2020-10-01 08:17:42 CDT] - [clear-cache] Delete broken symlinks in the ~/.cache directories.
+
 ## gitconfig
 
 Install into ~/.gitconfig.

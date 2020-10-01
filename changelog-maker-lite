@@ -1,0 +1,14 @@
+#!/bin/bash
+
+## https://github.com/hopeseekr/BashScripts/
+## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
+## License: MIT
+
+if [ -z "$1" ]; then
+    echo "Error: You must provide a git hash/tag/etc"
+    echo "       e.g., changelog-maker-lite v1.0.0.."
+    exit 1
+fi
+
+# @see https://stackoverflow.com/a/12900372/430062
+git log --pretty=shortlog --date=iso --reverse "$1" | awk '{print "["$3" "$4" CDT] - " substr($0, index($0, $9))}'
