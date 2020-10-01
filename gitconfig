@@ -1,0 +1,30 @@
+[url "git@github.com:"]
+	insteadOf = git://github.com/
+	insteadOf = https://github.com/
+	insteadOf = https://github.com/
+[commit]
+	gpgSign = true
+[alias]
+    shows = show --show-signature
+    # Tired of GitHub showing 20 commits over 10 days as all happening today when you do a rebase? 
+    #    Run `git redate <hash>` and it'll fix that.
+    redate = rebase --committer-date-is-author-date
+    resign = rebase --exec 'git commit --amend --no-edit -n -S' -i 
+    cloneup = clone --origin upstream
+    c = checkout
+    cp = cherry-pick
+    cpm = cherry-pick -m1
+    ll = log --pretty=shortlog --date=iso
+    pretty = ll
+    fix = rebase -i HEAD~2
+    ego = commit --amend --reuse-message=HEAD --author \"Theodore R. Smith <theodore@phpexperts.php>\"
+    alterego = commit --amend --reuse-message=HEAD --author \"Theodore R. Smith <hopeseekr@gmail.com>\"
+    alterSign = config user.signingKey \"B02DF5EE699DBE4149C922D359E310F3D9BC31BD\"
+[pretty]
+  shortlog = format:%C(auto,yellow)%h%C(auto,magenta)% G? %Cred%ad %C(auto,green)%<(20,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D
+
+[url "https://"]
+	insteadOf = git://
+[pull]
+	rebase = true
+

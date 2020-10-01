@@ -14,6 +14,45 @@ web app software much more efficient and streamlined.
 
 Go check it out! [bash_rc.aliases](bash_rc.aliases)
 
+## gitconfig
+
+Install into ~/.gitconfig.
+
+    git pretty
+    git ll
+
+Shows a beautiful multi-colored log with standard ISO dates:
+
+![git pretty](https://user-images.githubusercontent.com/1125541/94773688-e904c300-0381-11eb-878a-d0396d2bf102.png)
+
+    git fix
+
+Quickly jumps into rebasing the last two commits into one another.
+
+    git alterego
+
+Quickly switch the current repo to using your main alterego account for an previously-committed commit.
+
+    git ego
+
+The reverse of `git alterego`.
+
+    git resign <hash>
+
+Quickly resign bulk commits from <hash> to the latest.
+
+This is particularly utilitarian when your GPG key expires and you need to renew it and then resign.
+
+    git c: checkout
+    git cp: cherry-pick
+    git cpm: cherry-pick for Merge commits
+
+Utility aliases to make git more efficient to use.
+
+    git shows
+
+Shows the GPG signature for every commit in `git log`.
+
 ## sudoers.d/00_prompt_once
 
 This will make `sudo` only ask for your password ONE TIME during
