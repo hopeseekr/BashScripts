@@ -3,10 +3,21 @@
 ## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
 ## License: MIT
 
-rsync -rv --remove-source-files --exclude=composer /home/*/.cache/ /run/media/sinkhole/
+mkdir -p /run/media/sinkhole
+
+## Attempt to mount nullfsvfs
+## @see https://github.com/abbbi/nullfsvfs
+modprobe nullfs 2> /dev/null
+mount -t nullfs none /run/media/sinkhole 2> /dev/null
+if [ "$?" -ne 0 ]; then
+    echo "NOTICE: Running this without nullfsvfs is not recommended due to extended wear on SSDs."
+    echo "        See https://github.com/abbbi/nullfsvfs"
+fi
+
+rsync -rv --remove-source-files --exclude={composer,spotify,thumbnails} /home/*/.cache/ /run/media/sinkhole/
+rm -rf /run/media/sinkhole/*
 for user in `ls /home`; do
     find /home/$user/.cache/ -type d -empty -delete
 done
 
 rm -rvf /var/cache/pacman/pkg/*
-

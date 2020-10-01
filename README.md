@@ -64,8 +64,7 @@ On reboot, it will automatically expire.
 - Empties out the ~/.cache directory of every non-root user.
 - Empties out Pacman's package cache directory.
 
-This requires [nullfsvfs](https://github.com/abbbi/nullfsvfs) and requires that
-it be mounted to /media/sinkhole.
+This can optionally use [nullfsvfs](https://github.com/abbbi/nullfsvfs) in order to limit wear-and-tear on SSDs.
 
 ## cron.daily/01_purge-locales
 
