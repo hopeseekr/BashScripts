@@ -12,9 +12,8 @@ fi
 
 DATE=$(date +"%Y-%m-%d")
 HOUR=$(date +"%H")
-mkdir -p /snaps/daily/${DATE}
 
-if [[ "$HOUR" == "00" ]]; then
+if [[ ! -d "/snaps/daily/${DATE}" ]]; then
     btrfs subvolume snapshot / /snaps/daily/${DATE}
 fi
 
