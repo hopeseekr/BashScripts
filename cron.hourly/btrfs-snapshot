@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# @see https://serverfault.com/a/37836/56309
+if [[ $(/usr/bin/id -u) -ne 0 ]]; then
+    echo "Error: You *MUST* run this as sudo or root!"
+    echo ""
+    exit 99
+fi
+
+DATE=$(date +"%Y-%m-%d")
+HOUR=$(date +"%H")
+mkdir -p /snaps/daily/${DATE}
+btrfs subvolume snapshot / /snaps/daily/${DATE}/${HOUR}
