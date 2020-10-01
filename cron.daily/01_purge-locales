@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# @see https://serverfault.com/a/37836/56309
+if [[ $(/usr/bin/id -u) -ne 0 ]]; then
+    echo "Error: You *MUST* run this as sudo or root!"
+    echo ""
+    exit 99
+fi
+
+# Removes every locale except en_US.
+LOCALES=$(ls -1 /usr/share/locale/ | grep -v ^en)
+
+for locale in $LOCALES; do
+    rm -rvf $LOCALES
+done
