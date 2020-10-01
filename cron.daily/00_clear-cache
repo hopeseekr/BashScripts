@@ -17,6 +17,10 @@ fi
 rsync -rv --remove-source-files --exclude={composer,spotify,thumbnails} /home/*/.cache/ /run/media/sinkhole/
 rm -rf /run/media/sinkhole/*
 for user in `ls /home`; do
+    # Delete dangling symlinks.
+    # @see https://unix.stackexchange.com/a/49470/15780
+    find /home/$user/.cache/ -type l -xtype l -delete
+    # Delete empty directories.
     find /home/$user/.cache/ -type d -empty -delete
 done
 
