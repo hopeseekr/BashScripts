@@ -5,3 +5,5 @@ for user in `ls /home`; do
     find /home/$user/.cache/ -type d -empty -delete
 done
 
+rm -rvf /var/cache/pacman/pkg/*
+
