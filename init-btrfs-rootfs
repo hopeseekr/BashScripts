@@ -1,0 +1,192 @@
+#!/bin/bash
+
+## NOTE: This script is particularly designed for Arch Linux.
+##       This is because Arch unoptimally creates the root BTRFS /
+##       in subvolid=5 instead of a @rootfs subvolume.
+##
+##       Because of that, it makes restoring snapshots extremely painful.
+##
+## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
+
+# See https://misc.flogisoft.com/bash/tip_colors_and_formatting
+#     https://archive.is/Z9Q2Q
+BOLD="\033[1m"
+RESET="\033[0m"
+FG_DEFAULT="\033[39m"
+FG_RED="\033[31m"
+FG_YELLOW="\033[93m"
+FG_WHITE="\033[97m"
+BG_RED="\033[101m"
+BG_BLUE="\033[44m"
+
+# @see https://serverfault.com/a/37836/56309
+if [[ $(/usr/bin/id -u) -ne 0 ]]; then
+    echo "Error: You *MUST* run this as sudo or root!"
+    echo ""
+    exit 99
+fi
+
+# Start installer if the /@rootfs hasn't been created yet.
+if [[ ! -f /newrootfs ]]; then
+    echo "STOP!!!"
+    echo ""
+    echo "Are you *certain* that you have backed up everything of importance?"
+    echo "This is a risky operation: even though it is relatively safe, if something"
+    echo "unexpected happens, you'll quite possibly lose your entire /."
+    echo ""
+    echo "You really ought to have a rescue disk handy before you begin!"
+    echo "See https://www.system-rescue.org/Download/"
+    echo ""
+    # @see https://stackoverflow.com/a/1885534/430062
+    read -p "Continue? (y) " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 0
+    fi
+
+    touch /true-root
+    # @see https://unix.stackexchange.com/a/612283/15780
+    DISK=$(mount | grep " / type" | awk '{print $1}')
+    PART_UUID=$(blkid -o value -s UUID ${DISK})
+    echo "ROOT UUID: ${PART_UUID}"
+
+    cd /
+    echo "Creating the @rootfs subvolume..."
+    btrfs subvolume create @rootfs
+    ROOT_SID=$(btrfs subvol list / | grep @rootfs | awk '{print $2}')
+    echo subvolid=${ROOT_SID} > "/@rootfs/newrootfs"
+
+    echo "Shallow-copying / to /@rootfs (subvol=${ROOT_SID})... (Takes about 1-5 minutes)"
+    echo "NOTE: /var/log/journal errors are normal and unavoidable due to how systemd works."
+    cp -aixp --reflink=always bin etc lib* opt usr var root /@rootfs
+
+    echo "Creating the @home, @snapshots and @important subvolumes..."
+    btrfs subvolume create @home
+
+    echo "Copying files from /home to /@home... (Takes a while)"
+    cp -avpix  /mnt/home/* /@home/
+    mv /home /home.orig
+    mkdir /home.new
+    mount -t btrfs -o subvol=@home UUID=${PART_UUID} /home
+    btrfs subvolume create @snapshots
+    btrfs subvolume create @important
+
+    mkdir -p /media/true-root
+
+    echo "OK! Step 1 is complete!"
+    echo ""
+    echo "Now, for Step 2, add the following entries to /etc/stab."
+    echo -e "${BOLD}Be *absolutely certain* that you replace the subvol= option for /"
+    echo -e "${BOLD}or your system will get bricked.${RESET}"
+    echo ""
+    echo "    UUID=${PART_UUID}  /home       btrfs  rw,noatime,ssd,autodefrag,space_cache,subvol=/@home       0 0"
+    echo "    UUID=${PART_UUID}  /snaps      btrfs  rw,noatime,ssd,autodefrag,space_cache,subvol=/@snapshots  0 0"
+    echo "    UUID=${PART_UUID}  /           btrfs  rw,noatime,ssd,autodefrag,space_cache,subvol=/@rootfs     0 0"
+    echo "    UUID=${PART_UUID}  /important  btrfs  rw,noatime,ssd,autodefrag,space_cache,subvol=/@important  0 0"
+    echo "    UUID=${PART_UUID}  /media/true-root btrfs  rw,noatime,ssd,subvolid=5,noauto  0 0"
+    echo ""
+    echo "You really ought to have a rescue disk handy before you begin!"
+    echo "See https://www.system-rescue.org/Download/"
+    echo ""
+    echo "If all goes to hell, enter into a rescue prompt and run the following:"
+    echo ""
+    echo "    sudo -s"
+    echo "    mkdir -p /media/recovery /media/recovery-root"
+    echo "    mount -o ssd,subvolid=5 /media/recovery"
+    echo "    mount -o ssd,subvol=@rootfs /media/recovery-root"
+    echo "    # Figure out which one is more messed up:"
+    echo "    arch-chroot /media/recovery-root # This should work!"
+    echo "    # if not: "
+    echo "    cp -a --reflink=always /media/recovery/* /media/recovery-root/"
+    echo "    # Retry:"
+    echo "    arch-chroot /media/recovery-root # This should work!"
+    echo ""
+    echo "If you cannot access arch-chroot via either /emdia/recovery or /media/recovery-root,"
+    echo "then we have accidentally hosed your system, and I apologize. Create a GitHub issue!"
+    echo ""
+    echo "You also need to ensure that 'subvol=@rootfs' is set in /media/recovery-root/etc/fstab"
+    echo ""
+    echo "If you want/need to reset the state of your system BEFORE you run Step 3, do this:"
+    echo ""
+    echo "    umount /home"
+    echo "    btrfs subvol delete --commit-each @rootfs @home @snapshots @important"
+    echo ""
+    echo "This is heavy surgery for any live system. Good luck!"
+    echo ""
+    echo "When your system reboots, run this script for a second time to finish the mibration process."
+    echo "Otherwise, you will have a duplicated / lurking around taking up space."
+else
+    echo "Wooho!! You've made it to the final Stage 3!!"
+    echo ""
+    echo -e "\e[1mThis stage is the ${FG_RED}*destructive*${FG_DEFAULT} one. We're going to be ${FG_RED}DELETING${FG_DEFAULT} all the old duplicate stuff!"
+    echo -e "If you didn't make backups before, you really ought to now!${RESET}"
+    echo ""
+    # @see https://stackoverflow.com/a/1885534/430062
+    read -p "Continue? (y) " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "No problem. I'll be here when you're ready!"
+        exit 0
+    fi
+
+    echo "First, we're going to delete your old /home on the master /..."
+    read -p "Ready? (y) " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "No problem. I'll be here when you're ready!"
+        exit 0
+    fi
+
+    mount /media/true-root
+
+    if [[ ! -f /media/true-root/true-root ]]; then
+        echo "Error: Something very strange has gone wrong and this is not the true-root (subvolid=5)"
+        echo "       Or this script is just very confused! Bailing for your own safety!"
+        exit 2
+    fi
+
+    cd /media/true-root/@rootfs/
+    rm -rvf home/*
+    rm -rvf home.new
+
+    if [[ -d /home.new ]]; then
+        echo "Error: For some reason, deleting 'home' from your @rootfs in 'true-root' did not affect"
+        echo "       the 'home' in /."
+        echo "       You really ought to open up a bug report https://github.com/hopeseekr/BashScripts"
+        exit 3
+    fi
+
+    echo "Now, we're going to delete every duplicate file in 'true-root'."
+    read -p "Are you positively certain? (y) " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Well! Can't say I blame you!"
+        exit 0
+    fi
+
+    read -p "You're still doubly sure? (We provide 0 warranty!) (y) " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Whew! Wipe the sweat off your brow!"
+        echo "It's better to be safe than possibly sorry when rm -rvf'ing /!!"
+        exit 0
+    fi
+
+    echo -e "${BOLD}${FG_YELLOW}# ============================================================= #"
+    echo -e "${BOLD}${FG_YELLOW}# Buckle your seatbelt, Dorothy! Cuz Kansas...is going bye-bye! ${FG_YELLOW}#"
+    echo -e                    "# ${RESET}-- Cypher of New Zion (circa ~2199 CE)                ${FG_YELLOW}        # "
+    echo -e "${BOLD}${FG_YELLOW}# ============================================================= #${RESET}"
+    echo ""
+    echo -e "${BOLD}=== HIT ${FG_RED}CTRL+C${FG_DEFAULT} NOW IF YOU DO NOT TRUST MY PROGRAMMING!! ===${RESET}"
+    echo ""
+    i=10
+    while (( i >= 1 )); do
+        echo -n $(( i-- ))...
+        sleep 1
+    done
+    echo ""
+    echo -e "${BOLD}             ${BG_RED}${FG_WHITE}   B O O M   ${RESET}"
+    echo "Well! Hopefully not! ::fingers-crossed::"
+    sleep 3
+    echo -e "${BOLD}${BG_BLUE}  Welcome... To the real world! ${RESET} [of properly-configured btrfs subvolumes!]"
+fi
