@@ -1,0 +1,74 @@
+#!/bin/bash
+
+## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
+## License: MIT
+
+# Ease-of-use Aliases
+
+alias ..="cd .."
+alias ls="ls -CF --color=auto --block-size=MB"
+alias ll="ls -lisa --color=auto"
+alias lsl="ls -lhFA | less"
+alias mkdir="mkdir -pv"
+alias userlist="cut -d: -f1 /etc/passwd"
+alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
+alias wget="wget -c"
+alias myip="curl http://ipecho.net/plain; echo"
+alias logs="find /var/log -type f -exec file {} \; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | xargs tail -f"
+alias folders='find . -maxdepth 1 -type d -print0 | xargs -0 du -sk | sort -rn'
+alias grep='grep --color=auto'
+
+# Creates an archive (*.tar.gz) from given directory.
+function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }
+
+# Create a ZIP archive of a file or folder.
+function makezip() { zip -r "${1%%/}.zip" "$1" ; }
+
+# create an directory and directly cd into it
+mcd () {
+  mkdir -p $1
+  cd $1
+}
+
+
+# Dev aliases
+alias free="free -m"
+alias cda='cd /code/api.starfish.com/'
+alias csup='(containers up -d && containers logs -ft)'
+alias art='php artisan'
+alias rdb='art migrate:refresh; art db:seed'
+alias ip='init_project'
+alias pu='phpunit'
+alias puf='phpunit --filter='
+alias puh='phpunit --coverage-html coverage'
+alias put='phpunit --testdox'
+alias gcp='git cherry-pick'
+alias grd='git rebase --committer-date-is-author-date'
+alias gpm='git pull --rebase origin master'
+alias gs='git show'
+alias nuke="find . -maxdepth 1 ! -name '.' ! -name '.git' -exec rm -rf {} \; && git reset --hard"
+alias behat='behat --format-settings='"'"'{"expand": true}'"'"''
+alias docker-prune='docker rmi $(docker images | grep "^<none>" | awk "{print $3}")'
+alias psql="sudo -u postgres psql"
+alias gd='git diff'
+alias ga='git add'
+alias gco='git checkout --ours'
+alias pf='php-cs-fixer fix'
+alias lsdate="ls -l --time-style=full-iso"
+alias less="less -r"
+
+# System performance
+alias opti='optimus-manager --print-mode'
+alias super7="7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on"
+alias qmv='qmv --format=destination-only'
+
+# Video Archiving aliases
+alias youtube-dl='youtube-dl -f best --external-downloader aria2c --external-downloader-args="-x8 -s8 -k 1M"'
+alias youtube-mp3="youtube-dl -x --audio-format mp3"
+alias youtube-archive='youtube-dl --external-downloader aria2c --external-downloader-args="-x8 -s8 -k 1M" --write-description -o "%(playlist_index)s-%(title)s::%(id)s.%(upload_date)s.%(ext)s" -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]"'
+# Get the video resolution [e.g., 1920x1080]
+alias vidres="mediainfo mediainfo --Inform='Video;%Width%x%Height%'"
+
+# Use Intel QSV for video hardware acceleration
+export LIBVA_DRIVER_NAME=iHD
+alias mpv="mpv --hwdec=libva-intel-driver"
