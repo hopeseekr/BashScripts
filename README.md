@@ -5,6 +5,20 @@ Utilities to ease your life.
 Scripts that I use on a daily basis, or on new system installs,
 that improve my experience with Linux substantially!
 
+## sudoers.d/00_prompt_once
+
+This will make `sudo` only ask for your password ONE TIME during
+a single boot. It won't ask across terminals and it won't time out.
+On reboot, it will automatically expire.
+
+## cron.hourly/btrfs-snapshot
+
+Takes BTRFS snapshots of / every hour on the hour.
+
+## cron.daily/btrfs-snapshot
+
+Cleans up the prior day's hourly snapshots while keeping the daily ones.
+
 ## init-btrfs-rootfs
 
 ### The Problem
