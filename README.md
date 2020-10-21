@@ -137,3 +137,12 @@ Adds a watermark to videos via ffmpeg.
 ## x265.sh
 
 Transcodes to x265 HEVC via ffmpeg using Intel's graphics card.
+
+# Esoteric Utilities
+
+## esoteric/arch-pacman-dupe-cleaner
+
+Aids in automagically repairing duplicate Pacman database entries in Arch Linux.
+
+It's meant to resolve the rare problem: "error: duplicated database entry 'foo'"
+

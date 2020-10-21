@@ -22,7 +22,10 @@ v1.1.0 @ 2020-10-01
 [2020-10-01 01:10:26 CDT] - [.gitconfig] Added a whole bunch of my git aliases. tag: v1.0.0
 [2020-10-01 08:13:51 CDT] - [clear-cache] Use nullfs if it is available.
 [2020-10-01 08:17:42 CDT] - [clear-cache] Delete broken symlinks in the ~/.cache directories.
-[2020-10-01 08:18:38 CDT] - [btrfs-snapshot] Improved the handling of snapshots at day terminuses. tag: v1.1.0, origin/master
+[2020-10-01 08:18:38 CDT] - [btrfs-snapshot] Improved the handling of snapshots at day terminuses.
 
 v1.1.1 @ 2020-10-05
 [2020-10-01 08:38:03 CDT] - [changelog-maker-lite] Added a utility for making pretty CHANGELOGs.
+
+CURRENT:
+[2020-10-20 20:10:54 CDT] - [arch-pacman-dupe-cleaner] Utility for resolving "error: duplicated database entry 'foo'"
