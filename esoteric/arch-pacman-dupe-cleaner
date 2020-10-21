@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# From https://github.com/hopeseekr/BashScripts/blob/master/arch-pacman-dupe-cleaner
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
+# GPG: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690
+# License: MIT
+# @see https://unix.stackexchange.com/a/615578/15780
+
+# 0. Login as root.
+sudo -s
+
+# 1. Remove the latest dupes from your Pacman DB.
+pacman -Syu 2>&1 | grep "duplicated database entry" > /tmp/dupes
+for latest in $(for dupe in $(cat /tmp/dupes | awk '{print $5}'); do
+    ls /var/lib/pacman/local/$dupe* -d | tail -n1; done); do
+    rm -rvf $latest;
+done
+rm /tmp/dupes
+
+# 2. Remove system of dupe files.
+pacman -Syu 2>&1 > /tmp/update-dupes
+cat /tmp/update-dupes | grep "exists in file system" | awk '{print $2}' | xargs rm -vf
+rm /tmp/update-dupes
+
+# 3. Reinstall everything (this will restore anything deleted in #2.).
+pacman -Syu
+
