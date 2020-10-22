@@ -1,0 +1,58 @@
+#!/bin/sh
+##########################################################################
+# git-mtime: Git MTime Restorer                                          #
+#                                                                        #
+#   Restores each file's modification time in your working directory     #
+#   to when it was last updated in the remote git repository.            #
+#                                                                        #
+# Copyright © 2012-2020 Theodore R. Smith <theodore@phpexperts.pro>      #
+# GPG: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690                #
+# License: MIT                                                           #
+# From https://github.com/hopeseekr/BashScripts/blob/master/git-mtime    #
+#                                                                        #
+# When you checkout a repository & run this, your workdir goes from:     #
+#                                                                        #
+#    -rwxrwxr-x+ 1 tsmith users 1MB Oct 22 01:58 changelog-maker-lite*   #
+#    -rw-rw-r--+ 1 tsmith users 1MB Oct 22 01:58 CHANGELOG.txt           #
+#    -rwxrwxr-x+ 1 tsmith users 1MB Oct 22 01:58 clone-github-repos.php* #
+#    drwxrwxr-x+ 1 tsmith users 1MB Oct 22 01:58 cron.daily/             #
+#    drwxr-xr-x+ 1 tsmith users 1MB Oct 22 01:58 cron.hourly/            #
+#    -rw-rw-r--+ 1 tsmith users 1MB Oct 22 01:58 gitconfig               #
+#    -rwxrwxr-x+ 1 tsmith users 1MB Oct 22 01:58 git-mtime*              #
+#    -rwxrwxr-x+ 1 tsmith users 1MB Oct 22 01:58 init-btrfs-rootfs*      #
+#                                                                        #
+# To:                                                                    #
+#                                                                        #
+#    -rwxrwxr-x+ 1 tsmith users 1MB Oct  1 08:38 changelog-maker-lite*   #
+#    -rw-rw-r--+ 1 tsmith users 1MB Oct 22 01:01 CHANGELOG.txt           #
+#    -rwxrwxr-x+ 1 tsmith users 1MB Oct  1 00:23 clone-github-repos.php* #
+#    drwxrwxr-x+ 1 tsmith users 1MB Oct  1 08:18 cron.daily/             #
+#    drwxr-xr-x+ 1 tsmith users 1MB Oct  1 08:18 cron.hourly/            #
+#    -rw-rw-r--+ 1 tsmith users 1MB Oct  1 01:10 gitconfig               #
+#    -rwxrwxr-x+ 1 tsmith users 1MB Oct 22 01:01 git-mtime*              #
+#    -rwxrwxr-x+ 1 tsmith users 1MB Sep 30 23:19 init-btrfs-rootfs*      #
+#                                                                        #
+##########################################################################
+
+MTIME_DATA=$(git log --pretty=%at --name-status --reverse)
+
+for FILE in $MTIME_DATA; do
+    # See if it's an integer. If so, it's our mtime.
+    # CAVEAT: Won't work for files with mtimes before 2001-09-09 UTC.
+    # CAVEAT: Won't behave properly if there are root-level files exactly
+    #         equivalent to epoch times after 2001-09-09 UTC.
+    # @see https://stackoverflow.com/a/808740/430062
+    if [ "$FILE" -eq "$FILE" ] 2> /dev/null && [ "$FILE" -ge 1000000000 ] 2> /dev/null; then
+        MTIME=$FILE
+    else
+        if [ -f "$FILE" ]; then
+            # Change the modification date to the epoch time.
+            # @see https://unix.stackexchange.com/a/139674/15780
+            touch --date="@${MTIME}" "${FILE}"
+
+            # Don't forget the directories, too...
+            touch --date="@${MTIME}" "$(dirname "${FILE}"})"
+        fi
+    fi
+done
+
