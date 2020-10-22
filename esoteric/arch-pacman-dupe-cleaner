@@ -1,10 +1,20 @@
 #!/bin/bash
 
-# From https://github.com/hopeseekr/BashScripts/blob/master/arch-pacman-dupe-cleaner
-# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
-# GPG: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690
-# License: MIT
-# @see https://unix.stackexchange.com/a/615578/15780
+#########################################################################
+# Arch Linux Pacman Database de-Duplicator                              #
+#                                                                       #
+#   Remove duplicated Arch Linux Pacman entries.                        #
+#                                                                       #
+#   Inspired by https://unix.stackexchange.com/a/615578/15780           #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
 
 # 0. Login as root.
 sudo -s

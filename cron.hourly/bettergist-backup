@@ -1,7 +1,18 @@
 #!/bin/bash
-
-## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
-## License: MIT
+#########################################################################
+# PostgreSQL Auto Backupper (Hourly)                                    #
+#                                                                       #
+#   Automatically makes compressed xz backups of a database every hour, #
+#   but only if the DB's contents have changed.                         #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
 
 cd /code/bettergist-collector/database/backups
 sudo -u postgres pg_dump bettergist | xz -9 --threads=0 > bettergist-$(date +"%Y%m%d.%H").sql.xz

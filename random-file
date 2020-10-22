@@ -1,8 +1,20 @@
 #!/bin/bash
-
-## Random File Picker
-## Copyright © 2020 Theodore R. Smith <theodore@hpexperts.pro>
-## License: MIT
+#########################################################################
+# Random File Picker                                                    #
+#                                                                       #
+#   Randomly picks a file or directory in the given directory or $PWD   #
+#   and displays it.                                                    #
+#                                                                       #
+#   I use this to let Fate decide which movie I'm going to watch!       #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
 
 dir=${1-$PWD}
 

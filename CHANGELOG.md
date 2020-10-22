@@ -33,5 +33,6 @@
 
 ### CURRENT:
 * [2020-10-20 20:10:54 CDT] - [arch-pacman-dupe-cleaner] Utility for resolving "error: duplicated database entry 'foo'"
+* [2020-10-22 15:59:58 CDT] - [Major] Relicensed to the Creative Commons Attribution v4.0 International License.
 * [2020-10-22 01:01:01 CDT] - [git-mtime] Restores the file modification times of your git workdir to the repo's.
 * [2020-10-22 04:34:32 CDT] - [ssh-keyphrase-only-once] Only type in your SSH keyphrase once per boot.

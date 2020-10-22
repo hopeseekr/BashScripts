@@ -1,8 +1,21 @@
 #!/bin/bash
-## Sync Watch: See how much data still needs to be written to disk(s).
-## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
-## License: MIT
-
-
+#########################################################################
+# Dirty Data Sync Watcher                                               #
+#                                                                       #
+#   Outputs a tiny, updating display of how many megabytes are queued   #
+#   in memory, waiting to be written to disk.                           #
+#                                                                       #
+#   This helps you visualize when it will be safe to unmount a disk     #
+#   or turn off your system.                                            #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
 
 watch -d grep -e Dirty: -e Writeback: /proc/meminfo
+

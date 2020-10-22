@@ -1,10 +1,23 @@
 #!/bin/bash
 
-## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
-## License: MIT
+#########################################################################
+# High-Octane .bashrc aliase and functions                              #
+#                                                                       #
+#    These aliases and functions have revolutionized how I develop      #
+#    via the command line (CLI) and how I interact with Linux / UNIX.   #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2015-2020 Theodore R. Smith <theodore@phpexperts.pro>     #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# Copyright © 2016-2018 Rishi Ramawat https://github.com/rishi-ramawat  #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
 
 # Ease-of-use Aliases
-
 alias ..="cd .."
 
 # Colorized grep and less!
@@ -42,7 +55,7 @@ mcd () {
 }
 
 
-# Dev aliases
+# Dev aliases [RR=Copyright by Rishi Ramawat]
 alias csup='(docker-compose up -d && docker-compose logs -ft)'
 alias art='php artisan'
 alias rdb='art migrate:refresh; art db:seed'
@@ -56,10 +69,12 @@ alias gpm='git pull --rebase origin master'
 alias gs='git show'
 alias nuke="find . -maxdepth 1 ! -name '.' ! -name '.git' -exec rm -rf {} \; && git reset --hard"
 alias behat='behat --format-settings='"'"'{"expand": true}'"'"''
-alias docker-prune='docker rmi $(docker images | grep "^<none>" | awk "{print $3}")'
-alias psql="sudo -u postgres psql"
 alias gd='git diff'
 alias ga='git add'
+## End copyright by Rishi Ramawata
+
+alias docker-prune='docker rmi $(docker images | grep "^<none>" | awk "{print $3}")'
+alias psql="sudo -u postgres psql"
 alias gco='git checkout --ours'
 alias pf='php-cs-fixer fix'
 
@@ -69,12 +84,13 @@ alias super7="7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on"
 alias qmv='qmv --format=destination-only'
 
 # Video Archiving aliases
+# Part of the https://www.ourtube.me/ Platform.
 alias youtube-dl='youtube-dl -f best --external-downloader aria2c --external-downloader-args="-x8 -s8 -k 1M"'
 alias youtube-mp3="youtube-dl -x --audio-format mp3"
 alias youtube-archive='youtube-dl --external-downloader aria2c --external-downloader-args="-x8 -s8 -k 1M" --write-description -o "%(playlist_index)s-%(title)s::%(id)s.%(upload_date)s.%(ext)s" -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]"'
 # Get the video resolution [e.g., 1920x1080]
 alias vidres="mediainfo mediainfo --Inform='Video;%Width%x%Height%'"
 
-# Use Intel QSV for video hardware acceleration
+# Use Intel QSV for video hardware acceleration of VLC and mpv.
 export LIBVA_DRIVER_NAME=iHD
 alias mpv="mpv --hwdec=libva-intel-driver"

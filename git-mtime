@@ -5,10 +5,13 @@
 #   Restores each file's modification time in your working directory     #
 #   to when it was last updated in the remote git repository.            #
 #                                                                        #
+# Part of HopeSeekr's BashScripts Collection                             #
+# https://github.com/hopeseekr/BashScripts/                              #
+#                                                                        #
 # Copyright © 2012-2020 Theodore R. Smith <theodore@phpexperts.pro>      #
-# GPG: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690                #
-# License: MIT                                                           #
-# From https://github.com/hopeseekr/BashScripts/blob/master/git-mtime    #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690    #
+#                                                                        #
+# License: Creative Commons Attribution v4.0 International               #
 #                                                                        #
 # When you checkout a repository & run this, your workdir goes from:     #
 #                                                                        #

@@ -1,4 +1,24 @@
 #!/bin/bash
+#########################################################################
+# BTRFS Root FileSystem Fixer                                           #
+#                                                                       #
+#   Automatically moves your root (/) BTRFS into subvolumes.            #
+#                                                                       #
+#      / => /@rootfs                                                    #
+#      /home => /@home                                                  #
+#      /snaps => /@snaphots (for hourly/daily backups.                  #
+#                            See: cron.hourly/btrfs-snapshot(           #
+#      /important => /@important (for high-frequency snapshots that     #
+#                                 are not auto-pruned.)                 #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
 
 ## NOTE: This script is particularly designed for Arch Linux.
 ##       This is because Arch unoptimally creates the root BTRFS /
@@ -6,10 +26,10 @@
 ##
 ##       Because of that, it makes restoring snapshots extremely painful.
 ##
-## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
+## NOTE: This has been successfully tested on Ubuntu 20.04, Arch Linux, and Fedora 32.
 
-# See https://misc.flogisoft.com/bash/tip_colors_and_formatting
-#     https://archive.is/Z9Q2Q
+# @see https://misc.flogisoft.com/bash/tip_colors_and_formatting
+#      https://archive.is/Z9Q2Q
 BOLD="\033[1m"
 RESET="\033[0m"
 FG_DEFAULT="\033[39m"
