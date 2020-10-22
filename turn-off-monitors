@@ -1,0 +1,18 @@
+#!/bin/bash
+#########################################################################
+# Turn Monitors Off via the Command Line (CLI)                          #
+#                                                                       #
+#   Does exactly what it says. It will turn off all of your monitors    #
+#   until the mouse is moved or a key is pressed.                       #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
+
+sleep 1; xset dpms force off
+

@@ -88,6 +88,12 @@ Takes BTRFS snapshots of / every hour on the hour.
 
 Cleans up the prior day's hourly snapshots while keeping the daily ones.
 
+## turn-off-monitors
+
+Easily turns off all of your monitors via the CLI.
+
+For when you want to just step away and not worry so much about a lock screen.
+
 ## ls-by-min <MB>
 
 Returns a list of files sorted by file size, descending, that are at least X MB big.
