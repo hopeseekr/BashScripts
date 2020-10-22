@@ -37,6 +37,7 @@
 * [2020-10-22 01:01:01 CDT] - [git-mtime] Restores the file modification times of your git workdir to the repo's.
 * [2020-10-22 04:34:32 CDT] - [ssh-keyphrase-only-once] Only type in your SSH keyphrase once per boot.
 * [2020-10-22 16:22:09 CDT] - [turn-off-monitors] Easily turn off all of your monitors via the CLI.
+* [2020-10-22 18:36:34 CDT] - Added a Table of Contents to the README. HEAD -> v2.0
 
 Behavioral changes:
 * [2020-10-22 14:53:09 CDT] - [changelog-maker-lite] Now outputs Markdown lists.

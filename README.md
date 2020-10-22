@@ -1,4 +1,4 @@
-# HopeSeekr's Bash Scripts
+# HopeSeekr's Bash Scripts Collection
 
 Utilities to ease your life.
 
@@ -6,6 +6,37 @@ Scripts that I use on a daily basis, or on new system installs,
 that improve my experience with Linux substantially!
 
 They are sorted by how much utility they provide me, descending.
+
+Table of Contents (Categorized)
+===============================
+
+   * **Super Productivity**
+      * [bash_rc.aliases](#bash_rcaliases) - High-Octane .bashrc aliase and functions for a better Quality of Life.
+      * [sudoers.d/00_prompt_once](#sudoersd00_prompt_once) - Only prompt for your sudo password once per boot.
+      * [ssh-keyphrase-only-once](#ssh-keyphrase-only-onceinstaller) - Only prompt for your SSH keyphrase once per boot.
+      * [gitconfig](#gitconfig) - High-Octane Git CLI Configuration.
+   * **CronTabs**
+      * [cron.daily/00_clear-cache](#crondaily00_clear-cache) - Remove useless cache files nightly.
+      * [cron.daily/01_purge-locales](#crondaily01_purge-locales) - Remove worthless intl locales.
+      * [cron.hourly/btrfs-snapshot](#cronhourlybtrfs-snapshot) - Backup your BTRFS / hourly.
+      * [cron.daily/btrfs-snapshot](#crondailybtrfs-snapshot) - Backup your BTRFS  / daily.
+   * **Quality of Life**
+      * [ls-by-min ](#ls-by-min-) - Sorts the output of  `ls` by file size, descending.
+      * [random-file [dir]](#random-file-dir) -  Randomly picks a file or directory and displays it.
+      * [sync-watch](#sync-watch) - Outputs a tiny, updating display of how many MBs need to be written to disks.
+      * [turn-off-monitors](#turn-off-monitors) - Turns off all monitors via the Command Line (CLI). 
+   * **Uber Scripts** (很好的控制台脚本)
+      * [changelog-maker-lite](#changelog-maker-lite) - Quickly creates a beautiful changelog from the commit history.
+      * [git-mtime](#git-mtime) - Restores every file's modification time to that of the repo's history.
+      * [stream-to-youtube](#stream-to-youtube) - Live Screencast directly to YouTube from the CLI. 
+      * [watermark.sh](#watermarksh) - Easily embed your own image watermark onto videos.
+      * [x265.sh](#x265sh) - Transcode to h265 HEVC via the Intel graphics card using VAAPI.
+   * **Esoteric Utilities**
+      * [arch-pacman-dupe-cleaner](#esotericarch-pacman-dupe-cleaner) - 
+      * [init-btrfs-rootfs](#esotericinit-btrfs-rootfs) - Remove duplicated Arch Linux Pacman entries.
+      * [clone-github-repos.php](#esotericclone-github-reposphp) - Downloads all of a user's/org's GitHub repositories.
+   * [License](#license) - Creative Commons v4.0 International
+   * [About The Author](#about-the-author)
 
 ## bash_rc.aliases
 
