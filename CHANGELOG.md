@@ -1,5 +1,9 @@
 ### v1.0.0 @ 2020-09-30
-* [2020-09-20 10:47:15 CDT] - Initial.
+* [2020-09-20 10:47:15 CDT] - Initial:
+    * [ls-by-min] Sort `ls` by file size, descending.
+    * [stream-to-youtube.sh] Live Screencast directly to YouTube from the CLI (via ffmpeg).
+    * [watermark.sh] Easily embed your own image watermark onto videos (via ffmpeg).
+    * [x265.sh] Effectively highly-compress (with acceptable visual loss) videos to H.265 HEVC using Intel's VAAPI. 
 * [2020-09-23 14:59:35 CDT] - [x265] Pass all extra parameters directly to ffmpeg.
 * [2020-09-23 15:00:18 CDT] - Added a utility to download all of a user's or organization's GitHub repos.
 * [2020-09-23 15:01:15 CDT] - [sync-watch] See how much data is waiting to be written to disks.
