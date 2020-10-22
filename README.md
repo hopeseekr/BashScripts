@@ -5,6 +5,8 @@ Utilities to ease your life.
 Scripts that I use on a daily basis, or on new system installs,
 that improve my experience with Linux substantially!
 
+![Hope's Logo](https://avatars2.githubusercontent.com/u/50506504?s=200&v=4)
+
 They are sorted by how much utility they provide me, descending.
 
 Table of Contents (Categorized)
