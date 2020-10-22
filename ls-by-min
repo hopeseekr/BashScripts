@@ -1,8 +1,19 @@
 #!/bin/bash
-################# ls-by-min ################
-##  List By Min File Size                 ##
-##  Copyright (c) 2020 Theodore R. Smith  ##
-##  License: MIT                          ##
+#########################################################################
+# LS By Min                                                             #
+#                                                                       #
+#   Sorts the output of  `ls` by file size, descending.                 #
+#                                                                       #
+#   If you want to sort ascending, try `ls-by-min | sort -r`            #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
 
 if [ -z "$1" ]; then
     echo "Error: You must specify a minimum file size (in MB)."
@@ -17,5 +28,5 @@ else
 	MAXDEPTH=1
 fi
 
-find . -maxdepth ${MAXDEPTH} -type f -size "+${FILE_SIZE}M" -exec du -sm {} \; | sort -rnk1 | sed 's/^[0-9]\+\t*//g' 
+find . -maxdepth ${MAXDEPTH} -type f -size "+${FILE_SIZE}M" -exec du -sm {} \; | sort -rnk1 | sed 's/^[0-9]\+\t*//g'
 

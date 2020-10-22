@@ -1,3 +1,17 @@
+#########################################################################
+# High-Octane Git Config                                                #
+#                                                                       #
+#   A whole bunch of git aliases and configurations that greatly        #
+#   increase my own proficiency with git on the command line (CLI).     #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
 [url "git@github.com:"]
 	insteadOf = git://github.com/
 	insteadOf = https://github.com/
@@ -6,10 +20,10 @@
 	gpgSign = true
 [alias]
     shows = show --show-signature
-    # Tired of GitHub showing 20 commits over 10 days as all happening today when you do a rebase? 
+    # Tired of GitHub showing 20 commits over 10 days as all happening today when you do a rebase?
     #    Run `git redate <hash>` and it'll fix that.
     redate = rebase --committer-date-is-author-date
-    resign = rebase --exec 'git commit --amend --no-edit -n -S' -i 
+    resign = rebase --exec 'git commit --amend --no-edit -n -S' -i
     cloneup = clone --origin upstream
     c = checkout
     cp = cherry-pick

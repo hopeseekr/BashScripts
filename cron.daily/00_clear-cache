@@ -1,14 +1,30 @@
 #!/bin/bash
-
-## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
-## License: MIT
+#########################################################################
+# The Amazing Linux Cache Purger                                        #
+#                                                                       #
+#   Empties out the ~/.cache directory of every non-root user.          #
+#   Empties out Arch Linux' Pacman's package cache directory.           #
+#                                                                       #
+#   This can optionally use nullfsvfs in order to limit wear-and-tear   #
+#   on SSDs.                                                            #
+#                                                                       #
+#   Saves over 4 GB of space on average on a 3-user system.             #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
 
 mkdir -p /run/media/sinkhole
 
 ## Attempt to mount nullfsvfs
 ## @see https://github.com/abbbi/nullfsvfs
-modprobe nullfs 2> /dev/null
-mount -t nullfs none /run/media/sinkhole 2> /dev/null
+modprobe nullfs 2>/dev/null
+mount -t nullfs none /run/media/sinkhole 2>/dev/null
 if [ "$?" -ne 0 ]; then
     echo "NOTICE: Running this without nullfsvfs is not recommended due to extended wear on SSDs."
     echo "        See https://github.com/abbbi/nullfsvfs"
@@ -16,7 +32,7 @@ fi
 
 rsync -rv --remove-source-files --exclude={composer,spotify,thumbnails} /home/*/.cache/ /run/media/sinkhole/
 rm -rf /run/media/sinkhole/*
-for user in `ls /home`; do
+for user in $(ls /home); do
     # Delete dangling symlinks.
     # @see https://unix.stackexchange.com/a/49470/15780
     find /home/$user/.cache/ -type l -xtype l -delete

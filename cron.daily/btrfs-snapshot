@@ -1,7 +1,19 @@
 #!/bin/bash
-
-## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
-## License: MIT
+#########################################################################
+# BTRFS Auto Snapshotter (Daily)                                        #
+#                                                                       #
+#   Automatically takes snapshots of / into                             #
+#       /snaps/daily/YYYY-mm-dd                                         #
+#   every day -and- deletes all the previous day's HOURLY snapshots.    #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
 
 # @see https://serverfault.com/a/37836/56309
 if [[ $(/usr/bin/id -u) -ne 0 ]]; then

@@ -1,7 +1,17 @@
 #!/bin/bash
-
-## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
-## License: MIT
+#########################################################################
+# PHP Temp file Cleaner                                                 #
+#                                                                       #
+#   Removes unnecessary PHP temp files.                                 #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
 
 cd /tmp
 

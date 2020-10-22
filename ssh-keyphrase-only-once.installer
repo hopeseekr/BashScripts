@@ -1,5 +1,18 @@
 #!/bin/bash
-
+#########################################################################
+# Only type in your SSH keyphrase once per boot.                        #
+#                                                                       #
+#   Installs a script and configures OpenSSH so that you are only       #
+#   prompted for your SSH keyphrase *once* per system boot.             #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
 
 # Bail out if ~/.bash_profile already has the code.
 # @see https://stackoverflow.com/a/4749368/430062

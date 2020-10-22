@@ -1,7 +1,21 @@
 #!/bin/bash
 
-## Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>
-## License: MIT
+#########################################################################
+# BTRFS Auto Snapshotter (Hourly)                                       #
+#                                                                       #
+#   Automatically purges every non-EN locale every day.                 #
+#                                                                       #
+#   NOTE: This has only tested on Arch Linux.  It might cripple your    #
+#         distribution's package manager (missing files).               #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
 
 
 # @see https://serverfault.com/a/37836/56309
