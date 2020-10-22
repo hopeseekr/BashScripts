@@ -132,6 +132,10 @@ Easily creates [CHANGELOGs](CHANGELOG.md) based upon concise git commit logs:
     [2020-10-01 01:10:26 CDT] - [.gitconfig] Added a whole bunch of my git aliases. tag: v1.0.0
     [2020-10-01 08:17:42 CDT] - [clear-cache] Delete broken symlinks in the ~/.cache directories.
 
+## stream-to-youtube
+
+YouTube CLI Livestream Screencaster straight from the CLI (via ffmpeg)!
+
 # Esoteric Utilities
 
 ## esoteric/arch-pacman-dupe-cleaner
