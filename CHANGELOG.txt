@@ -29,3 +29,4 @@ v1.1.1 @ 2020-10-05
 
 CURRENT:
 [2020-10-20 20:10:54 CDT] - [arch-pacman-dupe-cleaner] Utility for resolving "error: duplicated database entry 'foo'"
+[2020-10-22 01:01:01 CDT] - [git-mtime] Restores the file modification times of your git workdir to the repo's.
