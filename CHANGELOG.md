@@ -36,3 +36,4 @@
 * [2020-10-22 15:59:58 CDT] - [Major] Relicensed to the Creative Commons Attribution v4.0 International License.
 * [2020-10-22 01:01:01 CDT] - [git-mtime] Restores the file modification times of your git workdir to the repo's.
 * [2020-10-22 04:34:32 CDT] - [ssh-keyphrase-only-once] Only type in your SSH keyphrase once per boot.
+* [2020-10-22 16:22:09 CDT] - [turn-off-monitors] Easily turn off all of your monitors via the CLI.
