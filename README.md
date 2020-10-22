@@ -132,10 +132,6 @@ Easily creates [CHANGELOGs](CHANGELOG.md) based upon concise git commit logs:
     [2020-10-01 01:10:26 CDT] - [.gitconfig] Added a whole bunch of my git aliases. tag: v1.0.0
     [2020-10-01 08:17:42 CDT] - [clear-cache] Delete broken symlinks in the ~/.cache directories.
 
-## clone-github-repos.php
-
-Automagically downloads all of the GitHub repositories of a user or or an organization.
-
 # Esoteric Utilities
 
 ## esoteric/arch-pacman-dupe-cleaner
@@ -164,6 +160,10 @@ you really ought to have a rescue disk prepped in avance.
 And for the love of God, make backups first!
 
 ![btrfs-init-rootfs](https://user-images.githubusercontent.com/1125541/94771567-231f9600-037d-11eb-8032-50d2b5873f36.png)
+
+## esoteric/clone-github-repos.php
+
+Automagically downloads all of the GitHub repositories of a user or or an organization.
 
 # License
 
