@@ -130,7 +130,15 @@ Easily creates [CHANGELOGs](CHANGELOG.md) based upon concise git commit logs:
 
 Automagically downloads all of the GitHub repositories of a user or or an organization.
 
-## init-btrfs-rootfs
+# Esoteric Utilities
+
+## esoteric/arch-pacman-dupe-cleaner
+
+Aids in automagically repairing duplicate Pacman database entries in Arch Linux.
+
+It's meant to resolve the rare problem: "error: duplicated database entry 'foo'"
+
+## esoteric/init-btrfs-rootfs
 
 ### The Problem
 
@@ -150,12 +158,4 @@ you really ought to have a rescue disk prepped in avance.
 And for the love of God, make backups first!
 
 ![btrfs-init-rootfs](https://user-images.githubusercontent.com/1125541/94771567-231f9600-037d-11eb-8032-50d2b5873f36.png)
-
-# Esoteric Utilities
-
-## esoteric/arch-pacman-dupe-cleaner
-
-Aids in automagically repairing duplicate Pacman database entries in Arch Linux.
-
-It's meant to resolve the rare problem: "error: duplicated database entry 'foo'"
 
