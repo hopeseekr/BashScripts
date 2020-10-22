@@ -27,6 +27,11 @@ Easily creates [CHANGELOGs](CHANGELOG.md) based upon concise git commit logs:
     [2020-10-01 01:10:26 CDT] - [.gitconfig] Added a whole bunch of my git aliases. tag: v1.0.0
     [2020-10-01 08:17:42 CDT] - [clear-cache] Delete broken symlinks in the ~/.cache directories.
 
+## ssh-keyphrase-only-once.installer
+
+Properly configures your OpenSSH client and installs `ssh-agent` in your `~/.bash_profile` in such a way
+that you will only ever have to enter your SSH keyphrase once per login for anything that works with `ssh-agent`. 
+
 ## gitconfig
 
 Install into ~/.gitconfig.
