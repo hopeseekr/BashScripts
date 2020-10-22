@@ -5,6 +5,8 @@ Utilities to ease your life.
 Scripts that I use on a daily basis, or on new system installs,
 that improve my experience with Linux substantially!
 
+They are sorted by how much utility they provide me, descending.
+
 ## bash_rc.aliases
 
 This is arguably the most important piece of the project!
@@ -14,18 +16,11 @@ web app software much more efficient and streamlined.
 
 Go check it out! [bash_rc.aliases](bash_rc.aliases)
 
-## changelog-maker-lite
+## sudoers.d/00_prompt_once
 
-Easily creates [CHANGELOGs](CHANGELOG.md) based upon concise git commit logs:
-
-    [2020-10-01 00:23:15 CDT] - [x265.sh] Use VAAPI for encoding using Intel graphics cards.
-    [2020-10-01 00:30:00 CDT] - Created a README.md.
-    [2020-10-01 00:37:07 CDT] - [random-file] renamed for more clarity.
-    [2020-10-01 00:44:34 CDT] - Flushed out the README.
-    [2020-10-01 00:49:44 CDT] - [bash_rc.aliases] Added a whole slew of webdev aliases.
-    [2020-10-01 00:58:00 CDT] - [bash_rc.aliases] Added some more descriptions.
-    [2020-10-01 01:10:26 CDT] - [.gitconfig] Added a whole bunch of my git aliases. tag: v1.0.0
-    [2020-10-01 08:17:42 CDT] - [clear-cache] Delete broken symlinks in the ~/.cache directories.
+This will make `sudo` only ask for your password ONE TIME during
+a single boot. It won't ask across terminals and it won't time out.
+On reboot, it will automatically expire.
 
 ## ssh-keyphrase-only-once.installer
 
@@ -34,6 +29,7 @@ that you will only ever have to enter your SSH keyphrase once per login for anyt
 
 ## gitconfig
 
+A highly-optimized .gitconfig for seasoned software developers ready to increase their daly productivity.
 Install into ~/.gitconfig.
 
     git pretty
@@ -71,12 +67,6 @@ Utility aliases to make git more efficient to use.
 
 Shows the GPG signature for every commit in `git log`.
 
-## sudoers.d/00_prompt_once
-
-This will make `sudo` only ask for your password ONE TIME during
-a single boot. It won't ask across terminals and it won't time out.
-On reboot, it will automatically expire.
-
 ## cron.daily/00_clear-cache
 
 - Empties out the ~/.cache directory of every non-root user.
@@ -97,6 +87,44 @@ Takes BTRFS snapshots of / every hour on the hour.
 ## cron.daily/btrfs-snapshot
 
 Cleans up the prior day's hourly snapshots while keeping the daily ones.
+
+## ls-by-min <MB>
+
+Returns a list of files sorted by file size, descending, that are at least X MB big.
+
+## x265.sh
+
+Transcodes to x265 HEVC via ffmpeg using Intel's graphics card.
+
+## random-file [dir]
+
+Picks a random file in a directory / PWD.
+
+## git-mtime
+
+Restores each file's modification time in your working directory to when it was 
+last updated in the remote git repository.
+
+## sync-watch
+
+Displays how many megabytes still need to be written to [slow] disks.
+
+## watermark.sh
+
+Adds a watermark to videos via ffmpeg.
+
+## changelog-maker-lite
+
+Easily creates [CHANGELOGs](CHANGELOG.md) based upon concise git commit logs:
+
+    [2020-10-01 00:23:15 CDT] - [x265.sh] Use VAAPI for encoding using Intel graphics cards.
+    [2020-10-01 00:30:00 CDT] - Created a README.md.
+    [2020-10-01 00:37:07 CDT] - [random-file] renamed for more clarity.
+    [2020-10-01 00:44:34 CDT] - Flushed out the README.
+    [2020-10-01 00:49:44 CDT] - [bash_rc.aliases] Added a whole slew of webdev aliases.
+    [2020-10-01 00:58:00 CDT] - [bash_rc.aliases] Added some more descriptions.
+    [2020-10-01 01:10:26 CDT] - [.gitconfig] Added a whole bunch of my git aliases. tag: v1.0.0
+    [2020-10-01 08:17:42 CDT] - [clear-cache] Delete broken symlinks in the ~/.cache directories.
 
 ## clone-github-repos.php
 
@@ -122,26 +150,6 @@ you really ought to have a rescue disk prepped in avance.
 And for the love of God, make backups first!
 
 ![btrfs-init-rootfs](https://user-images.githubusercontent.com/1125541/94771567-231f9600-037d-11eb-8032-50d2b5873f36.png)
-
-## ls-by-min <MB>
-
-Returns a list of files sorted by file size, descending, that are at least X MB big.
-
-## random-file [dir]
-
-Picks a random file in a directory / PWD.
-
-## sync-watch
-
-Displays how many megabytes still need to be written to [slow] disks.
-
-## watermark.sh
-
-Adds a watermark to videos via ffmpeg.
-
-## x265.sh
-
-Transcodes to x265 HEVC via ffmpeg using Intel's graphics card.
 
 # Esoteric Utilities
 
