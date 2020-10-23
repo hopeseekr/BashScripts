@@ -45,3 +45,4 @@ Behavioral changes:
 ### v2.1.0 @ 2020-10-23
 * [2020-10-23 12:31:25 CDT] - [m] Refactored to use /usr/bin/env shebang.
 * [2020-10-23 12:39:46 CDT] - [wifi-autorun-on-connect] Autorun a script when you connect to a Wifi hotspot.
+* [2020-10-23 18:40:30 CDT] - Translated the README into Chinese and Hindi to support 3 Billion people. HEAD -> v2.1
