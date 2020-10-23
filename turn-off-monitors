@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #########################################################################
 # Turn Monitors Off via the Command Line (CLI)                          #
 #                                                                       #
