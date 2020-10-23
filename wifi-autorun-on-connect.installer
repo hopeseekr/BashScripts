@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+#########################################################################
+# WiFi Autorun on Connect Installer                                    #
+#                                                                       #
+#   Automatically run a script when connected to specific               #
+#   WiFi networks.                                                      #
+#                                                                       #
+# Part of HopeSeekr's BashScripts Collection                            #
+# https://github.com/hopeseekr/BashScripts/                             #
+#                                                                       #
+# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
+#                                                                       #
+# License: Creative Commons Attribution v4.0 International              #
+#########################################################################
+
+# Require this script to be run as the root user.
+# @see https://serverfault.com/a/37836/56309
+if [[ $(/usr/bin/id -u) -ne 0 ]]; then
+    echo "Error: You *MUST* run this as sudo or root!"
+    exit 99
+fi
+
+if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+    echo "Usage: wifi-autorun-on-startup.installer [HOTSPOT] [SCRIPT]"
+    exit
+fi
+
+
+if [ ! -d "/etc/NetworkManager" ]; then
+    echo "Error: This script only works with NetworkManager." >&2
+    exit 2
+fi
+
+WIFI_HOTSPOT=""
+if [ ! -z "$1" ]; then
+    if [ ! -f "/etc/NetworkManager/system-connections/${1}.nmconnection" ]; then
+        echo "Error: NetworkManager does not know about '${1}'." >&2
+        echo "       Please try connecting to it first, retrying this script." >&2
+        exit 3
+    fi
+
+    WIFI_HOTSPOT="$1"
+fi
+
+if [ ! -z "$2" ] &&  [ ! -f "$2" ]; then
+    echo "Error: Cannot find a script at '${2}'." >&2
+    exit 4
+fi
+
+echo "Warning: This script only works with NetworkManager..."
+echo ""
+
+function selectHotspot() {
+    if [ -z "$WIFI_HOTSPOT" ]; then
+        echo "Known Hotspots:" >&2
+
+        HOTSPOTS=()
+        local index=0
+        local file
+        for file in /etc/NetworkManager/system-connections/*.nmconnection; do
+            index=$(( $index + 1 ))
+            filename=${file##*/system-connections/}
+            hotspot=${filename%%.nmconnection}
+            HOTSPOTS+=("$hotspot")
+
+            echo "    ${index}) ${hotspot}" >&2
+        done
+
+        echo "" >&2
+        echo -n "Which hotspot (1-${index})? " >&2
+        read hotspot_pick
+        hotspot_pick=$(( $hotspot_pick - 1 ))
+
+        echo "${HOTSPOTS[$hotspot_pick]}"
+    else
+        echo $WIFI_HOTSPOT
+    fi
+}
+
+WIFI_HOTSPOT=$(selectHotspot)
+
+echo "Chosen wifi network: ${WIFI_HOTSPOT}"
+
+function assertScriptDoesNotExit()
+{
+    SCRIPT_FILE="/etc/NetworkManager/dispatcher.d/on_connect-${1}.sh"
+    if [ -f "$SCRIPT_FILE" ]; then
+        echo "WARNING: A startup script for this connection already exists" >&2
+        echo "         at '${SCRIPT_FILE}'." >&2
+        echo "" >&2
+        echo -n "Replace it or quit? [r/Q] " >&2
+
+        local replace_or_quit
+        read replace_or_quit
+        if [ "$replace_or_quit" != "r" ]; then
+            echo "Quitting..." >&2
+            exit 5
+        fi
+    fi
+}
+
+assertScriptDoesNotExit "${WIFI_HOTSPOT}"
+
+function grabConnectionUUID()
+{
+    local nm_conn_file="/etc/NetworkManager/system-connections/${1}.nmconnection"
+
+    if [ ! -f "$nm_conn_file" ]; then
+        echo "Error: NetworkManager does not know about '${1}'." >&2
+        echo "       Please try connecting to it first, retrying this script." >&2
+        exit 3
+    fi
+
+    CONNECTION_UUID=$(grep uuid= "$nm_conn_file" | sed 's/^uuid=//')
+    echo "Connection UUID: $CONNECTION_UUID"
+}
+
+grabConnectionUUID "$WIFI_HOTSPOT"
+
+
+#############################################################
+# Grab the text from an existing file -or- user input...    #
+#                                                           #
+# Copyright © 2020 Theodore R. Smith                        #
+# License: Creative Commons Attribution v4.0 International  #
+# From: https://github.com/hopeseekr/BashScripts/           #
+# @see https://stackoverflow.com/a/64486155/430062          #
+#############################################################
+function grabDocument()
+{
+    if [ ! -z "$1" ] &&  [ -f "$1" ]; then
+        echo $(<"$1")
+    else
+        echo "" >&2
+        echo "Please type/paste in bash script you wish to be run when NetworkManager connects to '${WIFI_HOTSPOT}'." >&2
+        echo "You should NOT start with '#!/usr/bin/env bash'..." >&2
+        echo "Press CTRL+D when finished." >&2
+        echo "" >&2
+
+        # Read user input until CTRL+D.
+        # @see https://stackoverflow.com/a/38811806/430062
+        readarray -t user_input
+
+        # Output as a newline-dilemeted string.
+        # @see https://stackoverflow.com/a/15692004/430062
+        printf '%s\n' "${user_input[@]}"
+    fi
+}
+
+N=$'\n'
+SCRIPT="#!/usr/bin/env bash${N}"
+SCRIPT+="if [[ CONNECTION_UUID=\"${CONNECTION_UUID}\" ]]; then${N}"
+SCRIPT+="$(grabDocument "$2")${N}"
+SCRIPT+="fi${N}"
+
+# Preserve white spaces and newlines.
+# @see https://stackoverflow.com/a/18018422/430062
+echo "$SCRIPT" > "$SCRIPT_FILE"
+
+chmod 0755 "$SCRIPT_FILE"
+
+echo ""
+echo "Success! An autorun on connect script has been successfully installed for ${WIFI_HOTSPOT}."
