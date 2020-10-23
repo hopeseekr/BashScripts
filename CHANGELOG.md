@@ -41,3 +41,7 @@
 
 Behavioral changes:
 * [2020-10-22 14:53:09 CDT] - [changelog-maker-lite] Now outputs Markdown lists.
+
+### v2.1.0 @ 2020-10-23
+* [2020-10-23 12:31:25 CDT] - [m] Refactored to use /usr/bin/env shebang.
+* [2020-10-23 12:39:46 CDT] - [wifi-autorun-on-connect] Autorun a script when you connect to a Wifi hotspot.

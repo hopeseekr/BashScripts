@@ -32,6 +32,7 @@ Table of Contents (Categorized)
       * [git-mtime](#git-mtime) - Restores every file's modification time to that of the repo's history.
       * [stream-to-youtube](#stream-to-youtube) - Live Screencast directly to YouTube from the CLI. 
       * [watermark.sh](#watermarksh) - Easily embed your own image watermark onto videos.
+      * [wifi-autorun-on-connect](#wifi-autorun-on-connectinstaller) - Autorun a script when you connect to a Wifi hotspot.
       * [x265.sh](#x265sh) - Transcode to h265 HEVC via the Intel graphics card using VAAPI.
    * **Esoteric Utilities**
       * [arch-pacman-dupe-cleaner](#esotericarch-pacman-dupe-cleaner) - 
@@ -138,6 +139,11 @@ Transcodes to x265 HEVC via ffmpeg using Intel's graphics card.
 ## random-file [dir]
 
 Picks a random file in a directory / PWD.
+
+## wifi-autorun-on-connect.installer
+
+Installs a NetworkManager script that atomatically runs when connected to specific               #
+WiFi networks.
 
 ## git-mtime
 
