@@ -1,4 +1,4 @@
-#!/bin/env php
+#!/usr/bin/env env php
 <?php
 #########################################################################
 # GitHub User + Org Repo Cloner                                         #

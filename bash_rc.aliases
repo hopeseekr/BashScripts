@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #########################################################################
 # High-Octane .bashrc aliase and functions                              #
