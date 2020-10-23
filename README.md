@@ -9,6 +9,8 @@ that improve my experience with Linux substantially!
 
 They are sorted by how much utility they provide me, descending.
 
+Translations: [中文](README.cn.md), [हिन्दी](README.hi.md)
+
 Table of Contents (Categorized)
 ===============================
 
