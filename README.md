@@ -185,6 +185,10 @@ Aids in automagically repairing duplicate Pacman database entries in Arch Linux.
 
 It's meant to resolve the rare problem: "error: duplicated database entry 'foo'"
 
+## esoteric/git-shallow-pull
+
+Shallow updates a shallow `git clone --depth 1` repository.
+
 ## esoteric/init-btrfs-rootfs
 
 ### The Problem
