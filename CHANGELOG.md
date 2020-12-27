@@ -46,3 +46,8 @@ Behavioral changes:
 * [2020-10-23 12:31:25 CDT] - [m] Refactored to use /usr/bin/env shebang.
 * [2020-10-23 12:39:46 CDT] - [wifi-autorun-on-connect] Autorun a script when you connect to a Wifi hotspot.
 * [2020-10-23 18:40:30 CDT] - Translated the README into Chinese and Hindi to support 3 Billion people. HEAD -> v2.1
+
+## v2.1.1 @ 2020-12-27
+* [2020-12-26 17:00:11 CST] - [git-shallow-pull] Added a utility to shallow update git.
+* [2020-12-27 12:51:48 CST] - [git-change-author] Easily bulk change the author's name and email in a git repo. HEAD -> v2.1 
+
