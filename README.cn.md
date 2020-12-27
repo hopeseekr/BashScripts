@@ -145,6 +145,10 @@ git alterego的相反。
 安裝一個NetworkManager腳本，該腳本在連接到特定的＃後自動運行
 WiFi網絡。
 
+## git-change-author
+
+輕鬆批量更改git存儲庫中任何提交的作者姓名和電子郵件。
+
 ## git-mtime
 
 將每個文件在工作目錄中的修改時間恢復到
@@ -182,6 +186,10 @@ WiFi網絡。
 幫助在Arch Linux中自動修復重複的Pacman數據庫條目。
 
 這是為了解決罕見的問題：“錯誤：重複的數據庫條目'foo'”
+
+## esoteric/git-shallow-pull
+
+淺更新淺的`git clone --depth 1`存儲庫。
 
 ## esoteric / init-btrfs-rootfs
 

@@ -147,6 +147,10 @@ Picks a random file in a directory / PWD.
 Installs a NetworkManager script that atomatically runs when connected to specific               #
 WiFi networks.
 
+## git-change-author
+
+Easily bulk change the author's name and email of any of the commits in a git repository.
+
 ## git-mtime
 
 Restores each file's modification time in your working directory to when it was 
