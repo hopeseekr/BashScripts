@@ -1,0 +1,35 @@
+#!/bin/bash
+##########################################################################
+# ssh-autologin: Automatically configure .ssh/authorized_keys            #
+#                                                                        #
+# Automatically sets up (if needed) a SSH private key and installs it    #
+# on the remote server (creating the .ssh, if needed, as well.           #
+#                                                                        #
+# Part of HopeSeekr's BashScripts Collection                             #
+# https://github.com/hopeseekr/BashScripts/                              #
+#                                                                        #
+# Copyright © 2012-2021 Theodore R. Smith <theodore@phpexperts.pro>      #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690    #
+#                                                                        #
+# License: Creative Commons Attribution v4.0 International               #
+#                                                                        #
+# Run like ./ssh-autologin <destination-server>                          #
+#                                                                        #
+##########################################################################
+
+
+if [ -z "$1" ]; then
+   echo "Error: You must put a destination server just like ssh [user@]destination-server"
+   exit 1
+fi
+
+if [ ! -f $HOME/.ssh/id_rsa ]; then
+  ssh-keygen -t rsa -b 4096
+fi
+
+scp $1:~/.ssh/id_rsa.pub
+ssh $1 'if [ ! -d .ssh ]; then mkdir .ssh; chmod 0700 .ssh; fi'
+cat ~/.ssh/id_rsa.pub | ssh $1 'cat >> .ssh/authorized_keys'
+
+echo "SSH auth has been set up. Please try to log in."
+

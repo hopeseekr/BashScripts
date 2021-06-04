@@ -17,6 +17,7 @@ Table of Contents (Categorized)
    * **Super Productivity**
       * [bash_rc.aliases](#bash_rcaliases) - High-Octane .bashrc aliase and functions for a better Quality of Life.
       * [sudoers.d/00_prompt_once](#sudoersd00_prompt_once) - Only prompt for your sudo password once per boot.
+      * [ssh-autologin](#ssh-autologin) - Automatically set up SSH autologins.
       * [ssh-keyphrase-only-once](#ssh-keyphrase-only-onceinstaller) - Only prompt for your SSH keyphrase once per boot.
       * [gitconfig](#gitconfig) - High-Octane Git CLI Configuration.
    * **CronTabs**
@@ -57,6 +58,11 @@ Go check it out! [bash_rc.aliases](bash_rc.aliases)
 This will make `sudo` only ask for your password ONE TIME during
 a single boot. It won't ask across terminals and it won't time out.
 On reboot, it will automatically expire.
+
+## ssh-autologin
+
+Automatically sets up (if needed) a SSH private key and installs it
+on the remote server (creating the .ssh, if needed, as well.
 
 ## ssh-keyphrase-only-once.installer
 
