@@ -74,7 +74,7 @@ try {
 }
 
 foreach ($repos as $repo) {
-    if ($repo->fork === 1 || empty($repo->clone_url))) {
+    if ($repo->fork === 1 || empty($repo->clone_url)) {
         continue;
     }
 
