@@ -51,3 +51,10 @@ Behavioral changes:
 * [2020-12-26 17:00:11 CST] - [git-shallow-pull] Added a utility to shallow update git.
 * [2020-12-27 12:51:48 CST] - [git-change-author] Easily bulk change the author's name and email in a git repo. HEAD -> v2.1 
 
+## v2.2.0 @ 2021-06-04
+* [2021-06-04 09:08:31 CDT] - [ssh-autologin] Automatically set up SSH autologins.
+
+## v2.3.0 @ 2021-10-30
+* [2021-10-30 07:00:24 CDT] - [clone-github-repos] Fixed a syntax error.
+* [2021-10-30 07:03:45 CDT] - [gitconfig] Added a git alias for easily renaming tags.
+* [2021-10-30 07:05:00 CDT] - [ssh-autologin] Fixed the exec permission.
