@@ -1,0 +1,53 @@
+#!/bin/bash
+##########################################################################
+# git-commit-at-modded-time: Use a file's modified time as the git time. #
+#                                                                        #
+#   Example:                                                             #
+#                                                                        #
+#      $ ls -l american-date                                             #
+#       #-rwxrwxr-x+ 1 1MB Oct 14  2020  american-date                   #
+#      $ ./git-commit-at-modded-time american-date                       #
+#      $ git pretty american-date                                        #
+#      7462b66 G 2020-10-14 15:53:34 -0500 Theodore R. Smith             #
+#                                                                        #
+# Part of HopeSeekr's BashScripts Collection                             #
+# https://github.com/hopeseekr/BashScripts/                              #
+#                                                                        #
+# Copyright © 2023-2024 Theodore R. Smith <theodore@phpexperts.pro>      #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690    #
+#                                                                        #
+# License: Creative Commons Attribution v4.0 International               #
+#                                                                        #
+##########################################################################
+
+
+if ! command -v faketime &> /dev/null
+then
+    echo "'faketime' could not be found. Please install it first."
+    exit
+fi
+
+# Grab all of the pertinent files in the repo and sort by age, descending.
+# We want to commit the oldest first to perserve the timeline.
+
+export EDITOR=vim
+# instantcheckmate@theodore.phpexperts.pro
+
+# Filter through each of them:
+echo "$@" | while read file; do
+	MODDED_AT=$(date -r "$file" '+%Y-%m-%d %H:%M:%S %Z')
+	COMMIT_TIME=$(date -r "$file" '+%A %-d %B %Y %-H:%M:%S %Z')
+
+	git add "$file"
+	< /dev/tty faketime "${MODDED_AT}" git commit -m "Modded @ ${COMMIT_TIME}." -e
+done
+
+# Mexico = Extremely hot in the summer.
+# Panama = Hot in the summer.
+# Colombia = Great year-round.
+
+# Jan Feb March April (4) [mexico],
+# May June July August [colombia] (4)
+# Sep [panama] (1),
+# Oct Nov [mexico] (2),
+# Dec [colombia] (1)
