@@ -58,3 +58,9 @@ Behavioral changes:
 * **[2021-10-30 07:00:24 CDT]** - **[clone-github-repos]** Fixed a syntax error.
 * **[2021-10-30 07:03:45 CDT]** - **[gitconfig]** Added a git alias for easily renaming tags.
 * **[2021-10-30 07:05:00 CDT]** - **[ssh-autologin]** Fixed the exec permission.
+
+## v2.4.0 @ 2024-01-13
+* **[2024-01-13 13:55:42 CST]** Added a Bash alias to have `free` show the total memory in MiBs.
+* **[2024-01-13 13:56:25 CST]** Added a Bash alias `ps-date` to show the full date timestamp of a long-running process.
+* **[2024-01-13 13:56:54 CST]** Added a Bash alias to hide all of the snap /dev/loop devices from df.
+* **[2024-01-13 13:59:23 CST]** [changelog-maker-lite] Bold the timestamps. HEAD -> trunk

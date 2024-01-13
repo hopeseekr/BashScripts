@@ -11,6 +11,16 @@ They are sorted by how much utility they provide me, descending.
 
 Translations: [中文](README.cn.md), [हिन्दी](README.hi.md)
 
+Recent Changes
+==============
+
+## v2.4.0 @ 2024-01-13
+* **[2024-01-13]** Added a Bash alias to have `free` show the total memory in MiBs.
+* **[2024-01-13]** Added a Bash alias `ps-date` to show the full date timestamp of a long-running process.
+* **[2024-01-13]** Added a Bash alias to hide all of the snap /dev/loop devices from df.
+* **[2024-01-13]** [changelog-maker-lite] Bold the timestamps. HEAD -> trunk
+
+
 Table of Contents (Categorized)
 ===============================
 
