@@ -97,3 +97,6 @@ alias mpv="mpv --hwdec=libva-intel-driver"
 # Show free memory in MB and total.
 alias free="free -mt"
 
+# Show a process PID's full date and time.
+# @see https://stackoverflow.com/a/5731337/430062
+alias ps-date='ps -eo pid,lstart,cmd'
