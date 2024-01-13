@@ -100,3 +100,6 @@ alias free="free -mt"
 # Show a process PID's full date and time.
 # @see https://stackoverflow.com/a/5731337/430062
 alias ps-date='ps -eo pid,lstart,cmd'
+
+# Hide all of the /dev/loop snap devices from df:
+alias df='df -l -BM -Tx"squashfs"'
