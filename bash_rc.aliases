@@ -36,7 +36,6 @@ alias myip="curl http://ipecho.net/plain; echo"
 alias logs="find /var/log -type f -exec file {} \; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | xargs tail -f"
 alias folders='find . -maxdepth 1 -type d -print0 | xargs -0 du -sk | sort -rn'
 
-alias free="free -m"
 ## Shows full ISO dates to the nanosecond:
 ## -rwxr-xr-x 1 tsmith tsmith 1MB 2020-10-01 00:48:49.759629612 -0500 bash_rc.aliases*
 ## -rwxr-xr-x 1 tsmith tsmith 1MB 2020-10-01 00:24:46.749613559 -0500 clone-github-repos.php*
@@ -94,3 +93,7 @@ alias vidres="mediainfo mediainfo --Inform='Video;%Width%x%Height%'"
 # Use Intel QSV for video hardware acceleration of VLC and mpv.
 export LIBVA_DRIVER_NAME=iHD
 alias mpv="mpv --hwdec=libva-intel-driver"
+
+# Show free memory in MB and total.
+alias free="free -mt"
+
