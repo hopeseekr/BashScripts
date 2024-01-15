@@ -1,0 +1,30 @@
+#!/bin/bash
+#############################################################################
+# tar-sorted: Create tar files automatically sorted by file name.           #
+#                                                                           #
+# This is particularly helpful on random-order file systems, such as ext4.  #
+#                                                                           #
+# With the Bettergist Collector, we use this to be able to roughly estimate #
+# how long compressing and extracting multiple-gigabyte files with millions #
+# of files will take.                                                       #
+#                                                                           #
+# It is a drop-in replacement for `tar`, and uses the same arguments.       #
+#                                                                           #
+# Optionally, you can install the function directly into your ~/.bashrc.    #
+#                                                                           #
+# Part of HopeSeekr's BashScripts Collection                                #
+# https://github.com/hopeseekr/BashScripts/                                 #
+#                                                                           #
+# Copyright © 2024 Theodore R. Smith <theodore@phpexperts.pro>              #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690       #
+#                                                                           #
+# License: Creative Commons Attribution v4.0 International                  #
+#                                                                           #
+#############################################################################
+
+# Create tar archives sorted alphanumerically.
+function tar-sorted() {
+    find "${@:3}" -print0 | sort -z | tar "$1" "$2" --no-recursion --null -T -;
+};
+
+tar-sorted "$@"
