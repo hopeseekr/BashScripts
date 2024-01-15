@@ -21,7 +21,7 @@ sudo -s
 
 # 1. Remove the latest dupes from your Pacman DB.
 pacman -Syu 2>&1 | grep "duplicated database entry" > /tmp/dupes
-for latest in $(for dupe in $(cat /tmp/dupes | awk '{print $5}'); do
+for latest in $(for dupe in $(cat /tmp/dupes | awk '{print $5}' | sed "s/'//g"); do
     ls /var/lib/pacman/local/$dupe* -d | tail -n1; done); do
     rm -rvf $latest;
 done

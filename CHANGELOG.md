@@ -64,3 +64,6 @@ Behavioral changes:
 * **[2024-01-13 13:56:25 CST]** Added a Bash alias `ps-date` to show the full date timestamp of a long-running process.
 * **[2024-01-13 13:56:54 CST]** Added a Bash alias to hide all of the snap /dev/loop devices from df.
 * **[2024-01-13 13:59:23 CST]** [changelog-maker-lite] Bold the timestamps. HEAD -> trunk
+
+## v2.4.1 @ 2024-01-15
+* **[2024-01-14 22:31:40 CST]** [arch-pacman-dupe-cleaner] Fixed the script for modern Arch. HEAD -> trunk
