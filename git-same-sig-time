@@ -1,0 +1,33 @@
+#!/bin/bash
+#############################################################################
+# git-same-sig-time: Unifies the GPG signature time with the commit's time. #
+#                                                                           #
+# Part of HopeSeekr's BashScripts Collection                                #
+# https://github.com/hopeseekr/BashScripts/                                 #
+#                                                                           #
+# Copyright © 2024 Theodore R. Smith <theodore@phpexperts.pro>              #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690       #
+#                                                                           #
+# License: Creative Commons Attribution v4.0 International                  #
+#                                                                           #
+#############################################################################
+
+git pretty -1 > /dev/null 2>&1
+if [ "$?" -eq 1 ]; then
+    echo "Error: You need \`git pretty\` installed. Add this to your ~/.gitconfig:"
+    echo ""
+    echo "    [pretty]"
+    echo "      shortlog = format:%C(auto,yellow)%h%C(auto,magenta)% G? %Cred%ad %C(auto,green)%<(20,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D"
+    exit 1
+fi
+
+# Get the count of git commits including and after the target commit.
+COMMIT_COUNT=$(git log --oneline "$1"^.. | wc -l)
+echo "Commit count: $COMMIT_COUNT"
+
+GIT_SEQUENCE_EDITOR="sed -i -re 's/^pick/edit/'" git rebase -i "$1"^
+
+for a in $(eval echo {1.."$COMMIT_COUNT"}); do
+    faketime "$(git pretty -1 | awk '{print $3" "$4}')" git commit --amend -S --no-edit
+    git rebase --continue
+done
