@@ -14,6 +14,12 @@ Translations: [中文](README.cn.md), [हिन्दी](README.hi.md)
 Recent Changes
 ==============
 
+## v2.5.0 @ 2024-01-19
+* **[2020-10-14]** [american-date] A utility to print out dates in the American format ('Fri, 19 January 2024 05:49:20 CST').
+* **[2024-01-15]** [tar-sorted] Create tar files automatically sorted by file name.
+* **[2023-11-17]** [git-commit-at-modded-time] Use a file's modified time as the git time.
+* **[2024-01-19]** [git-same-sig-time] Unifies the GPG signature time with the commit's time.
+
 #### v2.4.1 @ 2024-01-14
 * **[2024-01-14]** [arch-pacman-dupe-cleaner] Fixed the script for modern Arch.
 
@@ -33,6 +39,12 @@ Table of Contents (Categorized)
       * [ssh-autologin](#ssh-autologin) - Automatically set up SSH autologins.
       * [ssh-keyphrase-only-once](#ssh-keyphrase-only-onceinstaller) - Only prompt for your SSH keyphrase once per boot.
       * [gitconfig](#gitconfig) - High-Octane Git CLI Configuration.
+   * **Git Quality of Life**
+     * [git-change-author](#git-change-author) - Easily bulk change the author's name and email in a git repo.
+     * [git-commit-at-modded-time](#git-commit-at-modded-time) - Use a file's modified time as the git time.
+     * [git-mtime](#git-mtime-git-modified-time-restorer) - Restores every file's modification time to that of the repo's history.
+     * [git-same-sig-time](#git-same-sig-time) - Unifies the GPG signature time with the commit's time.
+     * [git-shallow-pull](#esotericgit-shallow-pull) - Shallow updates a shallow `git clone --depth 1` repository.
    * **CronTabs**
       * [cron.daily/00_clear-cache](#crondaily00_clear-cache) - Remove useless cache files nightly.
       * [cron.daily/01_purge-locales](#crondaily01_purge-locales) - Remove worthless intl locales.
@@ -42,10 +54,11 @@ Table of Contents (Categorized)
       * [ls-by-min ](#ls-by-min-) - Sorts the output of  `ls` by file size, descending.
       * [random-file [dir]](#random-file-dir) -  Randomly picks a file or directory and displays it.
       * [sync-watch](#sync-watch) - Outputs a tiny, updating display of how many MBs need to be written to disks.
+      * [tar-sorted](#tar-sorted) - Create tar files automatically sorted by file name.
       * [turn-off-monitors](#turn-off-monitors) - Turns off all monitors via the Command Line (CLI). 
    * **Uber Scripts** (很好的控制台脚本)
+      * [american-date](#american-date) - A utility to print out dates in the American format.
       * [changelog-maker-lite](#changelog-maker-lite) - Quickly creates a beautiful changelog from the commit history.
-      * [git-mtime](#git-mtime) - Restores every file's modification time to that of the repo's history.
       * [stream-to-youtube](#stream-to-youtube) - Live Screencast directly to YouTube from the CLI. 
       * [watermark.sh](#watermarksh) - Easily embed your own image watermark onto videos.
       * [wifi-autorun-on-connect](#wifi-autorun-on-connectinstaller) - Autorun a script when you connect to a Wifi hotspot.
@@ -122,6 +135,82 @@ Utility aliases to make git more efficient to use.
 
 Shows the GPG signature for every commit in `git log`.
 
+## git-change-author
+
+Easily bulk change the author's name and email of any of the commits in a git repository.
+
+Usage: `git-change-author "Your Name" "email@address" [SHA1]`
+
+## git-commit-at-modded-time
+
+Use a file's modified time as the git time.
+
+Example:
+
+    $ ls -l american-date
+     #-rwxrwxr-x+ 1 1MB Oct 14  2020  american-date
+    $ ./git-commit-at-modded-time american-date
+    $ git pretty american-date
+    7462b66 G 2020-10-14 15:53:34 -0500 Theodore R. Smith
+
+## git-mtime Git Modified Time Restorer
+
+Restores each file's modification time in your working directory to when it was
+last updated in the remote git repository.
+
+When you checkout a repository & run this, your workdir goes from:
+
+    -rwxrwxr-x+ 1 tsmith users 1MB Oct 22 01:58 changelog-maker-lite*
+    -rw-rw-r--+ 1 tsmith users 1MB Oct 22 01:58 CHANGELOG.txt
+    -rw-rw-r--+ 1 tsmith users 1MB Oct 22 01:58 gitconfig
+    -rwxrwxr-x+ 1 tsmith users 1MB Oct 22 01:58 git-mtime
+
+To:
+
+    -rwxrwxr-x+ 1 tsmith users 1MB Oct  1 08:38 changelog-maker-lite*
+    -rw-rw-r--+ 1 tsmith users 1MB Oct  1 01:10 gitconfig
+    -rwxrwxr-x+ 1 tsmith users 1MB Sep 30 23:19 git-mtime
+
+## git-same-sig-time
+
+Unifies the GPG signature time with the commit's time.
+
+Before:
+
+     gpg: Signature made Fri 19 Jan 2024 06:50:44 AM CST
+     gpg:                using RSA key 4BF826131C3487ACD28F2AD8EB24A91DD6125690
+     gpg: Good signature from "Theodore R. Smith <theodore@phpexperts.pro>" [ultimate]
+     43578ec G 2024-01-16 01:52:41 -0600 Theodore R. Smith   [m] Updated the packages and exclusion lists. HEAD
+     gpg: Signature made Fri 19 Jan 2024 06:50:25 AM CST
+     gpg:                using RSA key 4BF826131C3487ACD28F2AD8EB24A91DD6125690
+     gpg: Good signature from "Theodore R. Smith <theodore@phpexperts.pro>" [ultimate]
+     8ab4104 G 2024-01-15 08:27:07 -0600 Theodore R. Smith   Upgraded to PHP 8.3.
+
+After:
+
+     gpg: Signature made Tue 16 Jan 2024 01:52:41 AM CST
+     gpg:                using RSA key 4BF826131C3487ACD28F2AD8EB24A91DD6125690
+     gpg: Good signature from "Theodore R. Smith <theodore@phpexperts.pro>" [ultimate]
+     515e36b G 2024-01-16 01:52:41 -0600 Theodore R. Smith   [m] Updated the packages and exclusion lists. HEAD
+     gpg: Signature made Mon 15 Jan 2024 08:27:07 AM CST
+     gpg:                using RSA key 4BF826131C3487ACD28F2AD8EB24A91DD6125690
+     gpg: Good signature from "Theodore R. Smith <theodore@phpexperts.pro>" [ultimate]
+     22c5040 G 2024-01-15 08:27:07 -0600 Theodore R. Smith   Upgraded to PHP 8.3.
+
+## tar-sorted
+ 
+Create tar files automatically sorted by file name.
+
+This is particularly helpful on random-order file systems, such as ext4.
+
+With the Bettergist Collector, we use this to be able to roughly estimate
+how long compressing and extracting multiple-gigabyte files with millions
+of files will take.
+
+It is a drop-in replacement for `tar`, and uses the same arguments.
+
+Optionally, you can install the function directly into your ~/.bashrc.
+
 ## cron.daily/00_clear-cache
 
 - Empties out the ~/.cache directory of every non-root user.
@@ -143,45 +232,11 @@ Takes BTRFS snapshots of / every hour on the hour.
 
 Cleans up the prior day's hourly snapshots while keeping the daily ones.
 
-## turn-off-monitors
+## american-date
 
-Easily turns off all of your monitors via the CLI.
+A utility to print out dates in the American format
 
-For when you want to just step away and not worry so much about a lock screen.
-
-## ls-by-min <MB>
-
-Returns a list of files sorted by file size, descending, that are at least X MB big.
-
-## x265.sh
-
-Transcodes to x265 HEVC via ffmpeg using Intel's graphics card.
-
-## random-file [dir]
-
-Picks a random file in a directory / PWD.
-
-## wifi-autorun-on-connect.installer
-
-Installs a NetworkManager script that atomatically runs when connected to specific               #
-WiFi networks.
-
-## git-change-author
-
-Easily bulk change the author's name and email of any of the commits in a git repository.
-
-## git-mtime
-
-Restores each file's modification time in your working directory to when it was 
-last updated in the remote git repository.
-
-## sync-watch
-
-Displays how many megabytes still need to be written to [slow] disks.
-
-## watermark.sh
-
-Adds a watermark to videos via ffmpeg.
+    Fri, 19 January 2024 05:49:20 CST
 
 ## changelog-maker-lite
 
@@ -196,9 +251,45 @@ Easily creates [CHANGELOGs](CHANGELOG.md) based upon concise git commit logs:
     [2020-10-01 01:10:26 CDT] - [.gitconfig] Added a whole bunch of my git aliases. tag: v1.0.0
     [2020-10-01 08:17:42 CDT] - [clear-cache] Delete broken symlinks in the ~/.cache directories.
 
+## ls-by-min <MB>
+
+Returns a list of files sorted by file size, descending, that are at least X MB big.
+
+## random-file [dir]
+
+Picks a random file in a directory / PWD.
+
 ## stream-to-youtube
 
 YouTube CLI Livestream Screencaster straight from the CLI (via ffmpeg)!
+
+## sync-watch
+
+Displays how many megabytes still need to be written to [slow] disks.
+
+    Every 5.0s: grep -e Dirty: -e Writeback: /proc/meminfo                                                    asus-z13: Fri Jan 19 07:09:32 2024
+    
+    Dirty:            751552 kB
+    Writeback:             0 kB
+
+## turn-off-monitors
+
+Easily turns off all of your monitors via the CLI.
+
+For when you want to just step away and not worry so much about a lock screen.
+
+## wifi-autorun-on-connect.installer
+
+Installs a NetworkManager script that atomatically runs when connected to specific               #
+WiFi networks.
+
+## watermark.sh
+
+Adds a watermark to videos via ffmpeg.
+
+## x265.sh
+
+Transcodes to x265 HEVC via ffmpeg using Intel's graphics card.
 
 # Esoteric Utilities
 

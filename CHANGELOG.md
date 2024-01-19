@@ -64,3 +64,12 @@ Behavioral changes:
 * **[2024-01-13 13:56:25 CST]** Added a Bash alias `ps-date` to show the full date timestamp of a long-running process.
 * **[2024-01-13 13:56:54 CST]** Added a Bash alias to hide all of the snap /dev/loop devices from df.
 * **[2024-01-13 13:59:23 CST]** [changelog-maker-lite] Bold the timestamps. HEAD -> trunk
+
+## v2.4.1 @ 2024-01-14
+* **[2024-01-14 22:31:40 CST]** [arch-pacman-dupe-cleaner] Fixed the script for modern Arch.
+
+## v2.5.0 @ 2024-01-19
+* **[2020-10-14 15:53:34 CST]** [american-date] A utility to print out dates in the American format ('Fri, 19 January 2024 05:49:20 CST').
+* **[2024-01-15 09:14:17 CST]** [tar-sorted] Create tar files automatically sorted by file name.
+* **[2023-11-17 11:22:42 CST]** [git-commit-at-modded-time] Use a file's modified time as the git time.
+* **[2024-01-19 06:17:20 CST]** [git-same-sig-time] Unifies the GPG signature time with the commit's time.
