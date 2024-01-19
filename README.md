@@ -14,7 +14,10 @@ Translations: [中文](README.cn.md), [हिन्दी](README.hi.md)
 Recent Changes
 ==============
 
-## v2.4.0 @ 2024-01-13
+#### v2.4.1 @ 2024-01-14
+* **[2024-01-14]** [arch-pacman-dupe-cleaner] Fixed the script for modern Arch.
+
+#### v2.4.0 @ 2024-01-13
 * **[2024-01-13]** Added a Bash alias to have `free` show the total memory in MiBs.
 * **[2024-01-13]** Added a Bash alias `ps-date` to show the full date timestamp of a long-running process.
 * **[2024-01-13]** Added a Bash alias to hide all of the snap /dev/loop devices from df.
