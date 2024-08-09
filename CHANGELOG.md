@@ -73,3 +73,7 @@ Behavioral changes:
 * **[2024-01-15 09:14:17 CST]** [tar-sorted] Create tar files automatically sorted by file name.
 * **[2023-11-17 11:22:42 CST]** [git-commit-at-modded-time] Use a file's modified time as the git time.
 * **[2024-01-19 06:17:20 CST]** [git-same-sig-time] Unifies the GPG signature time with the commit's time.
+
+## v2.5.1 @ 2024-08-09
+* **[2024-03-17 05:21:56 CDT]** [btrfs-snapshot] Added support for hourly snapshots of /code.
+* **[2024-08-09 18:43:46 CDT]** [tar-sorted] Added support for --zstd archives.
