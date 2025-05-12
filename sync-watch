@@ -17,5 +17,5 @@
 # License: Creative Commons Attribution v4.0 International              #
 #########################################################################
 
-watch -d grep -e Dirty: -e Writeback: /proc/meminfo
+/bin/watch -d grep -e Dirty: -e Writeback: /proc/meminfo
 
