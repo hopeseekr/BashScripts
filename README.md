@@ -13,6 +13,11 @@ Translations: [中文](README.cn.md), [हिन्दी](README.hi.md)
 
 Recent Changes
 ==============
+## v2.7.3 @ 2025-05-12
+
+* **[2025-02-08 15:26:11 CDT]** [arch-upgrade-postgres] Made it better.
+* **[2025-05-12 08:27:50 CDT]** [sync-watch] Use system "watch" instead of any Bash alias. 
+
 #### v2.7.2 @ 2025-01-27
 
 * **[2024-12-07 19:41:20 CST]** [turn-off-monitors] Added compatibility to KDE Desktop.

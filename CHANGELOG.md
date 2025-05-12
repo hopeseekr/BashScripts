@@ -116,3 +116,8 @@ Behavioral changes:
 * **[2025-01-19 21:58:12 CET]** [turn-off-monitors] Added support for touch screen wakeup.
 * **[2025-01-25 19:18:27 CST]** [wifi-show-password] Added a utility to show the current wifi password.
 * **[2025-01-27 10:56:29 CST]** [arch-upgrade-postgres] Added a utility to automatically upgrade postgres on Arch Linux.
+
+## v2.7.3 @ 2025-05-12
+
+* **[2025-02-08 15:26:11 CDT]** [arch-upgrade-postgres] Made it better.
+* **[2025-05-12 08:27:50 CDT]** [sync-watch] Use system "watch" instead of any Bash alias. 
