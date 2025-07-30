@@ -9,30 +9,6 @@ Linux!
 
 Están ordenados por cuánta utilidad me brindan.
 
-Cambios Recientes
-=================
-
-#### v2.7.0 @ 2024-08-24
-
-* **[2024-08-24 12:06:32 CDT]** [bash-timer] Se agregó el proyecto bash-timer.
-
-#### v2.6.1 @ 2024-08-24
-
-* **[2024-08-23 07:09:10 CDT]** [git-same-sig-time] Se agregó soporte adecuado para zonas horarias diferentes a la de la computadora del usuario.
-
-#### v2.6.0 @ 2024-08-12
-
-* **[2024-08-12]** Se limpió mayormente el README y se tradujo al chino, hindi y español.
-* **[2024-08-12]** [turn-off-monitors] Se agregó soporte completo para apagar monitores en Wayland para Gnome y KDE.
-* **[2024-08-12]** [arch-pacman-dupe-cleaner] Requiere superusuario para ejecutarse.
-* **[2024-08-12]** [gitconfig] Tiempo de espera automático para git cuando los sitios web no son accesibles.
-* **[2024-08-12]** [bash_rc.aliases] Reemplaza ssh con mosh, si está instalado.
-* **[2024-08-12]** [bash_rc.aliases] Se añadió un alias para que `watch` respete los alias de ~/.bashrc.
-* **[2024-08-12]** [framework/wait_until_mouse_or_keyboard_event] Bloquea la ejecución hasta que se presione una tecla, se mueva el ratón o se haga clic en un botón del ratón.
-* **[2024-08-12]** [framework/is_root] Se agregó una función para determinar el acceso root.
-* **[2024-08-12]** [launch-browser] Lanza navegadores basados en Chrome en Wayland nativo.
-* **[2024-08-12]** Se añadió un .bash_profile.
-
 Tabla de Contenidos (Categorizada)
 ===============================
 
@@ -65,6 +41,7 @@ Tabla de Contenidos (Categorizada)
     * [launch-browser](#launch-browser) — Script de utilidad para lanzar navegadores que los inicia en modo Wayland 
       completo.
     * [ls-by-min](#ls-by-min) — Ordena la salida de `ls` por tamaño de archivo, descendente.
+    * [my-ip](#my-ip) — Obtén fácilmente la dirección IP pública de esta máquina.
     * [random-file](#random-file) — Elige aleatoriamente un archivo o directorio y lo muestra.
     * [sync-watch](#sync-watch) — Muestra una pequeña pantalla actualizada de cuántos MB necesitan escribirse en los 
       discos.
@@ -314,6 +291,10 @@ Crea fácilmente [CHANGELOGs](CHANGELOG.md) basados en registros de commits de g
 
 Devuelve una lista de archivos ordenados por tamaño de archivo, de forma descendente, que tienen al menos X MB de 
 tamaño.
+
+## my-ip
+
+Obtén fácilmente la dirección IP pública de esta máquina.
 
 ## random-file
 

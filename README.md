@@ -13,6 +13,10 @@ Translations: [中文](README.cn.md), [हिन्दी](README.hi.md)
 
 Recent Changes
 ==============
+## v2.8.0 @ 2025-07-29
+
+* **[2025-07-29 20:24:07 CDT]** [my-ip] Added a little utility to discover your private IP address.
+
 ## v2.7.3 @ 2025-05-12
 
 * **[2025-02-08 15:26:11 CDT]** [arch-upgrade-postgres] Made it better.
@@ -81,6 +85,7 @@ Table of Contents (Categorized)
 * **Quality of Life**
     * [launch-browser](#launch-browser) — Browser launcher utility script that launches browsers in full-Wayland.
     * [ls-by-min](#ls-by-min) — Sorts the output of  `ls` by file size, descending.
+    * [my-ip](#my-ip) — Easily fetch this machine's public IP address.
     * [random-file](#random-file) — Randomly picks a file or directory and displays it.
     * [sudoers.d/00_prompt_once](#sudoersd00_prompt_once) — Only prompt for your sudo password once per boot.
     * [sync-watch](#sync-watch) — Outputs a tiny, updating display of how many MBs need to be written to disks.
@@ -321,6 +326,10 @@ Easily creates [CHANGELOGs](CHANGELOG.md) based upon concise git commit logs:
 ## ls-by-min <MB>
 
 Returns a list of files sorted by file size, descending, that are at least X MB big.
+
+## my-ip
+
+Easily fetch this machine's public IP address.
 
 ## random-file
 

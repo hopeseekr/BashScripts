@@ -121,3 +121,8 @@ Behavioral changes:
 
 * **[2025-02-08 15:26:11 CDT]** [arch-upgrade-postgres] Made it better.
 * **[2025-05-12 08:27:50 CDT]** [sync-watch] Use system "watch" instead of any Bash alias. 
+
+## v2.8.0 @ 2025-07-29
+
+* **[2025-07-29 20:24:07 CDT]** [my-ip] Added a little utility to discover your private IP address.
+

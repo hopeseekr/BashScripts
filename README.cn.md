@@ -1,13 +1,3 @@
-The document begins with a description of a collection of Bash scripts, detailing utilities that the author uses to enhance their Linux experience. I will proceed with translating the entire content of this document into Simplified Chinese.
-
-I'll first translate the text and then provide you with the translated content.
-
-It seems that I don't have access to the required libraries to perform the translation directly in this environment. However, I can translate the document for you manually. This will take some time, but I'll get started right away.
-
-Here is the translation of the document into Simplified Chinese:
-
----
-
 # HopeSeekr 的 Bash 脚本集
 
 用于简化生活的实用工具。
@@ -17,30 +7,6 @@ Here is the translation of the document into Simplified Chinese:
 ![Hope 的标志](https://avatars2.githubusercontent.com/u/50506504?s=200&v=4)
 
 它们根据对我提供的效用进行排序。
-
-最近更改
-==========
-
-#### v2.7.0 @ 2024-08-24
-
-* **[2024-08-24 12:06:32 CDT]** [bash-timer] 添加了 bash-timer 项目。
-
-#### v2.6.1 @ 2024-08-24
-
-* **[2024-08-23 07:09:10 CDT]** [git-same-sig-time] 增加了对不同于用户计算机时区的正确支持。
-
-#### v2.6.0 @ 2024-08-12
-
-* **[2024-08-12]** 大幅清理了 README 并翻译成中文、印地语和西班牙语。
-* **[2024-08-12]** [turn-off-monitors] 增加了在 Wayland 下关闭 Gnome 和 KDE 显示器的完整支持。
-* **[2024-08-12]** [arch-pacman-dupe-cleaner] 需要超级用户权限运行。
-* **[2024-08-12]** [gitconfig] 在无法访问网站时自动超时 git。
-* **[2024-08-12]** [bash_rc.aliases] 如果安装了 mosh，则替换 ssh。
-* **[2024-08-12]** [bash_rc.aliases] 添加了一个别名，使 `watch` 尊重 ~/.bashrc 别名。
-* **[2024-08-12]** [framework/wait_until_mouse_or_keyboard_event] 阻止执行直到按下键盘键、移动鼠标或点击鼠标按钮。
-* **[2024-08-12]** [framework/is_root] 增加了一个确定是否为 root 访问的函数。
-* **[2024-08-12]** [launch-browser] 在本地 Wayland 启动基于 Chrome 的浏览器。
-* **[2024-08-12]** 添加了 .bash_profile。
 
 目录（分类）
 ====================
@@ -67,6 +33,7 @@ Here is the translation of the document into Simplified Chinese:
 * **生活质量**
     * [launch-browser](#launch-browser) — 用于启动浏览器的实用脚本，可在完整的 Wayland 模式下启动它们。
     * [ls-by-min](#ls-by-min) — 按文件大小降序排序 `ls` 输出。
+    * [my-ip](#my-ip) — 轻松获取该机器的公共IP地址。
     * [random-file](#random-file) — 随机选择并显示一个文件或目录。
     * [sync-watch](#sync-watch) — 显示需要写入磁盘的 MB 数量的更新屏幕。
     * [tar-sorted](#tar-sorted) — 自动按文件名排序创建 tar 文件。
@@ -302,6 +269,10 @@ git alterego 的反义词。
 ## ls-by-min <MB>
 
 返回按文件大小降序排列的文件列表，文件大小至少为 X MB。
+
+## my-ip
+
+轻松获取该机器的公共IP地址。
 
 ## random-file
 
