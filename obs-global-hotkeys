@@ -1,0 +1,249 @@
+#!/usr/bin/env bash
+#########################################################################
+# OBS Global Hotkeys Installer (GNOME)
+#
+# Quickly installs true OBS Global Hotkeys in GNOME. This script is
+# idempotent and safely finds available keybinding slots without
+# overwriting existing user configurations.
+#
+# Part of HopeSeekr's BashScripts Collection
+# https://github.com/hopeseekr/BashScripts/
+#
+# License: CC BY 4.0
+#########################################################################
+
+set -euo pipefail
+
+# ---- Configuration ------------------------------------------------------------
+# Add or remove keybindings here. Ensure all three arrays have the same
+# number of elements.
+
+declare -a KEYBINDING_NAMES=(
+  "OBS Record/Stop"
+  "OBS Pause/Unpause"
+)
+declare -a KEYBINDING_BINDS=(
+  "<Control>F8"
+  "<Control>F9"
+)
+declare -a KEYBINDING_CMDS=(
+  "obs-cmd recording toggle"
+  "obs-cmd recording toggle-pause"
+)
+
+# ---- DConf Constants ----------------------------------------------------------
+readonly GSETTINGS_SCHEMA="org.gnome.settings-daemon.plugins.media-keys"
+readonly KB_LIST_KEY="custom-keybindings"
+readonly KB_ROOT_PATH="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
+readonly KB_SCHEMA_PREFIX="org.gnome.settings-daemon.plugins.media-keys.custom-keybinding"
+
+# ---- UI/Helpers ---------------------------------------------------------------
+# Color codes for output
+readonly C_RED='\e[31m'
+readonly C_GREEN='\e[32m'
+readonly C_YELLOW='\e[33m'
+readonly C_BLUE='\e[34m'
+readonly C_NC='\e[0m' # No Color
+
+info() { echo -e "${C_BLUE}==>${C_NC} $1"; }
+success() { echo -e "${C_GREEN}==>${C_NC} $1"; }
+warn() { echo -e "${C_YELLOW}==>${C_NC} $1"; }
+error() { >&2 echo -e "${C_RED}==> ERROR:${C_NC} $1"; }
+
+require() {
+  command -v "$1" >/dev/null 2>&1 || { error "$1 is not installed. Please install it to continue."; exit 1; }
+}
+
+# Safely gets a string array from dconf and returns it as a Bash array
+get_dconf_array() {
+  local gsettings_output
+  gsettings_output=$(gsettings get "$GSETTINGS_SCHEMA" "$KB_LIST_KEY")
+
+  # Clean up the string "[ 'val1', 'val2' ]" into a format that can be read into a bash array
+  # Handles both "@as []" and "[]" for empty arrays
+  if [[ "$gsettings_output" == "@as []" || "$gsettings_output" == "[]" ]]; then
+    echo ""
+    return
+  fi
+  # Remove brackets, quotes, and commas, then feed to `mapfile`
+  gsettings_output="${gsettings_output//\'/}"
+  gsettings_output="${gsettings_output//, / }"
+  gsettings_output="${gsettings_output#[}"
+  gsettings_output="${gsettings_output%]}"
+  echo "$gsettings_output"
+}
+
+# Safely writes a Bash array to a dconf string array
+set_dconf_array() {
+  local -n arr="$1" # Use nameref for passing array
+  local formatted_array
+
+  if [ ${#arr[@]} -eq 0 ]; then
+    formatted_array="[]"
+  else
+    # Format as ['/path/1/', '/path/2/']
+    formatted_array=$(printf "'%s'," "${arr[@]}")
+    formatted_array="[${formatted_array%,}]" # Add brackets and remove trailing comma
+  fi
+
+  gsettings set "$GSETTINGS_SCHEMA" "$KB_LIST_KEY" "$formatted_array"
+}
+
+usage() {
+  cat << EOF
+Usage: $0 {install|uninstall|--help|-h}
+
+Installs or uninstalls global hotkeys for OBS Studio in GNOME.
+
+Commands:
+  install     Installs the keybindings, finding available slots automatically.
+  uninstall   Removes keybindings created by this script by name.
+  --help, -h  Show this help message.
+EOF
+  exit 2
+}
+
+# ---- Main Logic ---------------------------------------------------------------
+
+install_keybindings() {
+  info "Installing OBS global hotkeys for GNOME..."
+
+  # Read current keybindings into a bash array
+  mapfile -t current_bindings < <(get_dconf_array)
+
+  # Get a list of names of all currently installed custom keybindings
+  declare -A existing_names
+  for path in "${current_bindings[@]}"; do
+    # Skip empty paths that might result from parsing
+    [[ -z "$path" ]] && continue
+    local name
+    # Use || echo "" to prevent errors on unset keys
+    name=$(gsettings get "${KB_SCHEMA_PREFIX}:${path}" name 2>/dev/null || echo "")
+    if [[ -n "$name" ]]; then
+      existing_names["$name"]="$path"
+    fi
+  done
+
+  local bindings_changed=false
+  for i in "${!KEYBINDING_NAMES[@]}"; do
+    local name="${KEYBINDING_NAMES[$i]}"
+    local bind="${KEYBINDING_BINDS[$i]}"
+    local cmd="${KEYBINDING_CMDS[$i]}"
+
+    if [[ -n "${existing_names[$name]+_}" ]]; then
+      warn "Keybinding '$name' already exists. Skipping."
+      # Optional: could update the existing one here if desired
+      continue
+    fi
+
+    # Find the next available custom keybinding slot
+    local free_slot_path=""
+    for j in {0..99}; do
+      local potential_path="${KB_ROOT_PATH}/custom${j}/"
+      # Check if this path is in our list of current bindings
+      if ! printf '%s\n' "${current_bindings[@]}" | grep -q -x "$potential_path"; then
+        free_slot_path="$potential_path"
+        break
+      fi
+    done
+
+    if [[ -z "$free_slot_path" ]]; then
+      error "Could not find a free keybinding slot (checked custom0-99)."
+      exit 1
+    fi
+
+    info "Creating binding '$name' at $free_slot_path"
+    local schema="${KB_SCHEMA_PREFIX}:${free_slot_path}"
+    gsettings set "$schema" name "$name"
+    gsettings set "$schema" binding "$bind"
+    gsettings set "$schema" command "$cmd"
+
+    # Add the new path to our array and mark that we made a change
+    current_bindings+=("$free_slot_path")
+    bindings_changed=true
+  done
+
+  if $bindings_changed; then
+    # Write the updated array back to dconf
+    set_dconf_array current_bindings
+    success "Installation complete."
+    cat << EOF
+
+GLOBAL HOTKEYS INSTALLED:
+  ${KEYBINDING_BINDS[0]}  -> ${KEYBINDING_NAMES[0]}
+  ${KEYBINDING_BINDS[1]}  -> ${KEYBINDING_NAMES[1]}
+
+If hotkeys do not work immediately, try restarting GNOME Shell:
+- On Xorg: Press Alt+F2, type 'r', and press Enter.
+- On Wayland: Log out and log back in.
+EOF
+  else
+    success "All keybindings were already installed. No changes made."
+  fi
+}
+
+uninstall_keybindings() {
+  info "Uninstalling OBS global hotkeys..."
+
+  # Read current keybindings into a bash array
+  mapfile -t current_bindings < <(get_dconf_array)
+  declare -a bindings_to_keep=()
+  local bindings_changed=false
+
+  for path in "${current_bindings[@]}"; do
+     # Skip empty paths that might result from parsing
+    [[ -z "$path" ]] && continue
+    local name
+    name=$(gsettings get "${KB_SCHEMA_PREFIX}:${path}" name 2>/dev/null || echo "")
+
+    # Check if the fetched name is in our list of names to uninstall
+    local found_to_remove=false
+    for name_to_remove in "${KEYBINDING_NAMES[@]}"; do
+      if [[ "$name" == "$name_to_remove" ]]; then
+        found_to_remove=true
+        break
+      fi
+    done
+
+    if $found_to_remove; then
+      warn "Removing keybinding '$name' at path $path"
+      local schema="${KB_SCHEMA_PREFIX}:${path}"
+      # Resetting each key removes the custom value at that path.
+      gsettings reset "$schema" name >/dev/null 2>&1 || true
+      gsettings reset "$schema" binding >/dev/null 2>&1 || true
+      gsettings reset "$schema" command >/dev/null 2>&1 || true
+      bindings_changed=true
+    else
+      # This is not our keybinding, so we keep it.
+      bindings_to_keep+=("$path")
+    fi
+  done
+
+  if $bindings_changed; then
+    # Write the filtered array back to dconf
+    set_dconf_array bindings_to_keep
+    success "Uninstallation complete."
+  else
+    success "No relevant OBS keybindings found to uninstall."
+  fi
+}
+
+# ---- Preflight & Main Execution -----------------------------------------------
+require gsettings
+require dconf
+require obs-cmd
+
+case "${1:-}" in
+  install)
+    install_keybindings
+    ;;
+  uninstall)
+    uninstall_keybindings
+    ;;
+  -h | --help)
+    usage
+    ;;
+  *)
+    usage
+    ;;
+esac
