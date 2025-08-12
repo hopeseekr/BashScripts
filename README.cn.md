@@ -10,35 +10,35 @@
 
 目录（分类）
 ====================
-
 * **超级生产力**
-    * [bash_profile](#bash_profile) — 针对高级用户的高质量 `.bash_profile` 和 `.bashrc`。
-    * [bash_rc.aliases](#bash_rcaliases) — 高效的 .bashrc 别名和函数，用于提升生活质量。
-    * [bash-timer](#bash-timer) — 在bash中轻松为每个命令添加人类可读的执行时间！
-    * [ssh-autologin](#ssh-autologin) — 自动设置 SSH 自动登录。
-    * [ssh-keyphrase-only-once](#ssh-keyphrase-only-onceinstaller) — 每次启动时仅请求一次 SSH 密码短语。
-    * [gitconfig](#gitconfig) — 高效的 Git CLI 配置。
+    * **[bash_profile](#bash_profile)** — 针对高级用户的高质量 `.bash_profile` 和 `.bashrc`。
+    * **[bash_rc.aliases](#bash_rcaliases)** — 高效的 .bashrc 别名和函数，用于提升生活质量。
+    * **[bash-timer](#bash-timer)** — 在bash中轻松为每个命令添加人类可读的执行时间！
+    * **[ssh-autologin](#ssh-autologin)** — 自动设置 SSH 自动登录。
+    * **[ssh-keyphrase-only-once](#ssh-keyphrase-only-onceinstaller)** — 每次启动时仅请求一次 SSH 密码短语。
+    * **[gitconfig](#gitconfig)** — 高效的 Git CLI 配置。
 * **Git 生活质量**
-    * [git-change-author](#git-change-author) — 轻松批量更改 git 仓库中的作者姓名和电子邮件。
-    * [git-commit-at-modded-time](#git-commit-at-modded-time) — 使用文件修改时间作为 git 提交时间。
-    * [git-mtime](#git-mtime-git-modified-time-restorer) — 将每个文件的修改时间恢复到 git 仓库历史记录中。
-    * [git-same-sig-time](#git-same-sig-time) — 统一 GPG 签名时间与提交时间。
-    * [git-shallow-pull](#esotericgit-shallow-pull) — 浅层更新 `git clone --depth 1` 的仓库。
+    * **[git-change-author](#git-change-author)** — **轻松批量更改 git 仓库中的作者姓名和电子邮件。
+    * **[git-commit-at-modded-time](#git-commit-at-modded-time)** — 使用文件修改时间作为 git 提交时间。
+    * **[git-mtime](#git-mtime-git-modified-time-restorer)** — 将每个文件的修改时间恢复到 git 仓库历史记录中。
+    * **[git-same-sig-time](#git-same-sig-time)** — 统一 GPG 签名时间与提交时间。
+    * **[git-shallow-pull](#esotericgit-shallow-pull)** — 浅层更新 `git clone --depth 1` 的仓库。
+    * **[git-shift-time](#git-shift-time)** — 调整 Git 提交时间戳，以分钟或特定日期为单位。
 * **CronTabs**
-    * [cron.daily/00_clear-cache](#crondaily00_clear-cache) — 每晚清除无用的缓存文件。
-    * [cron.daily/01_purge-locales](#crondaily01_purge-locales) — 删除无用的国际化文件。
-    * [cron.hourly/btrfs-snapshot](#cronhourlybtrfs-snapshot) — 每小时备份你的 BTRFS / 。
-    * [cron.daily/btrfs-snapshot](#crondailybtrfs-snapshot) — 每天备份你的 BTRFS / 。
-    * [cron.hourly/php-clean-tmp](#cronhourlyphp-clean-tmp) — 在繁忙的服务器上清理 PHP 临时文件。
+    * **[cron.daily/00_clear-cache](#crondaily00_clear-cache)** — 每晚清除无用的缓存文件。
+    * **[cron.daily/01_purge-locales](#crondaily01_purge-locales)** — 删除无用的国际化文件。
+    * **[cron.hourly/btrfs-snapshot](#cronhourlybtrfs-snapshot)** — 每小时备份你的 BTRFS / 。
+    * **[cron.daily/btrfs-snapshot](#crondailybtrfs-snapshot)** — 每天备份你的 BTRFS / 。
+    * **[cron.hourly/php-clean-tmp](#cronhourlyphp-clean-tmp)** — 在繁忙的服务器上清理 PHP 临时文件。
 * **生活质量**
-    * [launch-browser](#launch-browser) — 用于启动浏览器的实用脚本，可在完整的 Wayland 模式下启动它们。
-    * [ls-by-min](#ls-by-min) — 按文件大小降序排序 `ls` 输出。
-    * [my-ip](#my-ip) — 轻松获取该机器的公共IP地址。
-    * [random-file](#random-file) — 随机选择并显示一个文件或目录。
-    * [sync-watch](#sync-watch) — 显示需要写入磁盘的 MB 数量的更新屏幕。
-    * [tar-sorted](#tar-sorted) — 自动按文件名排序创建 tar 文件。
-    * [turn-off-monitors](#turn-off-monitors) — 通过命令行关闭所有显示器（CLI）。
-    * [wifi-show-password](#wifi-show-password) — 显示当前连接的wifi密码。
+    * **[launch-browser](#launch-browser)** — 用于启动浏览器的实用脚本，可在完整的 Wayland 模式下启动它们。
+    * **[ls-by-min](#ls-by-min)** — 按文件大小降序排序 `ls` 输出。
+    * **[my-ip](#my-ip)** — 轻松获取该机器的公共IP地址。
+    * **[random-file](#random-file)** — 随机选择并显示一个文件或目录。
+    * **[sync-watch](#sync-watch)** — 显示需要写入磁盘的 MB 数量的更新屏幕。
+    * **[tar-sorted](#tar-sorted)** — 自动按文件名排序创建 tar 文件。
+    * **[turn-off-monitors](#turn-off-monitors)** — 通过命令行关闭所有显示器（CLI）。
+    * **[wifi-show-password](#wifi-show-password)** — 显示当前连接的wifi密码。
 * **精彩脚本**
     * [american-date](#american-date) — 一个用于打印美国日期格式的工具。
     * [changelog-maker-lite](#changelog-maker-lite) — 根据提交历史快速创建美观的变更日志。
@@ -201,6 +201,16 @@ git alterego 的反义词。
      gpg:                using RSA key 4BF826131C3487ACD28F2AD8EB24A91DD6125690
      gpg: Good signature from "Theodore R. Smith <theodore@phpexperts.pro>" [ultimate]
      22c5040 G 2024-01-15 08:27:07 -0600 Theodore R. Smith   Upgraded to PHP 8.3.
+
+## git-shift-time
+
+在保留 GPG 签名的同时，以分钟或特定日期为单位调整 Git 提交时间戳。
+
+此实用程序可让您将提交时间向前或向后移动指定的分钟数，或将它们设置为特定的日期/时间。 它对于修复在不同时区工作后的提交时间戳、将提交对齐到特定时间或纠正时间错误的提交非常有用。
+
+```bash
+git-shift-time <提交哈希> <分钟偏移量> [目标日期]
+```
 
 ## tar-sorted
  

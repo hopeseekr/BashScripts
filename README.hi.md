@@ -13,51 +13,51 @@
 
 विषय-सूची (वर्गीकृत)
 ===============================
-
 * **सुपर उत्पादकता**
-    * [bash_profile](#bash_profile) — पावर उपयोगकर्ताओं के लिए उच्च-गुणवत्ता `.bash_profile` और `.bashrc`।
-    * [bash_rc.aliases](#bash_rcaliases) — बेहतर जीवन गुणवत्ता के लिए हाई-ऑक्टेन .bashrc उपनाम और कार्य।
-    * [bash-timer](#bash-timer) — बैश में हर कमांड के लिए मानव-पठनीय निष्पादन समय आसानी से जोड़ें!
-    * [ssh-autologin](#ssh-autologin) — स्वचालित रूप से SSH स्वत: लॉगिन सेट करें।
-    * [ssh-keyphrase-only-once](#ssh-keyphrase-only-onceinstaller) — प्रति बूट केवल एक बार अपने SSH keyphrase के लिए संकेत दें।
-    * [gitconfig](#gitconfig) — Git CLI कॉन्फ़िगरेशन के लिए हाई-ऑक्टेन।
+    * **[bash_profile](#bash_profile)** — पावर उपयोगकर्ताओं के लिए उच्च-गुणवत्ता `.bash_profile` और `.bashrc`।
+    * **[bash_rc.aliases](#bash_rcaliases)** — बेहतर जीवन गुणवत्ता के लिए हाई-ऑक्टेन .bashrc उपनाम और कार्य।
+    * **[bash-timer](#bash-timer)** — बैश में हर कमांड के लिए मानव-पठनीय निष्पादन समय आसानी से जोड़ें!
+    * **[ssh-autologin](#ssh-autologin)** — स्वचालित रूप से SSH स्वत: लॉगिन सेट करें।
+    * **[ssh-keyphrase-only-once](#ssh-keyphrase-only-onceinstaller)** — प्रति बूट केवल एक बार अपने SSH keyphrase के लिए संकेत दें।
+    * **[gitconfig](#gitconfig)** — Git CLI कॉन्फ़िगरेशन के लिए हाई-ऑक्टेन।
 * **Git जीवन गुणवत्ता**
-    * [git-change-author](#git-change-author) — आसानी से git रिपो में लेखक का नाम और ईमेल बदलें। 
-    * [git-commit-at-modded-time](#git-commit-at-modded-time) — git समय के रूप में फ़ाइल के संशोधित समय का उपयोग करें।
-    * [git-mtime](#git-mtime-git-modified-time-restorer) — प्रत्येक फ़ाइल के संशोधन समय को रिपो के इतिहास की तरह बहाल करता है।
-    * [git-same-sig-time](#git-same-sig-time) — प्रतिज्ञान के समय के साथ GPG हस्ताक्षर समय को एकीकृत करता है।
-    * [git-shallow-pull](#esotericgit-shallow-pull) — Shallow `git clone --depth 1` रिपोजिटरी को अद्यतन करता है। 
+    * **[git-change-author](#git-change-author)** — आसानी से git रिपो में लेखक का नाम और ईमेल बदलें। 
+    * **[git-commit-at-modded-time](#git-commit-at-modded-time)** — git समय के रूप में फ़ाइल के संशोधित समय का उपयोग करें।
+    * **[git-mtime](#git-mtime-git-modified-time-restorer)** — प्रत्येक फ़ाइल के संशोधन समय को रिपो के इतिहास की तरह बहाल करता है।
+    * **[git-same-sig-time](#git-same-sig-time)** — प्रतिज्ञान के समय के साथ GPG हस्ताक्षर समय को एकीकृत करता है।
+    * **[git-shallow-pull](#esotericgit-shallow-pull)** — Shallow `git clone --depth 1` रिपोजिटरी को अद्यतन करता है। 
+    * **[git-shift-time](#git-shift-time)** — गिट कमिट टाइमस्टैम्प को विशिष्ट तिथि या मिनटों में समायोजित करता है।
 * **CronTabs**
-    * [cron.daily/00_clear-cache](#crondaily00_clear-cache) — प्रतिदिन रात में निरर्थक कैश फ़ाइलों को निकालें।
-    * [cron.daily/01_purge-locales](#crondaily01_purge-locales) — निरर्थक intl स्थानीय फ़ाइलों को निकालें।
-    * [cron.hourly/btrfs-snapshot](#cronhourlybtrfs-snapshot) — अपने BTRFS / को प्रत्येक घंटे बैकअप करें।
-    * [cron.daily/btrfs-snapshot](#crondailybtrfs-snapshot) — अपने BTRFS / को प्रतिदिन बैकअप करें।
-    * [cron.hourly/php-clean-tmp](#cronhourlyphp-clean-tmp) — व्यस्त सर्वरों पर PHP अस्थायी फ़ाइलों को साफ करता है।
+    * **[cron.daily/00_clear-cache](#crondaily00_clear-cache)** — प्रतिदिन रात में निरर्थक कैश फ़ाइलों को निकालें।
+    * **[cron.daily/01_purge-locales](#crondaily01_purge-locales)** — निरर्थक intl स्थानीय फ़ाइलों को निकालें।
+    * **[cron.hourly/btrfs-snapshot](#cronhourlybtrfs-snapshot)** — अपने BTRFS / को प्रत्येक घंटे बैकअप करें।
+    * **[cron.daily/btrfs-snapshot](#crondailybtrfs-snapshot)** — अपने BTRFS / को प्रतिदिन बैकअप करें।
+    * **[cron.hourly/php-clean-tmp](#cronhourlyphp-clean-tmp)** — व्यस्त सर्वरों पर PHP अस्थायी फ़ाइलों को साफ करता है।
 * **लाइफ का क्वालिटी**
-    * [launch-browser](#launch-browser) — पूर्ण-Wayland में ब्राउज़र लॉन्च करने वाला यूटिलिटी स्क्रिप्ट।
-    * [ls-by-min](#ls-by-min) — `ls` के आउटपुट को फ़ाइल आकार के अनुसार, घटते क्रम में क्रमबद्ध करता है।
-    * [my-ip](#my-ip) — इस मशीन का सार्वजनिक आईपी पता आसानी से प्राप्त करें।
-    * [random-file](#random-file) — यादृच्छिक रूप से एक फ़ाइल या निर्देशिका चुनता है और प्रदर्शित करता है।
-    * [sync-watch](#sync-watch) — छोटी, अद्यतन प्रदर्शन देता है कि डिस्क पर कितने MB लिखने की आवश्यकता है।
-    * [tar-sorted](#tar-sorted) — फ़ाइल नाम द्वारा स्वचालित रूप से क्रमबद्ध tar फ़ाइलें बनाता है।
-    * [turn-off-monitors](#turn-off-monitors) — कमांड लाइन (CLI) के माध्यम से सभी मॉनिटर बंद कर देता है।
-    * [wifi-show-password](#wifi-show-password) — Shows the currently connected wifi password.
+    * **[launch-browser](#launch-browser)** — पूर्ण-Wayland में ब्राउज़र लॉन्च करने वाला यूटिलिटी स्क्रिप्ट।
+    * **[ls-by-min](#ls-by-min)** — `ls` के आउटपुट को फ़ाइल आकार के अनुसार, घटते क्रम में क्रमबद्ध करता है।
+    * **[my-ip](#my-ip)** — इस मशीन का सार्वजनिक आईपी पता आसानी से प्राप्त करें।
+    * **[random-file](#random-file)** — यादृच्छिक रूप से एक फ़ाइल या निर्देशिका चुनता है और प्रदर्शित करता है।
+    * **[sync-watch](#sync-watch)** — छोटी, अद्यतन प्रदर्शन देता है कि डिस्क पर कितने MB लिखने की आवश्यकता है।
+    * **[tar-sorted](#tar-sorted)** — फ़ाइल नाम द्वारा स्वचालित रूप से क्रमबद्ध tar फ़ाइलें बनाता है।
+    * **[turn-off-monitors](#turn-off-monitors) — कमांड लाइन (CLI)** के माध्यम से सभी मॉनिटर बंद कर देता है।
+    * **[wifi-show-password](#wifi-show-password)** — Shows the currently connected wifi password.
 * **उबेर स्क्रिप्ट**
-    * [american-date](#american-date) — अमेरिकी प्रारूप में दिनांक प्रिंट करने के लिए एक उपयोगिता।
-    * [changelog-maker-lite](#changelog-maker-lite) — प्रतिबद्ध इतिहास से जल्दी से एक सुंदर चेंजलॉग बनाता है।
-    * [stream-to-youtube](#stream-to-youtube) — CLI से सीधे YouTube पर लाइव स्क्रीनकास्ट करें।
-    * [sudoers.d/00_prompt_once](#sudoersd00_prompt_once) — प्रति बूट केवल एक बार अपने sudo पासवर्ड के लिए संकेत।
-    * [watermark.sh](#watermarksh) — आसानी से वीडियो पर अपने खुद के चित्र वॉटरमार्क एम्बेड करें।
-    * [wifi-autorun-on-connect](#wifi-autorun-on-connectinstaller) — Wifi हॉटस्पॉट से कनेक्ट होने पर स्क्रिप्ट को स्वतः चलाएँ।
-    * [x265.sh](#x265sh) — VAAPI का उपयोग करके Intel ग्राफिक्स कार्ड के माध्यम से h265 HEVC में ट्रांसकोड करें।
+    * **[american-date](#american-date)** — अमेरिकी प्रारूप में दिनांक प्रिंट करने के लिए एक उपयोगिता।
+    * **[changelog-maker-lite](#changelog-maker-lite)** — प्रतिबद्ध इतिहास से जल्दी से एक सुंदर चेंजलॉग बनाता है।
+    * **[stream-to-youtube](#stream-to-youtube)** — CLI से सीधे YouTube पर लाइव स्क्रीनकास्ट करें।
+    * **[sudoers.d/00_prompt_once](#sudoersd00_prompt_once)** — प्रति बूट केवल एक बार अपने sudo पासवर्ड के लिए संकेत।
+    * **[watermark.sh](#watermarksh)** — आसानी से वीडियो पर अपने खुद के चित्र वॉटरमार्क एम्बेड करें।
+    * **[wifi-autorun-on-connect](#wifi-autorun-on-connectinstaller)** — Wifi हॉटस्पॉट से कनेक्ट होने पर स्क्रिप्ट को स्वतः चलाएँ।
+    * **[x265.sh](#x265sh)** — VAAPI का उपयोग करके Intel ग्राफिक्स कार्ड के माध्यम से h265 HEVC में ट्रांसकोड करें।
 * **एसोटेरिक उपयोगिताएँ**
-    * [arch-pacman-dupe-cleaner](#esotericarch-pacman-dupe-cleaner) — डुप्लिकेट Arch Linux Pacman प्रविष्टियों को हटाएँ।
-    * [arch-upgrade-postgres](#esotericarch-upgrade-postgres) — Arch Linux में PostgreSQL को एक संस्करण से दूसरे संस्करण में अपग्रेड करना स्वचालित करता है।
-    * [init-btrfs-rootfs](#esotericinit-btrfs-rootfs) — सब कुछ संगठित BTRFS उपमाध्यमों में डालता है + स्नैपशॉट को चालू करता है।
-    * [clone-github-repos.php](#esotericclone-github-reposphp) — एक उपयोगकर्ता/संगठन के सभी GitHub रिपोजिटरी डाउनलोड करता है।
+    * **[arch-pacman-dupe-cleaner](#esotericarch-pacman-dupe-cleaner)** — डुप्लिकेट Arch Linux Pacman प्रविष्टियों को हटाएँ।
+    * **[arch-upgrade-postgres](#esotericarch-upgrade-postgres)** — Arch Linux में PostgreSQL को एक संस्करण से दूसरे संस्करण में अपग्रेड करना स्वचालित करता है।
+    * **[init-btrfs-rootfs](#esotericinit-btrfs-rootfs)** — सब कुछ संगठित BTRFS उपमाध्यमों में डालता है + स्नैपशॉट को चालू करता है।
+    * **[clone-github-repos.php](#esotericclone-github-reposphp)** — एक उपयोगकर्ता/संगठन के सभी GitHub रिपोजिटरी डाउनलोड करता है।
 * **बैश फ्रेमवर्क**
-    * [is_root](#is_root) — `is_root` फ़ंक्शन प्रदान करता है, यह निर्धारित करने के लिए कि वर्तमान उपयोगकर्ता के पास रूट एक्सेस है या नहीं।
-    * [wait_until_mouse_or_keyboard_event](#wait_until_mouse_or_keyboard_event) — माउस को हिलाने, माउस बटन क्लिक करने या कुंजी दबाने तक निष्पादन को रोके रखता है।
+    * **[is_root](#is_root)** — `is_root` फ़ंक्शन प्रदान करता है, यह निर्धारित करने के लिए कि वर्तमान उपयोगकर्ता के पास रूट एक्सेस है या नहीं।
+    * **[wait_until_mouse_or_keyboard_event](#wait_until_mouse_or_keyboard_event)** — माउस को हिलाने, माउस बटन क्लिक करने या कुंजी दबाने तक निष्पादन को रोके रखता है।
 
 * [लाइसेंस](#लाइसेंस) — क्रिएटिव कॉमन्स v4.0 अंतर्राष्ट्रीय
 * [लेखक के बारे में](#लेखक-के-बारे-में)
@@ -228,6 +228,16 @@ git समय के रूप में फ़ाइल के संशोध�
      gpg:                using RSA key 4BF826131C3487ACD28F2AD8EB24A91DD6125690
      gpg: Good signature from "Theodore R. Smith <theodore@phpexperts.pro>" [ultimate]
      22c5040 G 2024-01-15 08:27:07 -0600 Theodore R. Smith   Upgraded to PHP 8.3.
+
+## git-shift-time
+
+GPG हस्ताक्षरों को संरक्षित करते हुए गिट कमिट टाइमस्टैम्प को विशिष्ट तिथि या मिनटों में समायोजित करता है।
+
+यह उपयोगिता आपको कमिट समय को निर्दिष्ट मिनटों से आगे या पीछे स्थानांतरित करने या उन्हें एक विशिष्ट दिनांक/समय पर सेट करने की अनुमति देती है। यह अलग-अलग टाइमज़ोन में काम करने के बाद कमिट टाइमस्टैम्प ठीक करने, विशिष्ट समय पर कमिट को संरेखित करने या गलत समय वाले कमिट को ठीक करने के लिए उपयोगी है।
+
+```bash
+git-shift-time <कमिट-हैश> <मिनट-ऑफसेट> [लक्ष्य-तिथि]
+```
 
 ## tar-sorted
  

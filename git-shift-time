@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+#############################################################################
+# git-shift-time: Shift or set commit timestamps from a target commit to HEAD
+#
+# Usage:
+#   git-shift-time <since-commit> <±minutes> [new-date]
+#
+# Part of HopeSeekr's BashScripts Collection
+# https://github.com/hopeseekr/BashScripts/
+#
+# Examples:
+#   git-shift-time abc123 -60                 # shift each by -1 hour
+#   git-shift-time abc123 +120 "2024-12-31 23:59:59" # set exact date
+#
+# WARNING: This rewrites history. Do NOT use on shared branches unless you
+# know what you're doing. After success, push with:
+#   git push --force-with-lease
+#
+# Copyright © 2024 Theodore R. Smith <theodore@phpexperts.pro>
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690
+#
+# License: Creative Commons Attribution v4.0 International
+#############################################################################
+
+set -euo pipefail
+
+if ! command -v faketime &> /dev/null
+then
+    echo "'faketime' could not be found. Please install it first."
+    exit 1
+fi
+
+# Function to display usage
+usage() {
+    echo "Usage: $0 <commit-hash> <minutes-offset> [target-date]"
+    echo ""
+    echo "Arguments:"
+    echo "  commit-hash    : The commit hash to start from (inclusive)"
+    echo "  minutes-offset : Number of minutes to adjust (positive or negative)"
+    echo "  target-date    : Optional specific date/time to set (overrides minutes-offset)"
+    echo "                   Format: 'YYYY-MM-DD HH:MM:SS' or any date format git accepts"
+    echo ""
+    echo "Examples:"
+    echo "  $0 abc123 -30                     # Subtract 30 minutes from commit time"
+    echo "  $0 abc123 60                      # Add 60 minutes to commit time"
+    echo "  $0 abc123 0 '2024-01-15 14:30:00' # Set to specific date/time"
+    exit 1
+}
+
+# Check for required arguments
+if [ $# -lt 2 ]; then
+    usage
+fi
+
+COMMIT_HASH="$1"
+MINUTES_OFFSET="$2"
+TARGET_DATE="${3:-}"
+
+# Verify git pretty is configured
+git pretty -1 > /dev/null 2>&1
+if [ "$?" -eq 1 ]; then
+    echo "Error: You need \`git pretty\` installed. Add this to your ~/.gitconfig:"
+    echo ""
+    echo "    [pretty]"
+    echo "      shortlog = format:%C(auto,yellow)%h%C(auto,magenta)% G? %Cred%ad %C(auto,green)%<(20,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D"
+    exit 1
+fi
+
+# Verify faketime is installed
+if ! command -v faketime &> /dev/null; then
+    echo "Error: faketime is not installed. Please install it first."
+    echo "  Ubuntu/Debian: sudo apt-get install faketime"
+    echo "  macOS: brew install libfaketime"
+    exit 1
+fi
+
+# Validate minutes offset is a number (positive or negative)
+if [[ ! "$MINUTES_OFFSET" =~ ^-?[0-9]+$ ]] && [ -z "$TARGET_DATE" ]; then
+    echo "Error: Minutes offset must be an integer (positive or negative)"
+    usage
+fi
+
+# Verify the commit exists
+if ! git rev-parse "$COMMIT_HASH" > /dev/null 2>&1; then
+    echo "Error: Commit $COMMIT_HASH not found"
+    exit 1
+fi
+
+# Get the count of git commits including and after the target commit
+COMMIT_COUNT=$(git log --oneline "$COMMIT_HASH"^.. 2>/dev/null | wc -l)
+
+if [ "$COMMIT_COUNT" -eq 0 ]; then
+    echo "Error: No commits found after $COMMIT_HASH"
+    exit 1
+fi
+
+echo "Found $COMMIT_COUNT commit(s) to adjust"
+echo "Starting time adjustment..."
+
+# Start interactive rebase
+GIT_SEQUENCE_EDITOR="sed -i -re 's/^pick/edit/'" git rebase -i "$COMMIT_HASH"^
+
+# Process each commit
+for i in $(seq 1 "$COMMIT_COUNT"); do
+    # Get current commit hash for display
+    CURRENT_HASH=$(git rev-parse --short HEAD)
+
+    if [ -n "$TARGET_DATE" ]; then
+        # Use the specified target date
+        NEW_TIME="$TARGET_DATE"
+        echo "[$i/$COMMIT_COUNT] Setting commit $CURRENT_HASH to: $NEW_TIME"
+    else
+        # Calculate new time based on offset
+        # Get current commit timestamp in seconds since epoch
+        CURRENT_TIMESTAMP=$(git log -1 --format=%at)
+
+        # Calculate new timestamp (minutes * 60 seconds)
+        NEW_TIMESTAMP=$((CURRENT_TIMESTAMP + (MINUTES_OFFSET * 60)))
+
+        # Convert back to readable format for display
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            # macOS
+            NEW_TIME=$(date -r "$NEW_TIMESTAMP" "+%Y-%m-%d %H:%M:%S")
+        else
+            # Linux
+            NEW_TIME=$(date -d "@$NEW_TIMESTAMP" "+%Y-%m-%d %H:%M:%S")
+        fi
+
+        echo "[$i/$COMMIT_COUNT] Adjusting commit $CURRENT_HASH by $MINUTES_OFFSET minutes to: $NEW_TIME"
+    fi
+
+    # Use faketime to set the commit time
+    # We need to preserve the author date and set both author and committer dates
+    if [ -n "$TARGET_DATE" ]; then
+        # For specific date, use it directly
+        GIT_AUTHOR_DATE="$TARGET_DATE" \
+        GIT_COMMITTER_DATE="$TARGET_DATE" \
+        faketime "$TARGET_DATE" git commit --amend -S --no-edit --date="$TARGET_DATE"
+    else
+        # For offset, use the calculated time
+        GIT_AUTHOR_DATE="$NEW_TIME" \
+        GIT_COMMITTER_DATE="$NEW_TIME" \
+        faketime "$NEW_TIME" git commit --amend -S --no-edit --date="$NEW_TIME"
+    fi
+
+    # Continue to next commit
+    git rebase --continue
+done
+
+echo ""
+echo "✓ Successfully adjusted $COMMIT_COUNT commit(s)"
+echo ""
+echo "Updated commits:"
+git pretty -"$COMMIT_COUNT"

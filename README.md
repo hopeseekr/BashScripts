@@ -64,49 +64,50 @@ Table of Contents (Categorized)
 ===============================
 
 * **Super Productivity**
-    * [bash_profile](#bash_profile) — High-quality `.bash_profile` and `.bashrc` for power users.
-    * [bash_rc.aliases](#bash_rcaliases) — High-Octane .bashrc aliase and functions for a better Quality of Life.
-    * [bash-timer](#bash-timer) — Easily add Human-readable execution time for every command in bash!
-    * [ssh-autologin](#ssh-autologin) — Automatically set up SSH autologins.
-    * [ssh-keyphrase-only-once](#ssh-keyphrase-only-onceinstaller) — Only prompt for your SSH keyphrase once per boot.
-    * [gitconfig](#gitconfig) — High-Octane Git CLI Configuration.
+    * **[bash_profile](#bash_profile)** — High-quality `.bash_profile` and `.bashrc` for power users.
+    * **[bash_rc.aliases](#bash_rcaliases)** — High-Octane .bashrc aliase and functions for a better Quality of Life.
+    * **[bash-timer](#bash-timer)** — Easily add Human-readable execution time for every command in bash!
+    * **[ssh-autologin](#ssh-autologin)** — Automatically set up SSH autologins.
+    * **[ssh-keyphrase-only-once](#ssh-keyphrase-only-onceinstaller)** — Only prompt for your SSH keyphrase once per boot.
+    * **[gitconfig](#gitconfig)** — High-Octane Git CLI Configuration.
 * **Git Quality of Life**
-    * [git-change-author](#git-change-author) — Easily bulk change the author's name and email in a git repo.
-    * [git-commit-at-modded-time](#git-commit-at-modded-time) — Use a file's modified time as the git time.
-    * [git-mtime](#git-mtime-git-modified-time-restorer) — Restores every file's modification time to that of the repo's history.
-    * [git-same-sig-time](#git-same-sig-time) — Unifies the GPG signature time with the commit's time.
-    * [git-shallow-pull](#esotericgit-shallow-pull) — Shallow updates a shallow `git clone --depth 1` repository.
+    * **[git-change-author](#git-change-author)** — Easily bulk change the author's name and email in a git repo.
+    * **[git-commit-at-modded-time](#git-commit-at-modded-time)** — Use a file's modified time as the git time.
+    * **[git-mtime](#git-mtime-git-modified-time-restorer)** — Restores every file's modification time to that of the repo's history.
+    * **[git-same-sig-time](#git-same-sig-time)** — Unifies the GPG signature time with the commit's time.
+    * **[git-shallow-pull](#esotericgit-shallow-pull)** — Shallow updates a shallow `git clone --depth 1` repository.
+    * **[git-shift-time](#git-shift-time)** — Adjusts git commit timestamps by minutes or to a specific date.
 * **CronTabs**
-    * [cron.daily/00_clear-cache](#crondaily00_clear-cache) — Remove useless cache files nightly.
-    * [cron.daily/01_purge-locales](#crondaily01_purge-locales) — Remove worthless intl locales.
-    * [cron.hourly/btrfs-snapshot](#cronhourlybtrfs-snapshot) — Backup your BTRFS / hourly.
-    * [cron.daily/btrfs-snapshot](#crondailybtrfs-snapshot) — Backup your BTRFS  / daily.
-    * [cron.hourly/php-clean-tmp](#cronhourlyphp-clean-tmp) — Cleans PHP temp files on busy servers.
+    * **[cron.daily/00_clear-cache](#crondaily00_clear-cache)** — Remove useless cache files nightly.
+    * **[cron.daily/01_purge-locales](#crondaily01_purge-locales)** — Remove worthless intl locales.
+    * **[cron.hourly/btrfs-snapshot](#cronhourlybtrfs-snapshot)** — Backup your BTRFS / hourly.
+    * **[cron.daily/btrfs-snapshot](#crondailybtrfs-snapshot)** — Backup your BTRFS  / daily.
+    * **[cron.hourly/php-clean-tmp](#cronhourlyphp-clean-tmp)** — Cleans PHP temp files on busy servers.
 * **Quality of Life**
-    * [launch-browser](#launch-browser) — Browser launcher utility script that launches browsers in full-Wayland.
-    * [ls-by-min](#ls-by-min) — Sorts the output of  `ls` by file size, descending.
-    * [my-ip](#my-ip) — Easily fetch this machine's public IP address.
-    * [random-file](#random-file) — Randomly picks a file or directory and displays it.
-    * [sudoers.d/00_prompt_once](#sudoersd00_prompt_once) — Only prompt for your sudo password once per boot.
-    * [sync-watch](#sync-watch) — Outputs a tiny, updating display of how many MBs need to be written to disks.
-    * [tar-sorted](#tar-sorted) — Create tar files automatically sorted by file name.
-    * [turn-off-monitors](#turn-off-monitors) — Turns off all monitors via the Command Line (CLI).
-    * [wifi-show-password](#wifi-show-password) — Shows the currently connected wifi password.
+    * **[launch-browser](#launch-browser)** — Browser launcher utility script that launches browsers in full-Wayland.
+    * **[ls-by-min](#ls-by-min)** — Sorts the output of  `ls` by file size, descending.
+    * **[my-ip](#my-ip)** — Easily fetch this machine's public IP address.
+    * **[random-file](#random-file)** — Randomly picks a file or directory and displays it.
+    * **[sudoers.d/00_prompt_once](#sudoersd00_prompt_once)** — Only prompt for your sudo password once per boot.
+    * **[sync-watch](#sync-watch)** — Outputs a tiny, updating display of how many MBs need to be written to disks.
+    * **[tar-sorted](#tar-sorted)** — Create tar files automatically sorted by file name.
+    * **[turn-off-monitors](#turn-off-monitors) — Turns off all monitors via the Command Line (CLI)**.
+    * **[wifi-show-password](#wifi-show-password)** — Shows the currently connected wifi password.
 * **Uber Scripts** (很好的控制台脚本)
-    * [american-date](#american-date) — A utility to print out dates in the American format.
-    * [changelog-maker-lite](#changelog-maker-lite) — Quickly creates a beautiful changelog from the commit history.
-    * [stream-to-youtube](#stream-to-youtube) — Live Screencast directly to YouTube from the CLI. 
-    * [watermark.sh](#watermarksh) — Easily embed your own image watermark onto videos.
-    * [wifi-autorun-on-connect](#wifi-autorun-on-connectinstaller) — Autorun a script when you connect to a Wifi hotspot.
-    * [x265.sh](#x265sh) — Transcode to h265 HEVC via the Intel graphics card using VAAPI.
+    * **[american-date](#american-date)** — A utility to print out dates in the American format.
+    * **[changelog-maker-lite](#changelog-maker-lite)** — Quickly creates a beautiful changelog from the commit history.
+    * **[stream-to-youtube](#stream-to-youtube)** — Live Screencast directly to YouTube from the CLI. 
+    * **[watermark.sh](#watermarksh)** — Easily embed your own image watermark onto videos.
+    * **[wifi-autorun-on-connect](#wifi-autorun-on-connectinstaller)** — Autorun a script when you connect to a Wifi hotspot.
+    * **[x265.sh](#x265sh)** — Transcode to h265 HEVC via the Intel graphics card using VAAPI.
 * **Esoteric Utilities**
-    * [arch-pacman-dupe-cleaner](#esotericarch-pacman-dupe-cleaner) — Remove duplicated Arch Linux Pacman entries.
-    * [arch-upgrade-postgres](#esotericarch-upgrade-postgres) — Automates the upgrading PostgreSQL from one version to the next in Arch Linux.
-    * [init-btrfs-rootfs](#esotericinit-btrfs-rootfs) — Puts everything into organized BTRFS subvolumes + turns on snapshotting.
-    * [clone-github-repos.php](#esotericclone-github-reposphp) — Downloads all of a user's/org's GitHub repositories.
+    * **[arch-pacman-dupe-cleaner](#esotericarch-pacman-dupe-cleaner)** — Remove duplicated Arch Linux Pacman entries.
+    * **[arch-upgrade-postgres](#esotericarch-upgrade-postgres)** — Automates the upgrading PostgreSQL from one version to the next in Arch Linux.
+    * **[init-btrfs-rootfs](#esotericinit-btrfs-rootfs)** — Puts everything into organized BTRFS subvolumes + turns on snapshotting.
+    * **[clone-github-repos.php](#esotericclone-github-reposphp)** — Downloads all of a user's/org's GitHub repositories.
 * **Bash Framework**
-    * [is_root](#is_root) — Provides the `is_root` function for determining if the current user has root access.
-    * [wait_until_mouse_or_keyboard_event](#wait_until_mouse_or_keyboard_event) — Block execution until a key is pressed, the mouse is moved, or a mouse button is clicked.
+    * **[is_root](#is_root)** — Provides the `is_root` function for determining if the current user has root access.
+    * **[wait_until_mouse_or_keyboard_event](#wait_until_mouse_or_keyboard_event)** — Block execution until a key is pressed, the mouse is moved, or a mouse button is clicked.
 
 * [License](#license) — Creative Commons v4.0 International
 * [About The Author](#about-the-author)
@@ -254,6 +255,18 @@ After:
      gpg:                using RSA key 4BF826131C3487ACD28F2AD8EB24A91DD6125690
      gpg: Good signature from "Theodore R. Smith <theodore@phpexperts.pro>" [ultimate]
      22c5040 G 2024-01-15 08:27:07 -0600 Theodore R. Smith   Upgraded to PHP 8.3.
+
+## git-shift-time
+
+Adjusts git commit timestamps by minutes or to a specific date while preserving GPG signatures.
+
+This utility allows you to shift commit times forward or backward by a specified number of minutes,
+or set them to a specific date/time. It's useful for fixing commit timestamps after working in 
+different timezones, aligning commits to specific times, or correcting mistimed commits.
+
+```bash
+git-shift-time <commit-hash> <minutes-offset> [target-date]
+```
 
 ## tar-sorted
  

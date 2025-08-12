@@ -12,6 +12,12 @@
 #                                                                           #
 #############################################################################
 
+if ! command -v faketime &> /dev/null
+then
+    echo "'faketime' could not be found. Please install it first."
+    exit
+fi
+
 git pretty -1 > /dev/null 2>&1
 if [ "$?" -eq 1 ]; then
     echo "Error: You need \`git pretty\` installed. Add this to your ~/.gitconfig:"
