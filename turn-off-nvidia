@@ -1,508 +1,410 @@
 #!/bin/bash
+##################################################################################
+# turn-off-nvidia: A comprehensive script for managing NVIDIA GPU power states.  #
+#                                                                                #
+# Part of HopeSeekr's BashScripts Collection                                     #
+# https://github.com/hopeseekr/BashScripts/                                      #
+#                                                                                #
+#                                                                                #
+# This script helps you configure your NVIDIA dGPU for optimal power saving,     #
+# especially on laptops running Wayland where Runtime D3 (RTD3) power management #
+# is the preferred method.                                                       #
+#                                                                                #
+# Copyright © 2024 Theodore R. Smith <theodore@phpexperts.pro>                   #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690            #
+#                                                                                #
+# License: Creative Commons Attribution v4.0 International                       #
+##################################################################################
 
-# disable-nvidia - Script to disable NVIDIA GPU in Arch Linux
-# Author: Generated script for various NVIDIA disabling methods
-# Usage: ./disable-nvidia
+#Main improvements in v3:
+#
+#1.  **Wayland-First Mentality:** The script now detects if you're on Wayland and provides specific
+#guidance. It includes a dedicated "Wayland Guide" option.
+#
+#2.  **Modern Method First:** The UDEV rules for **Runtime D3 Power Management** are now presented
+#as the primary and most important method for all modern systems, especially on Wayland.
+#
+#3.  **New Tools Added:**
+#    *  `supergfxctl`: A modern alternative to `optimus-manager` that is very popular and works
+#       well, especially with ASUS laptops and Wayland sessions.
+#    *  `envycontrol`: A simple, lightweight tool for switching graphics modes.
+#4.  **Better Diagnostics:**
+#    *  A **System Info** check runs at the start to detect your session type (Wayland/X11), GPU,
+#       and driver version.
+#    *  The status check is more comprehensive and now clearly reports if Runtime D3 PM is
+#       `active` (working!) or just `enabled`.
+#5.  **Distro-Agnostic (Mostly):** It now attempts to detect your package manager (`pacman`, `apt`,
+#    `dnf`) to be useful beyond just Arch Linux.
+#6.  **Improved User Experience:**
+#    *  The menu is reorganized to be more logical (Modern > Alternatives > Legacy > Tools).
+#    *  Clearer explanations, warnings, and guidance are provided for each step.
+#    *  Emojis are used to quickly identify the purpose of each option (🚀 Modern, 💡 Info, ⚠️ Warning).
 
-set -e  # Exit on any error
+#!/bin/bash
 
+# disable-nvidia - Enhanced script to manage NVIDIA GPU power on Linux
+# Author: Original script enhanced with Wayland support, modern tools, and better diagnostics.
+# Usage: ./disable-nvidia.sh
+
+set -e # Exit on any error
+
+# --- Script Configuration & Colors ---
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
 BOLD='\033[1m'
 NC='\033[0m' # No Color
 
-# Function to print colored output
-print_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
+# Emojis for clarity
+ICON_INFO="💡"
+ICON_SUCCESS="✅"
+ICON_WARN="⚠️"
+ICON_ERROR="❌"
+ICON_ROCKET="🚀"
+ICON_LEGACY="💾"
+ICON_TOOL="🔧"
 
-print_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
+# --- System Information (Gathered once) ---
+SESSION_TYPE=""
+SUDO="sudo"
+PKG_MANAGER=""
+INSTALLCMD=""
+NVIDIA_GPU_INFO=""
+NVIDIA_DRIVER_VERSION=""
 
-print_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
+# --- Helper Functions ---
+print_info() { echo -e "${BLUE}${BOLD}${ICON_INFO} [INFO]${NC} $1"; }
+print_success() { echo -e "${GREEN}${BOLD}${ICON_SUCCESS} [SUCCESS]${NC} $1"; }
+print_warning() { echo -e "${YELLOW}${BOLD}${ICON_WARN} [WARNING]${NC} $1"; }
+print_error() { echo -e "${RED}${BOLD}${ICON_ERROR} [ERROR]${NC} $1"; }
 
-print_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
-
-# Check if running as root for certain operations
 check_root() {
     if [[ $EUID -eq 0 ]]; then
-        print_error "This script should not be run as root directly. Use sudo when needed."
+        print_error "This script should not be run as root. Use sudo when prompted."
         exit 1
     fi
 }
 
-# Check if package is installed
-is_installed() {
-    pacman -Q "$1" &>/dev/null
+# Detect package manager and install packages
+install_package() {
+    if [[ -z "$PKG_MANAGER" ]]; then
+        print_error "Package manager not detected. Cannot install '$1'."
+        return 1
+    fi
+    print_info "Attempting to install '$1' using '$PKG_MANAGER'..."
+    if ! $SUDO "$PKG_MANAGER" $INSTALLCMD "$1"; then
+        print_error "Failed to install '$1'. Please install it manually."
+        return 1
+    fi
+    print_success "Package '$1' installed successfully."
 }
 
-# Method 0: Add udev rules for Nvidia power-saving
-nvidia_power_saving_method() {
-    print_info "Setting up Nvidia power-saving configuration..."
+is_installed() {
+    case "$PKG_MANAGER" in
+        pacman) pacman -Q "$1" &>/dev/null ;;
+        apt) dpkg -l "$1" &>/dev/null ;;
+        dnf) dnf list installed "$1" &>/dev/null ;;
+        *) command -v "$1" &>/dev/null ;; # Fallback
+    esac
+}
 
-    print_info "Creating /etc/modprobe.d/nvidia-pm.conf..."
-    echo 'options nvidia "NVreg_DynamicPowerManagement=0x02"' | sudo tee /etc/modprobe.d/nvidia-pm.conf > /dev/null
+get_system_info() {
+    print_info "Gathering system information..."
+    SESSION_TYPE=${XDG_SESSION_TYPE:-"unknown"}
+    NVIDIA_GPU_INFO=$(lspci -d 10de: | grep -E "VGA|3D" | head -n1)
+    NVIDIA_DRIVER_VERSION=$(cat /proc/driver/nvidia/version 2>/dev/null | grep "NVRM version" | awk '{print $8}' || echo "Not Found")
+
+    if   command -v paru &>/dev/null;   then PKG_MANAGER="paru"; SUDO=""; INSTALLCMD="-S --noconfirm";
+    elif command -v yay &>/dev/null;    then PKG_MANAGER="yay"; SUDO=""; INSTALLCMD="-S --noconfirm";
+    elif command -v pacman &>/dev/null; then PKG_MANAGER="pacman"; INSTALLCMD="-S --noconfirm";
+    elif command -v apt &>/dev/null;    then PKG_MANAGER="apt"; INSTALLCMD="install -y";
+    elif command -v dnf &>/dev/null;    then PKG_MANAGER="dnf"; INSTALLCMD="install -y";
+    else PKG_MANAGER=""
+    fi
+}
+
+# --- Power Management Methods ---
+
+# Method 0: The Modern Way for Wayland & X11
+nvidia_d3_pm_method() {
+    print_info "${ICON_ROCKET} Setting up NVIDIA Runtime D3 Power Management (Modern Method)"
+    print_info "This is the PREFERRED method for modern laptops (Turing/20xx series or newer)."
+    print_info "It allows the GPU to automatically enter a deep power-saving state (D3cold) when unused."
+
+    print_info "Creating /etc/modprobe.d/nvidia-power-management.conf..."
+    echo 'options nvidia "NVreg_DynamicPowerManagement=0x02"' | sudo tee /etc/modprobe.d/nvidia-power-management.conf > /dev/null
 
     print_info "Creating /etc/udev/rules.d/80-nvidia-pm.rules..."
     sudo tee /etc/udev/rules.d/80-nvidia-pm.rules > /dev/null << 'EOF'
-# Enable runtime PM for NVIDIA VGA/3D controller devices on driver bind
-# @see https://wiki.archlinux.org/title/PRIME#NVIDIA
+# Enable runtime PM for NVIDIA an on driver bind
 ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="auto"
 ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="auto"
-# Enable runtime PM for NVIDIA VGA/3D controller devices on adding device
-ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="auto"
-ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="auto"
 
-# Disable runtime PM for NVIDIA VGA/3D controller devices on driver unbind
+# Disable runtime PM for NVIDIA on driver unbind
 ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="on"
 ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="on"
 EOF
 
-    print_info "Reloading udev rules and triggering devices..."
-    sudo udevadm control --reload-rules && sudo udevadm trigger
+    print_info "Reloading udev rules and rebuilding initramfs (recommended)..."
+    sudo udevadm control --reload-rules
+    # Rebuilding initramfs ensures modprobe options are loaded early
+    if command -v mkinitcpio &>/dev/null; then
+        sudo mkinitcpio -P
+    elif command -v dracut &>/dev/null; then
+        sudo dracut --force
+    else
+        print_warning "Could not detect initramfs generator. Please run 'sudo mkinitcpio -P' or 'sudo dracut --force' manually."
+    fi
 
-    print_success "Nvidia power-saving configuration applied successfully."
-
+    print_success "NVIDIA Runtime D3 Power Management has been configured."
     echo
-    echo -e "${RED}${BOLD}⚠️  CRITICAL WARNING ⚠️${NC}"
-    echo -e "${RED}${BOLD}YOU NEED TO REBOOT YOUR SYSTEM IMMEDIATELY!${NC}"
-    echo -e "${RED}${BOLD}Your system could now be unstable until you reboot!${NC}"
-    echo -e "${YELLOW}${BOLD}Please save all your work and reboot as soon as possible.${NC}"
-    echo
+    print_warning "${ICON_WARN} A REBOOT IS REQUIRED for these changes to take full effect."
 }
 
 # Method 1: Optimus Manager
 optimus_manager_method() {
-    print_info "Using Optimus Manager method..."
+    print_info "Configuring with optimus-manager..."
+    if [[ "$SESSION_TYPE" == "wayland" ]]; then
+        print_warning "Optimus Manager has limited functionality on Wayland."
+        print_warning "You can only use 'hybrid' mode. The goal is to let the GPU sleep via D3 PM."
+        print_warning "'integrated' mode will not work and may break your session."
+    fi
 
     if ! is_installed "optimus-manager"; then
-        print_info "Installing optimus-manager..."
-        sudo pacman -S optimus-manager --noconfirm
+        install_package "optimus-manager" || return 1
     fi
 
-    print_info "Switching to integrated GPU mode..."
-    sudo optimus-manager --switch integrated
-
-    print_success "NVIDIA GPU disabled using Optimus Manager."
-    print_warning "You need to log out and log back in (or reboot) for changes to take effect."
+    print_info "Switching to 'hybrid' mode (recommended for compatibility)..."
+    if sudo optimus-manager --switch hybrid; then
+      print_success "Switched to hybrid mode. The dGPU will be available for on-demand offloading."
+      print_warning "You need to log out and log back in (or reboot) for changes to take effect."
+    else
+      print_error "Failed to switch mode. Check 'optimus-manager' logs."
+    fi
 }
 
-# Method 2: bbswitch
-bbswitch_method() {
-    print_info "Using bbswitch method..."
+# Method 2: supergfxctl
+supergfxctl_method() {
+    print_info "Configuring with supergfxctl..."
+    print_info "This is a great modern tool, especially for ASUS laptops and Wayland users."
 
-    if ! is_installed "bbswitch"; then
-        print_info "Installing bbswitch..."
-        sudo pacman -S bbswitch --noconfirm
+    # Install supergfxctl if not present
+    if ! is_installed "supergfxctl"; then
+        install_package "supergfxctl" || return 1
     fi
 
-    print_info "Loading bbswitch module..."
+    # Enable and start service
+    if ! sudo systemctl enable --now supergfxd.service; then
+        print_error "Failed to enable supergfxd service"
+        return 1
+    fi
+
+    # Show available modes
+    local available_modes="$(sudo supergfxctl -s | tr -d '[]')"
+    print_info "Available modes: $available_modes"
+
+    # Prompt user for mode selection
+    PS3="Select GPU mode (1-3): "
+    select mode in "Integrated" "Hybrid" "NVIDIA-only (NvidiaNoModeset)"; do
+        case $REPLY in
+            1) target_mode="Integrated" ;;
+            2) target_mode="Hybrid" ;;
+            3) target_mode="NvidiaNoModeset" ;;
+            *) print_error "Invalid option"; return 1 ;;
+        esac
+        break
+    done
+
+    # Switch mode
+    print_info "Switching to '$target_mode' mode..."
+    if sudo supergfxctl -m "$target_mode"; then
+        print_success "Successfully switched to $target_mode mode."
+        print_warning "A reboot is required to apply the new mode."
+
+        # Ask user if they want to reboot now
+        read -rp "Reboot now? (y/N) " choice
+        if [[ "$choice" =~ ^[Yy]$ ]]; then
+            systemctl reboot
+        fi
+    else
+        print_error "Failed to switch to $target_mode mode."
+        return 1
+    fi
+}
+
+# Method 3: envycontrol
+envycontrol_method() {
+    print_info "Configuring with envycontrol..."
+    print_info "A simple tool to switch graphics modes by managing system configuration files."
+
+    if ! is_installed "envycontrol"; then
+        # On Arch, it's often a git package from AUR, we'll try a common pip install
+        install_package envycontrol || return 1
+
+        if ! command -v optimus-manage >/dev/null; then
+            if ! pip install envycontrol; then
+                print_warning "Could not auto-install with pip. Please install 'envycontrol' manually."
+                print_info "Try: pip install envycontrol"
+                return 1
+            fi
+        fi
+    fi
+
+    print_info "Available modes: integrated, hybrid, nvidia"
+    read -p "Enter desired mode [hybrid]: " mode
+    mode=${mode:-hybrid}
+
+    if sudo envycontrol -s "$mode"; then
+        print_success "Mode set to '$mode'. A REBOOT IS REQUIRED."
+    else
+        print_error "Failed to set mode with envycontrol."
+    fi
+}
+
+# Method 4: bbswitch (Legacy)
+bbswitch_method() {
+    print_warning "${ICON_LEGACY} Using bbswitch (Legacy Method)..."
+    print_warning "This is an older method and may not work on newer GPUs (Turing+) or AMD systems."
+    print_warning "Runtime D3 PM (Method 0) is strongly preferred."
+
+    if ! is_installed "bbswitch"; then install_package "bbswitch" || return 1; fi
     sudo modprobe bbswitch
 
-    print_info "Turning off NVIDIA GPU..."
+    print_info "Attempting to turn off NVIDIA GPU via bbswitch..."
     echo OFF | sudo tee /proc/acpi/bbswitch > /dev/null
 
-    # Check status
     if grep -q "OFF" /proc/acpi/bbswitch; then
-        print_success "NVIDIA GPU successfully turned off using bbswitch."
+        print_success "NVIDIA GPU successfully turned OFF using bbswitch."
     else
-        print_error "Failed to turn off NVIDIA GPU using bbswitch."
-        print_warning "This method may not work on newer hardware or AMD+NVIDIA systems."
+        print_error "Failed to turn off NVIDIA GPU using bbswitch. It may not be supported."
     fi
 }
 
-# Method 3: acpi_call
-acpi_call_method() {
-    print_info "Using acpi_call method..."
+# --- Diagnostics and Info ---
 
-    # (Your existing code for installing/loading the acpi_call module would go here)
-    # For this example, we'll just check if the interface exists.
-    if ! lsmod | grep -q acpi_call; then
-        print_warning "acpi_call module not loaded. Attempting to load..."
-        if ! sudo modprobe acpi_call; then
-            print_error "Failed to load acpi_call module. Please install it (e.g., 'acpi_call-dkms')."
-            return 1
-        fi
-    fi
-    if [ ! -f /proc/acpi/call ]; then
-        print_error "ACPI call interface not available. The 'acpi_call' module may have failed to load."
-        return 1
-    fi
-
-    # --- DETECTION LOGIC ---
-    local manufacturer product_name
-    if [ -f /sys/class/dmi/id/sys_vendor ]; then
-        # Clean up vendor name for better matching (e.g., "ASUSTeK COMPUTER INC." -> "ASUS")
-        manufacturer=$(sed 's/ INC\.//;s/ CORPORATION//;s/ COMPUTER//' /sys/class/dmi/id/sys_vendor)
-        product_name=$(cat /sys/class/dmi/id/product_name)
-        print_info "Detected Manufacturer: $manufacturer"
-        print_info "Detected Product: $product_name"
-    else
-        print_warning "Could not detect system manufacturer/product via DMI."
-        manufacturer="Unknown"
-    fi
-
-    local targeted_calls=()
-
-    # Use a case statement to select the right ACPI call(s)
-    # We use glob matching (e.g., "HP*") to catch variations like "HP" and "Hewlett-Packard".
-    case "$manufacturer" in
-        "ASUSTeK"*)
-            print_info "ASUS system detected. Using targeted ACPI calls."
-            targeted_calls=(
-                "\\_SB.PCI0.PEG0.PEGP._OFF"
-                "\\_SB.PCI0.PEG1.PEGP._OFF"
-                "\\_SB.PCI0.P0P2.VGA._OFF"
-            )
-            ;;
-        "LENOVO")
-            print_info "Lenovo system detected. Using targeted ACPI calls."
-            targeted_calls=(
-                "\\_SB.PCI0.PEG0.VID._OFF"
-                "\\_SB.PCI0.PEG0.GFX0._OFF"
-            )
-            ;;
-        "Dell"*)
-            print_info "Dell system detected. Using targeted ACPI calls."
-            # Dell XPS and other models often use one of these two.
-            targeted_calls=(
-                "\\_SB.PCI0.PEG0.PEGP._OFF"
-                "\\_SB.PCI0.GPP0.PG00._OFF"
-            )
-            ;;
-        "HP" | "Hewlett-Packard")
-            print_info "HP system detected. Using targeted ACPI calls."
-            # HP Omen, Pavilion, and Spectre models often use DGFX (Discrete Graphics).
-            targeted_calls=(
-                "\\_SB.PCI0.PEGP.DGFX._OFF"
-                "\\_SB.PCI0.PEG.VID._OFF"
-            )
-            ;;
-        "System76"*)
-            print_info "System76 system detected. Using targeted ACPI calls."
-            print_warning "Note: The recommended method for System76 is using 'system76-power'."
-            # This call is used by system76-power on some models.
-            targeted_calls=(
-                "\\_SB.PCI0.GPP0.PG00._OFF"
-            )
-            ;;
-        *)
-            print_warning "Unknown manufacturer '$manufacturer'. Falling back to a generic list of ACPI calls."
-            # If the manufacturer is not in our list, fall back to the big generic list
-            targeted_calls=(
-                "\\_SB.PCI0.PEG0.PEGP._OFF" "\\_SB.PCI0.PEG1.PEGP._OFF" "\\_SB.PCI0.PEGP.DGFX._OFF"
-                "\\_SB.PCI0.P0P2.VGA.PX02" "\\_SB.PCI0.P0P2.VGA._PS3" "\\_SB.PCI0.PEG0.VID._OFF"
-                "\\_SB.PCI0.PEG0.GFX0._OFF" "\\_SB.PCI0.GPP0.PG00._OFF" "\\_SB.PCI0.PEG.VID._OFF"
-                "\\_SB_.PCI0.VGA.DOFF" "\\_SB.PCI0.VGA.PX02" "\\_SB.PCI0.VID.PX02"
-                "\\_SB.PCI0.VGA._PS3" "\\_SB.PCI0.VID._PS3" "\\_SB.PCI0.P0P2.VGA._OFF"
-            )
-            ;;
-    esac
-
-    print_info "Attempting to turn off NVIDIA GPU..."
-    local success=false
-
-    for call in "${targeted_calls[@]}"; do
-        print_info "Trying ACPI call: $call"
-        echo "$call" | sudo tee /proc/acpi/call >/dev/null 2>&1
-        local result
-        result=$(sudo cat /proc/acpi/call 2>/dev/null)
-
-        # Check for explicit errors. An empty result or non-error result is considered a success.
-        if [[ ! "$result" =~ "Error" ]]; then
-            print_success "ACPI call '$call' seems to have succeeded. Result: $result"
-            success=true
-            break
-        else
-            print_warning "ACPI call '$call' failed. Result: $result"
-        fi
-    done
-
-    if [ "$success" = true ]; then
-        print_success "NVIDIA GPU likely disabled successfully via ACPI."
-        # Optional: Verify power state with lspci
-        return 0
-    else
-        print_error "Failed to disable NVIDIA GPU via any attempted ACPI calls."
-        print_info "This may be normal for your system. Modern systems may handle this automatically or require other tools like optimus-manager."
-        return 1
-    fi
-}
-
-# Method 4: Manual module unloading
-manual_unload_method() {
-    print_info "Using manual module unloading method..."
-
-    print_warning "This will stop the display manager. Make sure you save your work!"
-    read -p "Continue? (y/N): " -n 1 -r
+# Display Wayland-specific information
+wayland_explanation() {
+    echo -e "${PURPLE}${BOLD}--- How NVIDIA Power Management Works on Wayland ---${NC}"
     echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        print_info "Operation cancelled."
-        return
-    fi
-
-    print_info "Stopping display manager..."
-    sudo systemctl stop display-manager
-
-    print_info "Unloading NVIDIA kernel modules..."
-    sudo modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia 2>/dev/null || {
-        print_error "Failed to unload some NVIDIA modules. They may be in use."
-        print_info "Restarting display manager..."
-        sudo systemctl start display-manager
-        return
-    }
-
-    print_success "NVIDIA modules unloaded successfully."
-    print_info "Restarting display manager..."
-    sudo systemctl start display-manager
-}
-
-# Method 5: Install switcheroo-control
-switcheroo_method() {
-    print_info "Setting up switcheroo-control for runtime GPU switching..."
-
-    if ! is_installed "switcheroo-control"; then
-        print_info "Installing switcheroo-control..."
-        sudo pacman -S switcheroo-control --noconfirm
-    fi
-
-    print_info "Enabling and starting switcheroo-control service..."
-    sudo systemctl enable --now switcheroo-control
-
-    print_success "switcheroo-control installed and started."
-    print_info "This provides per-application GPU selection in GNOME."
-    print_warning "Log out and log back in for full functionality."
-    print_info "Right-click apps in GNOME to choose 'Launch using Discrete Graphics Card'."
-}
-
-# Check NVIDIA Runtime D3 Power Status
-check_nvidia_runtime_d3() {
-    print_info "Checking NVIDIA Runtime D3 Power Status..."
-
-    # Find NVIDIA GPU PCI address
-    nvidia_pci=$(lspci -d 10de: | grep -E "(VGA|3D)" | head -n1 | cut -d' ' -f1)
-
-    if [[ -z "$nvidia_pci" ]]; then
-        print_warning "No NVIDIA GPU found via lspci"
-        return
-    fi
-
-    # Convert PCI address format (01:00.0 -> 0000:01:00.0)
-    if [[ ${#nvidia_pci} -eq 7 ]]; then
-        nvidia_pci="0000:$nvidia_pci"
-    fi
-
-    print_info "Found NVIDIA GPU at PCI address: $nvidia_pci"
-
-    power_file="/proc/driver/nvidia/gpus/$nvidia_pci/power"
-
-    if [[ -f "$power_file" ]]; then
-        echo
-        print_info "=== NVIDIA Runtime D3 Status ==="
-
-        if grep -q "Runtime D3 status:" "$power_file"; then
-            d3_status=$(grep "Runtime D3 status:" "$power_file")
-            echo "$d3_status"
-
-            if echo "$d3_status" | grep -q "Not supported"; then
-                print_error "Runtime D3 status: Not supported [failure]"
-            elif echo "$d3_status" | grep -q "Disabled"; then
-                print_warning "Runtime D3 status: Disabled [udev rules not installed]"
-            elif echo "$d3_status" | grep -q "Enabled"; then
-                print_success "Runtime D3 status: Enabled [success]"
-            fi
-        else
-            print_warning "Runtime D3 status information not found in power file"
-            print_info "Power file contents:"
-            cat "$power_file"
-        fi
-    else
-        print_warning "NVIDIA power status file not found: $power_file"
-        print_info "Make sure NVIDIA drivers are loaded and GPU is accessible"
-    fi
-}
-
-# Monitor NVIDIA GPU Runtime Suspension
-monitor_nvidia_suspension() {
-    print_info "Monitoring NVIDIA GPU Runtime Suspension..."
-
-    # Find NVIDIA GPU PCI address
-    nvidia_pci=$(lspci -d 10de: | grep -E "(VGA|3D)" | head -n1 | cut -d' ' -f1)
-
-    if [[ -z "$nvidia_pci" ]]; then
-        print_warning "No NVIDIA GPU found via lspci"
-        return
-    fi
-
-    # Convert PCI address format (01:00.0 -> 0000:01:00.0)
-    if [[ ${#nvidia_pci} -eq 7 ]]; then
-        nvidia_pci="0000:$nvidia_pci"
-    fi
-
-    suspension_file="/sys/bus/pci/devices/$nvidia_pci/power/runtime_suspended_time"
-
-    if [[ ! -f "$suspension_file" ]]; then
-        print_error "Runtime suspension file not found: $suspension_file"
-        return
-    fi
-
-    print_info "Found NVIDIA GPU at PCI address: $nvidia_pci"
-    print_info "Monitoring runtime suspension time (Press Ctrl+C to stop)..."
-    print_info "When the GPU is suspended, this value will increment every second."
+    echo -e "On ${BOLD}Wayland${NC}, you can't truly 'switch' to an integrated-only mode like on X11."
+    echo -e "Your system always runs in a ${BOLD}hybrid mode${NC}, where both GPUs are available."
     echo
-
-    trap 'print_info "Monitoring stopped."; return' INT
-
-    previous_time=""
-    while true; do
-        if [[ -f "$suspension_file" ]]; then
-            current_time=$(cat "$suspension_file" 2>/dev/null || echo "0")
-
-            if [[ "$current_time" != "$previous_time" ]]; then
-                if [[ "$current_time" == "0" ]]; then
-                    echo -e "${YELLOW}[$(date '+%H:%M:%S')]${NC} Runtime suspended time: ${RED}$current_time${NC} (GPU is NOT suspended)"
-                else
-                    echo -e "${YELLOW}[$(date '+%H:%M:%S')]${NC} Runtime suspended time: ${GREEN}$current_time${NC} (GPU is suspended)"
-                fi
-                previous_time="$current_time"
-            fi
-        else
-            print_error "Suspension file disappeared: $suspension_file"
-            break
-        fi
-        sleep 1
-    done
+    echo -e "The goal is ${BOLD}NOT${NC} to disable the NVIDIA driver, but to make the physical GPU"
+    echo -e "go into a deep sleep state (${BOLD}D3cold${NC}) when it's not being used for an application."
+    echo
+    echo -e "${GREEN}${BOLD}Your Action Plan:${NC}"
+    echo -e "1. Use ${BOLD}Method 0 (${ICON_ROCKET})${NC} to enable Runtime D3 Power Management. This is essential."
+    echo -e "2. Use a tool like ${BOLD}supergfxctl${NC} (Method 2) and set it to 'hybrid' mode."
+    echo -e "3. After rebooting, use the ${BOLD}Status Check${NC} (Method 9) to verify power management is 'active'."
+    echo
+    echo -e "When an app needs the dGPU, you launch it like this:"
+    echo -e "${YELLOW}__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia <application>${NC}"
+    echo
 }
 
-# Check GPU status
 check_status() {
-    print_info "Checking GPU status..."
+    print_info "${ICON_TOOL} Checking current GPU and power status..."
+    local nvidia_pci_busid=$(lspci -d 10de: | grep -E "(VGA|3D)" | head -n1 | cut -d' ' -f1)
 
-    echo
-    print_info "=== PCI GPU Devices ==="
-    lspci | grep -E "(VGA|3D|Display)" || print_warning "No GPU devices found via lspci"
+    echo -e "\n${PURPLE}--- System ---${NC}"
+    echo "Session Type:          ${BOLD}$SESSION_TYPE${NC}"
+    echo "Package Manager:       ${BOLD}${PKG_MANAGER:-Not Found}${NC}"
 
-    echo
-    print_info "=== Loaded NVIDIA Modules ==="
-    lsmod | grep nvidia || print_info "No NVIDIA modules loaded"
+    echo -e "\n${PURPLE}--- NVIDIA Hardware & Driver ---${NC}"
+    echo "GPU:                   ${BOLD}${NVIDIA_GPU_INFO:-Not Found}${NC}"
+    echo "Driver Version:        ${BOLD}$NVIDIA_DRIVER_VERSION${NC}"
 
-    echo
-    print_info "=== bbswitch Status (if available) ==="
-    if [[ -f /proc/acpi/bbswitch ]]; then
-        cat /proc/acpi/bbswitch
-    else
-        print_info "bbswitch not available"
+    if [[ -n "$nvidia_pci_busid" ]]; then
+        local pci_path="/sys/bus/pci/devices/0000:${nvidia_pci_busid}"
+        echo -e "\n${PURPLE}--- Runtime D3 Power Management Status ---${NC}"
+        if [[ -f "${pci_path}/power/control" ]]; then
+            local power_control_status=$(cat "${pci_path}/power/control")
+            echo -e "Power Control:         ${BOLD}$power_control_status${NC}"
+            if [[ "$power_control_status" == "auto" ]]; then
+                print_success "Runtime PM is enabled."
+                local runtime_status=$(cat "${pci_path}/power/runtime_status")
+                echo -e "Runtime Status:        ${BOLD}$runtime_status${NC}"
+                if [[ "$runtime_status" == "active" ]]; then
+                    print_warning "GPU is currently active (in use or not sleeping)."
+                else
+                    print_success "GPU is suspended (in a low-power state)."
+                fi
+            else
+                print_error "Runtime PM is disabled. Use Method 0 to enable it."
+            fi
+        else
+            print_warning "Could not read power control status. Is the driver loaded?"
+        fi
     fi
 
-    echo
-    print_info "=== Optimus Manager Status (if available) ==="
-    if command -v optimus-manager &> /dev/null; then
-        optimus-manager --print-mode 2>/dev/null || print_info "Optimus Manager not configured"
-    else
-        print_info "Optimus Manager not installed"
-    fi
-
-    echo
-    print_info "=== switcheroo-control Status ==="
-    if systemctl is-active --quiet switcheroo-control; then
-        print_success "switcheroo-control service is running"
-    else
-        print_info "switcheroo-control service is not running"
-    fi
-
-    check_nvidia_runtime_d3
+    echo -e "\n${PURPLE}--- Helper Tool Status ---${NC}"
+    echo -n "optimus-manager:       "; command -v optimus-manager &>/dev/null && optimus-manager --print-mode || echo "Not installed/configured"
+    echo -n "supergfxctl:           "; command -v supergfxctl &>/dev/null && supergfxctl -S || echo "Not installed/configured"
+    echo -n "envycontrol:           "; command -v envycontrol &>/dev/null && envycontrol -q || echo "Not installed/dev/null"
+    echo -n "bbswitch:              "; [[ -f /proc/acpi/bbswitch ]] && cat /proc/acpi/bbswitch || echo "Not available"
 }
 
-# Main menu
+# --- Main Menu & Script Execution ---
+
 show_menu() {
-    # Check NVIDIA Runtime D3 status before showing menu
-    check_nvidia_runtime_d3
-
     echo
-    echo "============================================"
-    echo "        NVIDIA GPU Disable Script"
-    echo "============================================"
-    echo "Choose a method to disable/manage NVIDIA GPU:"
-    echo
-
-    # Only show option 0 if the udev rules file doesn't exist
-    if [[ ! -f /etc/udev/rules.d/80-nvidia-pm.rules ]]; then
-        echo -e "${BOLD}0) Add udev rules for Nvidia power-saving turn-off (Everyone should do this)${NC}"
+    echo "========================================================"
+    echo "        NVIDIA GPU Power Management Helper"
+    echo "========================================================"
+    echo -e "Detected Session: ${BOLD}${SESSION_TYPE}${NC} | GPU Driver: ${BOLD}${NVIDIA_DRIVER_VERSION}${NC}"
+    if [[ "$SESSION_TYPE" == "wayland" ]]; then
+        echo -e "${PURPLE}💡 You are on Wayland! For guidance, choose option 8.${NC}"
     fi
-
-    echo "1) Optimus Manager (Recommended for most laptops)"
-    echo "2) bbswitch (Hardware power-off, may not work on newer GPUs)"
-    echo "3) acpi_call (Alternative hardware power-off)"
-    echo "4) Manual module unload (Temporary, stops display manager)"
-    echo "5) Setup switcheroo-control (Per-app GPU switching)"
-    echo "6) Check GPU status"
-    echo "7) Monitor NVIDIA GPU Runtime Suspension (real-time)"
-    echo "8) Exit"
+    echo "--------------------------------------------------------"
+    echo "Choose an action:"
+    echo
+    echo -e "  ${PURPLE}--- Recommended Methods ---${NC}"
+    echo -e "  ${BOLD}0)${NC} ${ICON_ROCKET} Enable NVIDIA Runtime D3 Power Management ${GREEN}(Modern, Recommended for ALL systems)${NC}"
+    echo
+    echo -e "  ${PURPLE}--- Graphics Switching Tools ---${NC}"
+    echo -e "  ${BOLD}1)${NC} Configure with ${BOLD}supergfxctl${NC} (Good for Wayland/ASUS)"
+    echo -e "  ${BOLD}2)${NC} Configure with ${BOLD}envycontrol${NC} (Simple config-based switcher)"
+    echo -e "  ${BOLD}3)${NC} Configure with ${BOLD}optimus-manager${NC} (AMD not supported)"
+    echo
+    echo -e "  ${PURPLE}--- Legacy/Advanced Methods ---${NC}"
+    echo -e "  ${BOLD}4)${NC} ${ICON_LEGACY} Use ${BOLD}bbswitch${NC} to force power off (Older GPUs only)"
+    # Awaiting a safer implementation of acpi_call; omitting from menu for now.
+    echo
+    echo -e "  ${PURPLE}--- Diagnostics & Information ---${NC}"
+    echo -e "  ${BOLD}8)${NC} ${ICON_INFO} Explain how NVIDIA power management works on ${BOLD}Wayland${NC}"
+    echo -e "  ${BOLD}9)${NC} ${ICON_TOOL} Full System & GPU Power Status Check"
+    echo
+    echo -e "  ${BOLD}q)${NC} Exit"
     echo
 }
 
-# Main script execution
 main() {
     check_root
+    get_system_info
 
     while true; do
         show_menu
         read -p "Enter your choice: " choice
 
         case $choice in
-            0)
-                if [[ ! -f /etc/udev/rules.d/80-nvidia-pm.rules ]]; then
-                    nvidia_power_saving_method
-                else
-                    print_error "Invalid option. Please choose from the available options."
-                fi
-                ;;
-            1)
-                optimus_manager_method
-                ;;
-            2)
-                bbswitch_method
-                ;;
-            3)
-                acpi_call_method
-                ;;
-            4)
-                manual_unload_method
-                ;;
-            5)
-                switcheroo_method
-                ;;
-            6)
-                check_status
-                ;;
-            7)
-                monitor_nvidia_suspension
-                ;;
-            8)
-                print_info "Exiting..."
-                exit 0
-                ;;
-            *)
-                print_error "Invalid option. Please choose from the available options."
-                ;;
+            0) nvidia_d3_pm_method ;;
+            1) supergfxctl_method ;;
+            2) envycontrol_method ;;
+            3) optimus_manager_method ;;
+            4) bbswitch_method ;;
+            8) wayland_explanation ;;
+            9) check_status ;;
+            q|Q) print_info "Exiting..."; exit 0 ;;
+            *) print_error "Invalid option. Please choose from the menu." ;;
         esac
 
         echo
-        read -p "Press Enter to continue..."
+        read -p "Press Enter to return to the menu..."
     done
 }
 
 # Run main function
 main
-
-## @TODO
-## When installing `optimums-manager`, see if they are running gdm-prime, and if not,
-## show installation instructions.
