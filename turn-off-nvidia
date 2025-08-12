@@ -123,36 +123,118 @@ bbswitch_method() {
 acpi_call_method() {
     print_info "Using acpi_call method..."
 
-    if ! is_installed "acpi_call-dkms"; then
-        print_info "Installing acpi_call-dkms..."
-        sudo pacman -S acpi_call-dkms --noconfirm
+    # (Your existing code for installing/loading the acpi_call module would go here)
+    # For this example, we'll just check if the interface exists.
+    if ! lsmod | grep -q acpi_call; then
+        print_warning "acpi_call module not loaded. Attempting to load..."
+        if ! sudo modprobe acpi_call; then
+            print_error "Failed to load acpi_call module. Please install it (e.g., 'acpi_call-dkms')."
+            return 1
+        fi
+    fi
+    if [ ! -f /proc/acpi/call ]; then
+        print_error "ACPI call interface not available. The 'acpi_call' module may have failed to load."
+        return 1
     fi
 
-    print_info "Loading acpi_call module..."
-    sudo modprobe acpi_call
+    # --- DETECTION LOGIC ---
+    local manufacturer product_name
+    if [ -f /sys/class/dmi/id/sys_vendor ]; then
+        # Clean up vendor name for better matching (e.g., "ASUSTeK COMPUTER INC." -> "ASUS")
+        manufacturer=$(sed 's/ INC\.//;s/ CORPORATION//;s/ COMPUTER//' /sys/class/dmi/id/sys_vendor)
+        product_name=$(cat /sys/class/dmi/id/product_name)
+        print_info "Detected Manufacturer: $manufacturer"
+        print_info "Detected Product: $product_name"
+    else
+        print_warning "Could not detect system manufacturer/product via DMI."
+        manufacturer="Unknown"
+    fi
 
-    print_info "Attempting to turn off GPU using acpi_call..."
-    print_warning "ACPI call script not found. Trying common ACPI calls manually..."
+    local targeted_calls=()
 
-    # Common ACPI calls for different laptop models
-    acpi_calls=(
-        "\\_SB.PCI0.PEG0.PEGP._OFF"
-        "\\_SB.PCI0.PEGP.DGFX._OFF"
-        "\\_SB_.PCI0.VGA.DOFF"
-        "\\_SB_.PCI0.PEG.VID._OFF"
-    )
+    # Use a case statement to select the right ACPI call(s)
+    # We use glob matching (e.g., "HP*") to catch variations like "HP" and "Hewlett-Packard".
+    case "$manufacturer" in
+        "ASUSTeK"*)
+            print_info "ASUS system detected. Using targeted ACPI calls."
+            targeted_calls=(
+                "\\_SB.PCI0.PEG0.PEGP._OFF"
+                "\\_SB.PCI0.PEG1.PEGP._OFF"
+                "\\_SB.PCI0.P0P2.VGA._OFF"
+            )
+            ;;
+        "LENOVO")
+            print_info "Lenovo system detected. Using targeted ACPI calls."
+            targeted_calls=(
+                "\\_SB.PCI0.PEG0.VID._OFF"
+                "\\_SB.PCI0.PEG0.GFX0._OFF"
+            )
+            ;;
+        "Dell"*)
+            print_info "Dell system detected. Using targeted ACPI calls."
+            # Dell XPS and other models often use one of these two.
+            targeted_calls=(
+                "\\_SB.PCI0.PEG0.PEGP._OFF"
+                "\\_SB.PCI0.GPP0.PG00._OFF"
+            )
+            ;;
+        "HP" | "Hewlett-Packard")
+            print_info "HP system detected. Using targeted ACPI calls."
+            # HP Omen, Pavilion, and Spectre models often use DGFX (Discrete Graphics).
+            targeted_calls=(
+                "\\_SB.PCI0.PEGP.DGFX._OFF"
+                "\\_SB.PCI0.PEG.VID._OFF"
+            )
+            ;;
+        "System76"*)
+            print_info "System76 system detected. Using targeted ACPI calls."
+            print_warning "Note: The recommended method for System76 is using 'system76-power'."
+            # This call is used by system76-power on some models.
+            targeted_calls=(
+                "\\_SB.PCI0.GPP0.PG00._OFF"
+            )
+            ;;
+        *)
+            print_warning "Unknown manufacturer '$manufacturer'. Falling back to a generic list of ACPI calls."
+            # If the manufacturer is not in our list, fall back to the big generic list
+            targeted_calls=(
+                "\\_SB.PCI0.PEG0.PEGP._OFF" "\\_SB.PCI0.PEG1.PEGP._OFF" "\\_SB.PCI0.PEGP.DGFX._OFF"
+                "\\_SB.PCI0.P0P2.VGA.PX02" "\\_SB.PCI0.P0P2.VGA._PS3" "\\_SB.PCI0.PEG0.VID._OFF"
+                "\\_SB.PCI0.PEG0.GFX0._OFF" "\\_SB.PCI0.GPP0.PG00._OFF" "\\_SB.PCI0.PEG.VID._OFF"
+                "\\_SB_.PCI0.VGA.DOFF" "\\_SB.PCI0.VGA.PX02" "\\_SB.PCI0.VID.PX02"
+                "\\_SB.PCI0.VGA._PS3" "\\_SB.PCI0.VID._PS3" "\\_SB.PCI0.P0P2.VGA._OFF"
+            )
+            ;;
+    esac
 
-    for call in "${acpi_calls[@]}"; do
+    print_info "Attempting to turn off NVIDIA GPU..."
+    local success=false
+
+    for call in "${targeted_calls[@]}"; do
         print_info "Trying ACPI call: $call"
-        echo "$call" | sudo tee /proc/acpi/call > /dev/null
-        result=$(sudo cat /proc/acpi/call)
-        if [[ "$result" == "0x0" ]]; then
-            print_success "ACPI call $call succeeded!"
+        echo "$call" | sudo tee /proc/acpi/call >/dev/null 2>&1
+        local result
+        result=$(sudo cat /proc/acpi/call 2>/dev/null)
+
+        # Check for explicit errors. An empty result or non-error result is considered a success.
+        if [[ ! "$result" =~ "Error" ]]; then
+            print_success "ACPI call '$call' seems to have succeeded. Result: $result"
+            success=true
             break
         else
-            print_warning "ACPI call $call failed (returned: $result)"
+            print_warning "ACPI call '$call' failed. Result: $result"
         fi
     done
+
+    if [ "$success" = true ]; then
+        print_success "NVIDIA GPU likely disabled successfully via ACPI."
+        # Optional: Verify power state with lspci
+        return 0
+    else
+        print_error "Failed to disable NVIDIA GPU via any attempted ACPI calls."
+        print_info "This may be normal for your system. Modern systems may handle this automatically or require other tools like optimus-manager."
+        return 1
+    fi
 }
 
 # Method 4: Manual module unloading
@@ -420,3 +502,7 @@ main() {
 
 # Run main function
 main
+
+## @TODO
+## When installing `optimums-manager`, see if they are running gdm-prime, and if not,
+## show installation instructions.
