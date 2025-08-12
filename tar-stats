@@ -13,7 +13,7 @@
 # Part of HopeSeekr's BashScripts Collection                            #
 # https://github.com/hopeseekr/BashScripts/                             #
 #                                                                       #
-# Copyright © 2020 Theodore R. Smith <theodore@phpexperts.pro>          #
+# Copyright © 2025 Theodore R. Smith <theodore@phpexperts.pro>          #
 # GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690   #
 #                                                                       #
 # License: Creative Commons Attribution v4.0 International              #
@@ -21,30 +21,6 @@
 
 set -o pipefail
 
-# --- Help/Usage Function ---
-show_help() {
-  cat << EOF
-Usage: $(basename "$0") [MODE] [OPTIONS] <archive-name> [files-or-dirs...]
-
-A transparent wrapper for 'tar' that enhances archive creation (-c) and
-extraction (-x) with progress bars using 'pv'. It accepts the same arguments
-as 'tar', including the traditional dash-less style.
-
-MODE (must be specified):
-  -c, --create        Create a new archive.
-  -x, --extract       Extract files from an archive.
-
-COMMON OPTIONS:
-  -f, --file          Required. The name of the archive file.
-  -v, --verbose       List files as they are processed.
-  -C, --directory     For extraction, change to this directory first.
-  -z, -j, -J, -a      Compression flags (optional for extraction).
-
-Examples:
-  Create:  $(basename "$0") -czvf my_app.tar.gz ./my_app
-  Extract: $(basename "$0") -xvf my_app.tar.gz
-EOF
-}
 
 # --- Shared Parsing and Execution Logic ---
 
@@ -284,7 +260,9 @@ handle_extract() {
 }
 
 main() {
-  if [[ $# -eq 0 || " $* " =~ (--help|-h) ]]; then show_help; exit 0; fi
+  if [[ $# -eq 0 || " $* " =~ (--help|-h) ]]; then
+      source tar-stats-src/help.sh && show_help; exit 0
+  fi
 
   local mode=""
   local all_opts_str="${*}"
@@ -297,9 +275,14 @@ main() {
     if [[ -n "$mode" ]]; then mode="conflict"; else mode="extract"; fi
   fi
 
-  case "$mode" in
-    create)  handle_create "$@" ;;
-    extract) handle_extract "$@" ;;
+  case "$mode" in  create)
+    source tar-stats-src/create.sh
+    handle_create "$@"
+    ;;
+  extract)
+    source tar-stats-src/extract.sh
+    handle_extract "$@"
+    ;;
     conflict) echo "Error: Cannot specify both create (-c) and extract (-x)." >&2; exit 1 ;;
     *) echo "Error: Must specify a mode: -c (create) or -x (extract)." >&2; show_help; exit 1 ;;
   esac
