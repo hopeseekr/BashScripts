@@ -53,8 +53,7 @@ Recent Changes
 * **[2024-08-12]** [gitconfig] Automatically time out git when websites are not reachable.
 * **[2024-08-12]** [bash_rc.aliases] Replace ssh with mosh, if it is installed.
 * **[2024-08-12]** [bash_rc.aliases] Added an alias to make `watch` honor ~/.bashrc aliases.
-* **[2024-08-12]** [framework/wait_until_mouse_or_keyboard_event] Block execution until a key is pressed, 
-                   the mouse is moved, or a mouse button is clicked.
+* **[2024-08-12]** [framework/wait_until_mouse_or_keyboard_event] Block execution until a key is pressed, the mouse is moved, or a mouse button is clicked.
 * **[2024-08-12]** [framework/is_root] Added a function for determining root access.
 * **[2024-08-12]** [launch-browser] Launch Chrome-based browsers in native Wayland.
 * **[2024-08-12]** Added a .bash_profile.
@@ -73,6 +72,7 @@ Table of Contents (Categorized)
 * **Git Quality of Life**
     * **[git-change-author](#git-change-author)** — Easily bulk change the author's name and email in a git repo.
     * **[git-commit-at-modded-time](#git-commit-at-modded-time)** — Use a file's modified time as the git time.
+    * **[git-filter-copy](#git-filter-copy)** — Copies Git workdirs, preserving clean state and local modifications while respecting .gitattributes export rules.
     * **[git-mtime](#git-mtime-git-modified-time-restorer)** — Restores every file's modification time to that of the repo's history.
     * **[git-same-sig-time](#git-same-sig-time)** — Unifies the GPG signature time with the commit's time.
     * **[git-shallow-pull](#esotericgit-shallow-pull)** — Shallow updates a shallow `git clone --depth 1` repository.
@@ -211,6 +211,13 @@ Example:
     $ ./git-commit-at-modded-time american-date
     $ git pretty american-date
     7462b66 G 2020-10-14 15:53:34 -0500 Theodore R. Smith
+
+## git-filter-copy
+
+This utility is designed to copy directories while accounting for whether the source directory is a Git repository or not. If the source is a Git repository, it exports the current state of the project from the working directory, including any local modifications that are tracked by Git and not marked with export-ignore in .gitattributes.
+
+This means copying files that have been committed to the repository (or modified locally but still tracked), while excluding files that were never committed or explicitly ignored via .gitattributes. This ensures you get only the relevant and intended project files for local testing.
+
 
 ## git-mtime Git Modified Time Restorer
 

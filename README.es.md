@@ -25,6 +25,7 @@ Tabla de Contenidos (Categorizada)
       en un repositorio git.
     * **[git-commit-at-modded-time](#git-commit-at-modded-time)** — Usa el tiempo modificado de un archivo como el tiempo 
       de git.
+    * **[git-filter-copy](#git-filter-copy)** — Copia directorios de trabajo de Git, preservando el estado limpio y las modificaciones locales mientras respeta las reglas de exportación de .gitattributes.
     * **[git-mtime](#git-mtime-git-modified-time-restorer)** — Restaura el tiempo de modificación de cada archivo al del 
       historial del repositorio.
     * **[git-same-sig-time](#git-same-sig-time)** — Unifica el tiempo de la firma GPG con el tiempo del commit.
@@ -176,6 +177,12 @@ Ejemplo:
     $ ./git-commit-at-modded-time american-date
     $ git pretty american-date
     7462b66 G 2020-10-14 15:53:34 -0500 Theodore R. Smith
+
+## git-filter-copy
+
+Esta utilidad está diseñada para copiar directorios teniendo en cuenta si el directorio fuente es un repositorio Git o no. Si la fuente es un repositorio Git, exporta el estado actual del proyecto desde el directorio de trabajo, incluyendo cualquier modificación local que sea seguida por Git y que no esté marcada con ignorar-exportación en .gitattributes.
+
+Esto significa copiar archivos que han sido confirmados (commit) en el repositorio (o modificados localmente pero aún seguidos), excluyendo archivos que nunca fueron confirmados o ignorados explícitamente vía .gitattributes. Esto asegura que obtienes solo los archivos del proyecto relevantes e intencionales para las pruebas locales.
 
 ## git-mtime Restaurador de Hora de Modificación de Git
 

@@ -1,0 +1,123 @@
+#!/bin/sh
+
+# Exit immediately if a command exits with a non-zero status.
+set -e
+
+# --- Function Definitions ---
+
+# Prints usage information and exits.
+usage() {
+    echo "Usage: $0 <source_directory> <destination_directory>"
+    exit 1
+}
+
+# Resolves a potentially relative path to an absolute path.
+resolve_absolute_path() {
+    local path_to_resolve="$1"
+    local current_dir="$2"
+
+    # Use a more robust method to get the absolute path
+    if [ -d "$path_to_resolve" ]; then
+        (cd "$path_to_resolve" && pwd)
+    else
+        # Handle case where the last component might not exist yet
+        local parent_dir
+        parent_dir=$(dirname "$path_to_resolve")
+        local base_name
+        base_name=$(basename "$path_to_resolve")
+        echo "$((cd "$parent_dir" && pwd))/$base_name"
+    fi
+}
+
+# Handles the simple case of a non-Git directory by copying it entirely.
+handle_non_git_repo() {
+    local src="$1"
+    local dest="$2"
+    echo "Source is not a Git repository. Copying entire directory..."
+    # Ensure destination parent directory exists
+    mkdir -p "$(dirname "$dest")"
+    cp -a "$src" "$dest"
+}
+
+# Exports a clean archive and then overwrites it with any local modifications
+# to tracked files, while respecting .gitattributes `export-ignore`.
+export_git_repo() {
+    local src_dir="$1"
+    local dest_dir="$2"
+    local project_name
+
+    project_name=$(basename "$src_dir")
+    local final_dest="$dest_dir/$project_name"
+
+    echo "Exporting Git repository from '$src_dir' to '$final_dest'..."
+
+    # Ensure the final destination directory exists and is empty
+    rm -rf "$final_dest"
+    mkdir -p "$final_dest"
+
+    # Use a subshell to isolate the 'cd' command.
+    (
+        cd "$src_dir" || { echo "ERROR: Cannot change to directory: $src_dir"; exit 1; }
+
+        # --- Step 1: Create a clean archive from HEAD ---
+        # This correctly handles all .gitattributes `export-ignore` rules for the base export.
+        echo "Step 1: Creating base archive from HEAD..."
+        git archive HEAD | (cd "$final_dest" && tar -xf -)
+
+        # --- Step 2: Find MODIFIED files and copy them over ---
+        # This overwrites files in the destination with your uncommitted changes.
+        echo "Step 2: Overwriting with modified tracked files..."
+
+        # `git diff --name-only HEAD` is a reliable way to get modified files.
+        # We loop through them to handle filenames with spaces correctly.
+        # The trailing '--' ensures paths are not mistaken for options.
+        git diff --name-only HEAD -- | while IFS= read -r file; do
+            # We must still check if this modified file should be exported.
+            # This prevents copying a modified file from a directory that was
+            # correctly excluded by `git archive` (e.g., /tests).
+            local attr_output
+            attr_output=$(git check-attr export-ignore -- "$file" 2>/dev/null || true)
+
+            if ! echo "$attr_output" | grep -q "export-ignore: set"; then
+                # This file is modified and is NOT export-ignored.
+                # Only copy it if it actually exists (it could have been deleted).
+                if [ -f "$file" ]; then
+                    echo "  - Copying modified file: $file"
+                    # We don't need to create the directory, as `git archive`
+                    # would have already created it for the original file.
+                    cp -a "$file" "$final_dest/$file"
+                fi
+            fi
+        done
+    )
+    echo "Export complete."
+}
+
+# --- Main Script Logic ---
+
+main() {
+    # 1. Validate Arguments
+    if [ $# -ne 2 ]; then
+        usage
+    fi
+
+    local src_dir="$1"
+    local dest_dir="$2"
+    local CWD
+    CWD="$PWD"
+
+    # 2. Prepare Variables
+    src_dir=$(resolve_absolute_path "$src_dir" "$CWD")
+    dest_dir=$(resolve_absolute_path "$dest_dir" "$CWD")
+
+    # 3. Decide Action: Git Repo or Regular Directory?
+    if [ ! -d "$src_dir/.git" ]; then
+        # For a non-git repo, we copy to a subdir named after the source
+        handle_non_git_repo "$src_dir" "$dest_dir/$(basename "$src_dir")"
+    else
+        export_git_repo "$src_dir" "$dest_dir"
+    fi
+}
+
+# Run the main function, passing all command-line arguments to it
+main "$@"

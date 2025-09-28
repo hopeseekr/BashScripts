@@ -20,6 +20,7 @@
 * **Git 生活质量**
     * **[git-change-author](#git-change-author)** — **轻松批量更改 git 仓库中的作者姓名和电子邮件。
     * **[git-commit-at-modded-time](#git-commit-at-modded-time)** — 使用文件修改时间作为 git 提交时间。
+    * **[git-filter-copy](#git-filter-copy)** — 复制 Git 工作目录，同时保留清洁状态和本地修改，并遵守 .gitattributes 导出规则。
     * **[git-mtime](#git-mtime-git-modified-time-restorer)** — 将每个文件的修改时间恢复到 git 仓库历史记录中。
     * **[git-same-sig-time](#git-same-sig-time)** — 统一 GPG 签名时间与提交时间。
     * **[git-shallow-pull](#esotericgit-shallow-pull)** — 浅层更新 `git clone --depth 1` 的仓库。
@@ -156,6 +157,12 @@ git alterego 的反义词。
     $ ./git-commit-at-modded-time american-date
     $ git pretty american-date
     7462b66 G 2020-10-14 15:53:34 -0500 Theodore R. Smith
+
+## git-filter-copy
+
+该实用程序旨在复制目录，同时考虑源目录是否为 Git 仓库。如果源目录是 Git 仓库，它将从工作目录导出项目当前状态，包括任何由 Git 跟踪且未在 .gitattributes 中标记为“导出忽略”的本地修改。
+
+这意味着会复制已提交到仓库的文件（或已本地修改但仍有跟踪的文件），同时排除从未提交或通过 .gitattributes 明确忽略的文件。这确保您仅获得用于本地测试的相关且预期中的项目文件。
 
 ## git-mtime Git 修改时间恢复器
 
