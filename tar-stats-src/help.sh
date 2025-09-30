@@ -42,3 +42,5 @@ Examples:
   Extract: $(basename "$0") -xvf my_app.tar.gz
 EOF
 }
+
+show_help

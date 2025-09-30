@@ -11,30 +11,6 @@
 
 set -o pipefail
 
-# --- Help/Usage Function ---
-show_help() {
-  cat << EOF
-Usage: $(basename "$0") [OPTIONS] <archive-name> [files-or-dirs...]
-
-Create a compressed archive with progress reporting.
-
-OPTIONS:
-  -c, --create        (optional; required for this script to work)
-  -f, --file          Required. The output archive filename.
-  -v, --verbose       List files as they are processed.
-  -z, --gzip          Compress using gzip.
-  -j, --bzip2         Compress using bzip2.
-  -J, --xz            Compress using xz.
-  -Z, --zstd          Compress using zstd.
-  -a, --auto-compress Automatically determine compression based on .tar.gz, .xz, etc.
-
-Examples:
-  $(basename "$0") -czvf my_app.tar.gz ./my_app
-  $(basename "$0") -jvf my_app.tar.bz2 ./my_app
-  $(basename "$0") -a my_app.dddtar.gz ./my_app
-EOF
-}
-
 # --- Argument Parsing & Validation ---
 parseargs() {
   archive_name=""
@@ -59,7 +35,18 @@ parseargs() {
         passthrough_opts+=("$arg")
         ;;
       *)
-        input_paths+=("$arg")
+        # Check if this is a dash-less tar option (e.g., "cvf", "czf")
+        if [[ $has_file_flag -eq 0 ]] && [[ "$arg" =~ ^[a-zA-Z]+$ ]] && [[ "$arg" =~ [cf] ]]; then
+          # This looks like dash-less tar flags
+          if [[ "$arg" =~ f ]]; then
+            has_file_flag=1
+            next_arg_is_file=1
+          fi
+          # Add dash and pass through
+          passthrough_opts+=("-$arg")
+        else
+          input_paths+=("$arg")
+        fi
         ;;
     esac
   done
@@ -73,13 +60,6 @@ parseargs() {
     echo "Error: At least one file or directory is required." >&2
     return 1
   fi
-
-  for path in "${input_paths[@]}"; do
-    if [[ ! -e "$path" ]]; then
-      echo "Error: File/directory not found: '$path'" >&2
-      return 1
-    fi
-  done
 }
 
 # --- Compressor Selection ---
@@ -88,19 +68,21 @@ get_compressor() {
   local cmd="cat"
   local name="None"
 
-  if [[ "$opts" =~ --gzip|-z|z ]]; then
+  # Match compression flags only in options, not in filenames
+  # Pattern: (start|space)-<anything>X where X is the compression letter
+  if [[ "$opts" =~ (^|[[:space:]])--gzip([[:space:]]|$) ]] || [[ "$opts" =~ (^|[[:space:]])-[^[:space:]]*z([^[:space:]]*[[:space:]]|$) ]]; then
     cmd="gzip"
     name="Gzip"
-  elif [[ "$opts" =~ --bzip2|-j|j ]]; then
+  elif [[ "$opts" =~ (^|[[:space:]])--bzip2([[:space:]]|$) ]] || [[ "$opts" =~ (^|[[:space:]])-[^[:space:]]*j([^[:space:]]*[[:space:]]|$) ]]; then
     cmd="bzip2"
     name="Bzip2"
-  elif [[ "$opts" =~ --xz|-J|J ]]; then
+  elif [[ "$opts" =~ (^|[[:space:]])--xz([[:space:]]|$) ]] || [[ "$opts" =~ (^|[[:space:]])-[^[:space:]]*J([^[:space:]]*[[:space:]]|$) ]]; then
     cmd="xz -T0 -c"
     name="XZ"
-  elif [[ "$opts" =~ --zstd|-Z|Z ]]; then
+  elif [[ "$opts" =~ (^|[[:space:]])--zstd([[:space:]]|$) ]] || [[ "$opts" =~ (^|[[:space:]])-[^[:space:]]*Z([^[:space:]]*[[:space:]]|$) ]]; then
     cmd="zstd"
     name="Zstd"
-  elif [[ "$opts" =~ --auto-compress|-a|a ]]; then
+  elif [[ "$opts" =~ (^|[[:space:]])--auto-compress([[:space:]]|$) ]] || [[ "$opts" =~ (^|[[:space:]])-[^[:space:]]*a([^[:space:]]*[[:space:]]|$) ]]; then
     case "$archive_name" in
       *.tar.gz|*.tgz)   cmd="gzip";    name="Gzip" ;;
       *.tar.bz2|*.tbz2)  cmd="bzip2";   name="Bzip2" ;;
@@ -118,9 +100,15 @@ get_compressor() {
 
 # --- Main Creation Logic ---
 main() {
-  if [[ $# -eq 0 ]] || [[ " $* " =~ (--help|-h) ]]; then show_help; exit 0; fi
-
   parseargs "$@" || exit 1
+
+  # Validate input paths exist
+  for path in "${input_paths[@]}"; do
+    if [[ ! -e "$path" ]]; then
+      echo "Error: File/directory not found: '$path'" >&2
+      exit 1
+    fi
+  done
 
   # Get total size
   echo "Calculating total size..."

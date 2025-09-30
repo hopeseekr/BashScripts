@@ -63,7 +63,18 @@ parseargs() {
         passthrough_opts+=("$arg")
         ;;
       *)
-        input_paths+=("$arg")
+        # Check if this is a dash-less tar option (e.g., "cvf", "czf")
+        if [[ $has_file_flag -eq 0 ]] && [[ "$arg" =~ ^[a-zA-Z]+$ ]] && [[ "$arg" =~ [cf] ]]; then
+          # This looks like dash-less tar flags
+          if [[ "$arg" =~ f ]]; then
+            has_file_flag=1
+            next_arg_is_file=1
+          fi
+          # Add dash and pass through
+          passthrough_opts+=("-$arg")
+        else
+          input_paths+=("$arg")
+        fi
         ;;
     esac
   done
