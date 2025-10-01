@@ -44,12 +44,13 @@ Tabla de Contenidos (Categorizada)
       completo.
     * **[ls-by-min](#ls-by-min)** — Ordena la salida de `ls` por tamaño de archivo, descendente.
     * **[my-ip](#my-ip)** — Obtén fácilmente la dirección IP pública de esta máquina.
+    * **[obs-global-hotkeys](#obs-global-hotkeys)** — Instalador de atajos globales para OBS Studio en entornos GNOME (Wayland y Xorg)
     * **[random-file](#random-file)** — Elige aleatoriamente un archivo o directorio y lo muestra.
     * **[sync-watch](#sync-watch)** — Muestra una pequeña pantalla actualizada de cuántos MB necesitan escribirse en los 
       discos.
     * **[tar-sorted](#tar-sorted)** — Crea archivos tar automáticamente ordenados por nombre de archivo.
     * **[turn-off-monitors](#turn-off-monitors) — Apaga todos los monitores a través de la línea de comandos (CLI)**.
-    * **[turn-off-nvidia](#turn-off-nvidia)** - Modos de ahorro de energía NVIDIA completos para Xorg/Wayland, priorizando RTD3.
+    * **[turn-off-nvidia](#turn-off-nvidia)** — Modos de ahorro de energía NVIDIA completos para Xorg/Wayland, priorizando RTD3.
     * **[wifi-show-password](#wifi-show-password)** — Muestra la contraseña wifi conectada actualmente.
 * **Scripts Fantásticos**
     * **[american-date](#american-date)** — Una utilidad para imprimir fechas en formato americano.
@@ -317,6 +318,25 @@ tamaño.
 ## my-ip
 
 Obtén fácilmente la dirección IP pública de esta máquina.
+
+## obs-global-hotkeys
+
+**obs-global-hotkeys** automatiza la configuración de atajos de teclado verdaderamente globales para OBS Studio en 
+entornos GNOME (tanto Wayland como Xorg), resolviendo el problema común en el que los atajos de OBS solo funcionan 
+cuando la aplicación está enfocada. Instala de forma segura enlaces de teclas personalizables al encontrar 
+inteligentemente espacios disponibles en la configuración de teclas de medio de GNOME sin sobrescribir los atajos 
+de usuario existentes. El proceso es idempotente, lo que significa que las instalaciones repetidas no duplicarán 
+las entradas, y configura automáticamente dos atajos predeterminados: **Ctrl+F8** para alternar la grabación y 
+**Ctrl+F9** para pausar/reanudar. Antes de ejecutar el script, asegúrese de tener `obs-cmd` (del paquete `obs-cli`) 
+instalado para habilitar el control de OBS desde la línea de comandos.
+
+Para utilizar el script, ejecute `./obs-global-hotkeys.sh install` para agregar los atajos o 
+`./obs-global-hotkeys.sh uninstall` para eliminarlos por completo. El instalador reserva dinámicamente ranuras de 
+enlaces de teclas no utilizadas (por ejemplo, `custom0`, `custom1`), preservando sus atajos de GNOME existentes 
+mientras agrega funcionalidad OBS. Si los atajos no se activan inmediatamente después de la instalación, reinicie 
+la concha de GNOME a través de Alt+F2 > `r` (Xorg) o inicie sesión nuevamente (Wayland). El comando de desinstalación 
+elimina con precisión solo los enlaces creados por este script, dejando intactos otros enlaces de teclas 
+personalizados. Ambas operaciones requieren `gsettings` y `dconf`, que son estándar en GNOME.
 
 ## random-file
 

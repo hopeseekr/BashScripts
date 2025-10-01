@@ -87,12 +87,13 @@ Table of Contents (Categorized)
     * **[launch-browser](#launch-browser)** — Browser launcher utility script that launches browsers in full-Wayland.
     * **[ls-by-min](#ls-by-min)** — Sorts the output of  `ls` by file size, descending.
     * **[my-ip](#my-ip)** — Easily fetch this machine's public IP address.
+    * **[obs-global-hotkeys](#obs-global-hotkeys)** — OBS Global Hotkeys Installer (GNOME Wayland + Xorg)
     * **[random-file](#random-file)** — Randomly picks a file or directory and displays it.
     * **[sudoers.d/00_prompt_once](#sudoersd00_prompt_once)** — Only prompt for your sudo password once per boot.
     * **[sync-watch](#sync-watch)** — Outputs a tiny, updating display of how many MBs need to be written to disks.
     * **[tar-sorted](#tar-sorted)** — Create tar files automatically sorted by file name.
-    * **[turn-off-monitors](#turn-off-monitors)** — Turns off all monitors via the Command Line (CLI)**.
-    * **[turn-off-nvidia](#turn-off-nvidia)** - Comprehensive NVIDIA power-saving modes for Xorg/Wayland, prioritizing RTD3.
+    * **[turn-off-monitors](#turn-off-monitors)** — Turns off all monitors via the Command Line (CLI).
+    * **[turn-off-nvidia](#turn-off-nvidia)** — Comprehensive NVIDIA power-saving modes for Xorg/Wayland, prioritizing RTD3.
     * **[wifi-show-password](#wifi-show-password)** — Shows the currently connected wifi password.
 * **Uber Scripts** (很好的控制台脚本)
     * **[american-date](#american-date)** — A utility to print out dates in the American format.
@@ -356,6 +357,25 @@ Returns a list of files sorted by file size, descending, that are at least X MB 
 ## my-ip
 
 Easily fetch this machine's public IP address.
+
+## obs-global-hotkeys
+
+**obs-global-hotkeys** automates the setup of true global hotkeys for OBS Studio in GNOME 
+environments (both Wayland and Xorg), solving the common issue where OBS hotkeys only work 
+when the application is focused. It safely installs customizable keybindings by intelligently 
+finding available slots in GNOME's media-key configuration without overwriting existing 
+user-defined shortcuts. The process is idempotent—meaning repeated installations won't 
+duplicate entries—and automatically configures two default hotkeys: **Ctrl+F8** for toggling 
+recording and **Ctrl+F9** for pausing/unpausing. Before running, ensure you have `obs-cmd`
+(from the `obs-cli` package) installed to enable command-line control of OBS.
+
+To use the script, run `./obs-global-hotkeys.sh install` to add the hotkeys or 
+`./obs-global-hotkeys.sh uninstall` to cleanly remove them. The installer dynamically reserves 
+unused keybinding slots (e.g., `custom0`, `custom1`), preserving your existing GNOME shortcuts 
+while adding OBS functionality. If hotkeys don't activate immediately after installation, 
+restart GNOME Shell via Alt+F2 > `r` (Xorg) or log out/in (Wayland). The uninstall command 
+precisely removes only the bindings created by this script, leaving other custom keybindings 
+untouched. Both operations require `gsettings` and `dconf`, which are standard in GNOME.
 
 ## random-file
 

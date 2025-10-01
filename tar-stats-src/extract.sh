@@ -138,9 +138,10 @@ main() {
     | pv -c -N "Written" \
     | tar -x -f - $clean_opts "${input_paths[@]}"
 
-  local exit_code=${PIPESTATUS[3]}
+  local decompress_ec=${PIPESTATUS[1]}
+  local tar_ec=${PIPESTATUS[3]}
   echo "────────────────────────────────────────────────────────"
-  if [[ $exit_code -eq 0 ]]; then
+  if [[ $decompress_ec -eq 0 && $tar_ec -eq 0 ]]; then
     echo "✅ Success: Archive extracted."
   else
     echo "❌ Error: Extraction failed." >&2

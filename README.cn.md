@@ -18,7 +18,7 @@
     * **[ssh-keyphrase-only-once](#ssh-keyphrase-only-onceinstaller)** — 每次启动时仅请求一次 SSH 密码短语。
     * **[gitconfig](#gitconfig)** — 高效的 Git CLI 配置。
 * **Git 生活质量**
-    * **[git-change-author](#git-change-author)** — **轻松批量更改 git 仓库中的作者姓名和电子邮件。
+    * **[git-change-author](#git-change-author)** — 轻松批量更改 git 仓库中的作者姓名和电子邮件。
     * **[git-commit-at-modded-time](#git-commit-at-modded-time)** — 使用文件修改时间作为 git 提交时间。
     * **[git-filter-copy](#git-filter-copy)** — 复制 Git 工作目录，同时保留清洁状态和本地修改，并遵守 .gitattributes 导出规则。
     * **[git-mtime](#git-mtime-git-modified-time-restorer)** — 将每个文件的修改时间恢复到 git 仓库历史记录中。
@@ -35,11 +35,12 @@
     * **[launch-browser](#launch-browser)** — 用于启动浏览器的实用脚本，可在完整的 Wayland 模式下启动它们。
     * **[ls-by-min](#ls-by-min)** — 按文件大小降序排序 `ls` 输出。
     * **[my-ip](#my-ip)** — 轻松获取该机器的公共IP地址。
+    * **[obs-global-hotkeys](#obs-global-hotkeys)** — OBS 全局快捷键安装程序（GNOME Wayland + Xorg）
     * **[random-file](#random-file)** — 随机选择并显示一个文件或目录。
     * **[sync-watch](#sync-watch)** — 显示需要写入磁盘的 MB 数量的更新屏幕。
     * **[tar-sorted](#tar-sorted)** — 自动按文件名排序创建 tar 文件。
     * **[turn-off-monitors](#turn-off-monitors)** — 通过命令行关闭所有显示器（CLI）。
-    * **[turn-off-nvidia](#turn-off-nvidia)** - 为 Xorg/Wayland 提供全面的 NVIDIA 节能模式，优先使用 RTD3。
+    * **[turn-off-nvidia](#turn-off-nvidia)** — 为 Xorg/Wayland 提供全面的 NVIDIA 节能模式，优先使用 RTD3。
     * **[wifi-show-password](#wifi-show-password)** — 显示当前连接的wifi密码。
 * **精彩脚本**
     * [american-date](#american-date) — 一个用于打印美国日期格式的工具。
@@ -296,6 +297,12 @@ git-shift-time <提交哈希> <分钟偏移量> [目标日期]
 ## my-ip
 
 轻松获取该机器的公共IP地址。
+
+## obs-global-hotkeys
+
+**obs-global-hotkeys** 自动化在 GNOME 环境（包括 Wayland 和 Xorg）中为 OBS Studio 设置真正的全局快捷键，解决了常见的问题，即 OBS 快捷键仅在应用程序获取焦点时才有效。它通过智能地查找 GNOME 媒体键配置中的可用插槽来安全地安装可定制的按键绑定，不会覆盖现有的用户自定义快捷键。该过程是幂等操作——这意味着重复安装不会导致条目重复——并自动配置两个默认的快捷键：**Ctrl+F8** 用于切换录制，**Ctrl+F9** 用于暂停/恢复播放。在运行之前，请确保已安装 `obs-cmd`（来自 `obs-cli` 软件包），以启用 OBS 的命令行控制。
+
+要使用该脚本，请运行 `./obs-global-hotkeys.sh install` 添加快捷键，或运行 `./obs-global-hotkeys.sh uninstall` 清除它们。安装程序会动态地保留未使用的按键绑定插槽（例如，`custom0`、`custom1`），同时保留您现有的 GNOME 快捷键并添加 OBS 功能。如果快捷键在安装后没有立即激活，请通过 Alt+F2 > `r`（Xorg）重新启动 GNOME Shell，或注销/登录（Wayland）。卸载命令仅准确地删除由该脚本创建的绑定，不影响其他自定义按键绑定。两次操作都需要 `gsettings` 和 `dconf`，这是 GNOME 中的标准组件。
 
 ## random-file
 
