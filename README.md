@@ -91,7 +91,8 @@ Table of Contents (Categorized)
     * **[sudoers.d/00_prompt_once](#sudoersd00_prompt_once)** — Only prompt for your sudo password once per boot.
     * **[sync-watch](#sync-watch)** — Outputs a tiny, updating display of how many MBs need to be written to disks.
     * **[tar-sorted](#tar-sorted)** — Create tar files automatically sorted by file name.
-    * **[turn-off-monitors](#turn-off-monitors) — Turns off all monitors via the Command Line (CLI)**.
+    * **[turn-off-monitors](#turn-off-monitors)** — Turns off all monitors via the Command Line (CLI)**.
+    * **[turn-off-nvidia](#turn-off-nvidia)** - Comprehensive NVIDIA power-saving modes for Xorg/Wayland, prioritizing RTD3.
     * **[wifi-show-password](#wifi-show-password)** — Shows the currently connected wifi password.
 * **Uber Scripts** (很好的控制台脚本)
     * **[american-date](#american-date)** — A utility to print out dates in the American format.
@@ -384,6 +385,14 @@ Displays how many megabytes still need to be written to [slow] disks.
 Easily turns off all of your monitors via the CLI.
 
 For when you want to just step away and not worry so much about a lock screen.
+
+## turn-off-nvidia
+
+**Comprehensive NVIDIA GPU Power Management Script**
+
+**turn-off-nvidia** is a comprehensive bash script for managing NVIDIA dGPU power states on Linux, standing out as one of the few power management solutions that fully supports **NVIDIA GPUs with AMD CPUs on Wayland** while also working perfectly on Xorg. It prioritizes Runtime D3 Power Management (RTD3) as the modern approach, allowing your discrete GPU to automatically enter deep sleep states (D3cold) when idle, dramatically reducing power consumption and heat on laptops.
+
+The script provides multiple configuration methods including supergfxctl (excellent for ASUS laptops and Wayland), envycontrol, optimus-manager, and legacy options like bbswitch and acpi_call. It features intelligent system detection, comprehensive diagnostics, distro-agnostic package management (pacman/AUR, apt, dnf, zypper), PRIME offload setup for on-demand GPU usage, real-time power monitoring, and safe revert options. With extensive documentation and Wayland-specific guidance, turn-off-nvidia makes it simple to achieve optimal battery life on hybrid graphics laptops.
 
 ## watermark.sh
 

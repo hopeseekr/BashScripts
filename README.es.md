@@ -49,6 +49,7 @@ Tabla de Contenidos (Categorizada)
       discos.
     * **[tar-sorted](#tar-sorted)** — Crea archivos tar automáticamente ordenados por nombre de archivo.
     * **[turn-off-monitors](#turn-off-monitors) — Apaga todos los monitores a través de la línea de comandos (CLI)**.
+    * **[turn-off-nvidia](#turn-off-nvidia)** - Modos de ahorro de energía NVIDIA completos para Xorg/Wayland, priorizando RTD3.
     * **[wifi-show-password](#wifi-show-password)** — Muestra la contraseña wifi conectada actualmente.
 * **Scripts Fantásticos**
     * **[american-date](#american-date)** — Una utilidad para imprimir fechas en formato americano.

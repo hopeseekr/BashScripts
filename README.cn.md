@@ -39,6 +39,7 @@
     * **[sync-watch](#sync-watch)** — 显示需要写入磁盘的 MB 数量的更新屏幕。
     * **[tar-sorted](#tar-sorted)** — 自动按文件名排序创建 tar 文件。
     * **[turn-off-monitors](#turn-off-monitors)** — 通过命令行关闭所有显示器（CLI）。
+    * **[turn-off-nvidia](#turn-off-nvidia)** - 为 Xorg/Wayland 提供全面的 NVIDIA 节能模式，优先使用 RTD3。
     * **[wifi-show-password](#wifi-show-password)** — 显示当前连接的wifi密码。
 * **精彩脚本**
     * [american-date](#american-date) — 一个用于打印美国日期格式的工具。
@@ -323,6 +324,14 @@ git-shift-time <提交哈希> <分钟偏移量> [目标日期]
 通过命令行轻松关闭所有显示器。
 
 当你想要离开并不那么担心锁屏时使用。
+
+## turn-off-nvidia
+
+**全面的 NVIDIA GPU 电源管理脚本**
+
+**turn-off-nvidia** 是一个全面的 Bash 脚本，用于在 Linux 上管理 NVIDIA dGPU 电源状态，作为少数几个完全支持 AMD CPU 上的 NVIDIA GPU（在 Wayland 上）的电力管理解决方案之一，同时在 Xorg 上也运行完美。它优先采用实时 D3 电源管理 (RTD3) 作为现代方法，允许离线 GPU 在空闲时自动进入深度睡眠状态（D3cold），显著降低笔记本电脑的功耗和热量。
+
+该脚本提供了多种配置方法，包括适用于 ASUS 笔记本电脑和 Wayland 的 supergfxctl、envycontrol、optimus-manager，以及如 bbswitch 和 acpi_call 等传统选项。它具有智能系统检测、全面诊断、独立于发行版的软件包管理（pacman/AUR、apt、dnf、zypper）、PRIME 卸载设置以实现按需 GPU 使用、实时电源监控和安全回滚选项。配备了广泛文档和 Wayland 特定指南，turn-off-nvidia 使混合图形笔记本电脑获得最佳电池寿命变得简单易行。
 
 ## watermark.sh
 
