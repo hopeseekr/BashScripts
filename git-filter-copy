@@ -1,4 +1,23 @@
-#!/bin/sh
+#!/usr/bin/env bash
+#################################################################################
+# git-filter-copy: Copies Git repositories while filtering untracked files      #
+#                                                                               #
+# Usage:                                                                        #
+#   git-filter-copy <source_directory> <destination_directory>                  #
+#                                                                               #
+# Part of HopeSeekr's BashScripts Collection                                    #
+# https://github.com/hopeseekr/BashScripts/                                     #
+#                                                                               #
+# This command creates a clean copy of a Git repository (or regular directory)  #
+# by including only committed files and modified tracked files while respecting #
+# .gitattributes rules (e.g., export-ignore). Untracked files and directories   #
+# are excluded from the copy. For non-Git directories, performs a full copy.    #
+#                                                                               #
+# Copyright © 2025 Theodore R. Smith <theodore@phpexperts.pro>                  #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690           #
+#                                                                               #
+# License: Creative Commons Attribution v4.0 International                      #
+#################################################################################
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
@@ -25,7 +44,7 @@ resolve_absolute_path() {
         parent_dir=$(dirname "$path_to_resolve")
         local base_name
         base_name=$(basename "$path_to_resolve")
-        echo "$((cd "$parent_dir" && pwd))/$base_name"
+        echo "$(cd "$parent_dir" && pwd)/$base_name"
     fi
 }
 

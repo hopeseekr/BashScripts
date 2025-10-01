@@ -91,8 +91,8 @@ get_compressor() {
       *) echo "Warning: Auto-detection failed for '$archive_name'." >&2 ;;
     esac
   else
-    echo "No compression specified." >&2
-    return 1
+    cmd="cat"
+    name="None"
   fi
 
   echo "$cmd|$name"
@@ -141,9 +141,10 @@ main() {
     | pv -c -N "Output (${compressor_name})" \
     > "$archive_name"
 
-  local exit_code=${PIPESTATUS[2]}
+  local tar_exit_code=${PIPESTATUS[0]}
+  local compressor_exit_code=${PIPESTATUS[2]}
   echo "────────────────────────────────────────────────────────"
-  if [[ $exit_code -eq 0 ]]; then
+  if [[ $tar_exit_code -eq 0 && $compressor_exit_code -eq 0 ]]; then
     echo "✅ Success: Archive created."
   else
     echo "❌ Error: Archive creation failed." >&2

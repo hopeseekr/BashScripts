@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
-#########################################################################
-# OBS Global Hotkeys Installer (GNOME)
-#
-# Quickly installs true OBS Global Hotkeys in GNOME. This script is
-# idempotent and safely finds available keybinding slots without
-# overwriting existing user configurations.
-#
-# Part of HopeSeekr's BashScripts Collection
-# https://github.com/hopeseekr/BashScripts/
-#
-# License: CC BY 4.0
-#########################################################################
+############################################################################
+# OBS Global Hotkeys Installer (GNOME Wayland + Xorg)                      #
+#                                                                          #
+Quickly installs true OBS Global Hotkeys in GNOME Wayland + Xorg. This script is idempotent and safely finds available keybinding slots without overwriting existing user configurations.                                #
+#                                                                          #
+# Part of HopeSeekr's BashScripts Collection                               #
+# https://github.com/hopeseekr/BashScripts/                                #
+#                                                                          #
+# License: CC BY 4.0                                                       #
+############################################################################
 
 set -euo pipefail
 

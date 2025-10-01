@@ -652,7 +652,7 @@ use_dialog_menu() {
             9 "System & GPU Status Check" \
             R "Revert Changes" \
             q "Exit" 3>&1 1>&2 2>&3)
-        return "$choices"
+        echo "$choices"
     else
         return 0
     fi

@@ -12,10 +12,13 @@
 #                                                                           #
 #############################################################################
 
+# Verify faketime is installed
 if ! command -v faketime &> /dev/null
 then
     echo "'faketime' could not be found. Please install it first."
-    exit
+    echo "  Ubuntu/Debian: sudo apt-get install faketime"
+    echo "  macOS: brew install libfaketime"
+    exit 1
 fi
 
 git pretty -1 > /dev/null 2>&1

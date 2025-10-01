@@ -1,4 +1,18 @@
 #!/bin/bash
+#################################################################################
+# image-mp3-to-video: Combines an image with an mp3 to create a H264 video.     #
+#                                                                               #
+# Usage:                                                                        #
+#   image-mp3-to-video [image] [mp3]                                            #
+#                                                                               #
+# Part of HopeSeekr's BashScripts Collection                                    #
+# https://github.com/hopeseekr/BashScripts/                                     #
+#                                                                               #
+# Copyright © 2025 Theodore R. Smith <theodore@phpexperts.pro>                  #
+# GPG Fingerprint: 4BF8 2613 1C34 87AC D28F  2AD8 EB24 A91D D612 5690           #
+#                                                                               #
+# License: Creative Commons Attribution v4.0 International                      #
+#################################################################################
 
 if [[ -z "$1" ]]; then
   echo "Missing the image file."
@@ -13,7 +27,7 @@ fi
 AUDIO_IN="$2"
 OUTPUT="${AUDIO_IN%.mp3}.mp4"
 
-ffmpeg -loop 1 -framerate 2 -vaapi_device /dev/dri/renderD128 \
+ffmpeg -loop 1 -framerate 2 -vaapi_device "${VAAPI_DEVICE:-/dev/dri/renderD128}" \
   -i "$1" -i "$2" \
   -vf 'format=nv12,hwupload' \
   -c:v h264_vaapi -b:v 2M \
