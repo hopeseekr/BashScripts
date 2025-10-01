@@ -126,3 +126,19 @@ Behavioral changes:
 
 * **[2025-07-29 20:24:07 CDT]** [my-ip] Added a little utility to discover your private IP address.
 
+## v3.0.0 @ 2025-09-30
+
+* **[2025-08-09 14:16:16 CDT]** [obs-global-hotkeys] A utility to add Global Hotkeys for OBS on Wayland.
+* **[2025-08-09 18:46:09 CDT]** [tar-stats] Iteration 1 - Added compression support.
+* **[2025-08-09 18:47:24 CDT]** [tar-stats] Iteration 2 - Added extraction support.
+* **[2025-08-09 21:40:28 CDT]** [tar-stats] Iteration 3 - Added auto-detection for the compression utility to use when decompressing.
+* **[2025-08-10 13:06:25 CDT]** [turn-off-nvidia] Added a utility to turn off Nvidia graphics card to greatly extend battery life.
+* **[2025-08-12 12:57:09 CDT]** [git-shift-time] Added a utility to shift the timestamp of git commits.
+* **[2025-08-12 14:35:28 CDT]** [tar-stats] Split into multiple source code files and added a compilation step.
+* **[2025-08-12 14:38:35 CDT]** [turn-off-nvidia] Power savings for Xorg.
+* **[2025-08-12 15:47:45 CDT]** [turn-off-nvidia] Major rewrite with Wayland support and modern power management
+* **[2025-08-19 05:26:47 CDT]** [turn-off-nvidia] More refactoring.
+* **[2025-09-28 06:29:56 CDT]** [git-filter-copy] A utility to copy workdirs complying with .giattributes export restrictions.
+* **[2025-09-30 18:51:33 CDT]** [tar-stats] Much more work, but still not ready.
+* **[2025-09-30 20:52:11 CDT]** [image-mp3-to-video] Combines an image with an mp3 to produce an H264 video.
+* **[2025-09-30 20:54:18 CDT]** [turn-off-nvidia] Added the README documentation.

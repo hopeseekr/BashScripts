@@ -13,6 +13,23 @@ Translations: [中文](README.cn.md), [हिन्दी](README.hi.md)
 
 Recent Changes
 ==============
+## v3.0.0 @ 2025-09-30
+
+* **[2025-09-30 20:54:18 CDT]** [turn-off-nvidia] Added the README documentation.
+* **[2025-09-30 20:52:11 CDT]** [image-mp3-to-video] Combines an image with an mp3 to produce an H264 video.
+* **[2025-09-30 18:51:33 CDT]** [tar-stats] Much more work, but still not ready.
+* **[2025-09-28 06:29:56 CDT]** [git-filter-copy] A utility to copy workdirs complying with .giattributes export restrictions.
+* **[2025-08-19 05:26:47 CDT]** [turn-off-nvidia] More refactoring.
+* **[2025-08-12 15:47:45 CDT]** [turn-off-nvidia] Major rewrite with Wayland support and modern power management
+* **[2025-08-12 14:38:35 CDT]** [turn-off-nvidia] Power savings for Xorg.
+* **[2025-08-12 14:35:28 CDT]** [tar-stats] Split into multiple source code files and added a compilation step.
+* **[2025-08-12 12:57:09 CDT]** [git-shift-time] Added a utility to shift the timestamp of git commits.
+* **[2025-08-10 13:06:25 CDT]** [turn-off-nvidia] Added a utility to turn off Nvidia graphics card to greatly extend battery life.
+* **[2025-08-09 21:40:28 CDT]** [tar-stats] Iteration 3 - Added auto-detection for the compression utility to use when decompressing.
+* **[2025-08-09 18:47:24 CDT]** [tar-stats] Iteration 2 - Added extraction support.
+* **[2025-08-09 18:46:09 CDT]** [tar-stats] Iteration 1 - Added compression support.
+* **[2025-08-09 14:16:16 CDT]** [obs-global-hotkeys] A utility to add Global Hotkeys for OBS on Wayland.
+
 ## v2.8.0 @ 2025-07-29
 
 * **[2025-07-29 20:24:07 CDT]** [my-ip] Added a little utility to discover your private IP address.
@@ -40,23 +57,6 @@ Recent Changes
 #### v2.7.0 @ 2024-08-24
 
 * **[2024-08-24 12:06:32 CDT]** [bash-timer] Added the bash-timer project.
-
-#### v2.6.1 @ 2024-08-23
-
-* **[2024-08-23 07:09:10 CDT]** [git-same-sig-time] Added proper support for time zones different than the user's computer.
-
-#### v2.6.0 @ 2024-08-12
-
-* **[2024-08-12]** Majorly cleaned up the README and translated to Chinese, Hindi, and Spanissh.
-* **[2024-08-12]** [turn-off-monitors] Added full support for turning off monitors in Wayland for Gnome and KDE.
-* **[2024-08-12]** [arch-pacman-dupe-cleaner] Require superuser to run.
-* **[2024-08-12]** [gitconfig] Automatically time out git when websites are not reachable.
-* **[2024-08-12]** [bash_rc.aliases] Replace ssh with mosh, if it is installed.
-* **[2024-08-12]** [bash_rc.aliases] Added an alias to make `watch` honor ~/.bashrc aliases.
-* **[2024-08-12]** [framework/wait_until_mouse_or_keyboard_event] Block execution until a key is pressed, the mouse is moved, or a mouse button is clicked.
-* **[2024-08-12]** [framework/is_root] Added a function for determining root access.
-* **[2024-08-12]** [launch-browser] Launch Chrome-based browsers in native Wayland.
-* **[2024-08-12]** Added a .bash_profile.
 
 
 Table of Contents (Categorized)
