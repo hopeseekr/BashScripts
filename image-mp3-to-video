@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [[ -z "$1" ]]; then
+  echo "Missing the image file."
+  exit 1
+fi
+
+if [[ -z "$2" ]]; then
+  echo "Missing the audio file."
+  exit 1
+fi
+
+AUDIO_IN="$2"
+OUTPUT="${AUDIO_IN%.mp3}.mp4"
+
+ffmpeg -loop 1 -framerate 2 -vaapi_device /dev/dri/renderD128 \
+  -i "$1" -i "$2" \
+  -vf 'format=nv12,hwupload' \
+  -c:v h264_vaapi -b:v 2M \
+  -c:a aac -b:a 192k \
+  -pix_fmt nv12 -shortest \
+  -movflags +faststart "$OUTPUT"
+

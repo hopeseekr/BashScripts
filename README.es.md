@@ -54,6 +54,7 @@ Tabla de Contenidos (Categorizada)
     * **[american-date](#american-date)** — Una utilidad para imprimir fechas en formato americano.
     * **[changelog-maker-lite](#changelog-maker-lite)** — Crea rápidamente un hermoso registro de cambios a partir del 
       historial de commits.
+    * **[image-mp3-to-video](#image-mp3-to-video)** — Combina una imagen con un archivo mp3 para crear un video H264.
     * **[stream-to-youtube](#stream-to-youtube)** — Transmisión en vivo directamente a YouTube desde la línea de comandos.
     * **[sudoers.d/00_prompt_once](#sudoersd00_prompt_once)** — Solo solicita tu contraseña de sudo una vez por arranque.
     * **[watermark.sh](#watermarksh)** — Incrusta fácilmente tu propia marca de agua en videos.

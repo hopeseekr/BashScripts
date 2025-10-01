@@ -43,6 +43,7 @@
 * **精彩脚本**
     * [american-date](#american-date) — 一个用于打印美国日期格式的工具。
     * [changelog-maker-lite](#changelog-maker-lite) — 根据提交历史快速创建美观的变更日志。
+    * **[image-mp3-to-video](#image-mp3-to-video)** — 将图像与 MP3 结合以创建 H264 视频。
     * [stream-to-youtube](#stream-to-youtube) — 直接从命令行直播到 YouTube。
     * [sudoers.d/00_prompt_once](#sudoersd00_prompt_once) — 每次启动时仅请求一次 sudo 密码。
     * [watermark.sh](#watermarksh) — 轻松在视频中嵌入自定义水印。
@@ -277,6 +278,10 @@ git-shift-time <提交哈希> <分钟偏移量> [目标日期]
     [2020-10-01 00:58:00 CDT] — [bash_rc.aliases] 添加了更多描述。
     [2020-10-01 01:10:26 CDT] — [.gitconfig] 添加了大量 git 别名。 标签: v1.0.0
     [2020-10-01 08:17:42 CDT] — [clear-cache] 删除 ~/.cache 目录中的损坏符号链接。
+
+## image-mp3-to-video
+
+**image-mp3-to-video** 是一个脚本，可将图像与 MP3 音频文件结合起来创建 H264 视频。它适用于创建带有背景音乐的幻灯片演示或将图像转换为带有附加音频的视频。该过程简单易行，并允许调整屏幕上图像的时间、帧率和最终视频质量等参数。
 
 ## launch-browser <browser-path>
 

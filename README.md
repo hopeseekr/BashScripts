@@ -96,6 +96,7 @@ Table of Contents (Categorized)
 * **Uber Scripts** (很好的控制台脚本)
     * **[american-date](#american-date)** — A utility to print out dates in the American format.
     * **[changelog-maker-lite](#changelog-maker-lite)** — Quickly creates a beautiful changelog from the commit history.
+    * **[image-mp3-to-video](#image-mp3-to-video)** — Combines an image with an mp3 to create a H264 video.
     * **[stream-to-youtube](#stream-to-youtube)** — Live Screencast directly to YouTube from the CLI. 
     * **[watermark.sh](#watermarksh)** — Easily embed your own image watermark onto videos.
     * **[wifi-autorun-on-connect](#wifi-autorun-on-connectinstaller)** — Autorun a script when you connect to a Wifi hotspot.
@@ -335,6 +336,10 @@ Easily creates [CHANGELOGs](CHANGELOG.md) based upon concise git commit logs:
     [2020-10-01 00:58:00 CDT] — [bash_rc.aliases] Added some more descriptions.
     [2020-10-01 01:10:26 CDT] — [.gitconfig] Added a whole bunch of my git aliases. tag: v1.0.0
     [2020-10-01 08:17:42 CDT] — [clear-cache] Delete broken symlinks in the ~/.cache directories.
+
+## image-mp3-to-video
+
+Combines an image with an mp3 to create a H264 video.
 
 ## launch-browser <browser-path>
 
