@@ -17,7 +17,7 @@
 function turn-off-screen-in-wayland()
 {
     echo "Turning off monitors..."
-    if [[ $XDG_SESSION_DESKTOP == gnome* ]]; then
+    if [[ $XDG_SESSION_DESKTOP == gnome* || $MUTTER_PROPERTY_SUPPORTED ]]; then
         _trigger-monitors-off-in-gnome-wayland
 
         local interaction_event=$(wait_until_mouse_or_keyboard_event)
@@ -88,6 +88,13 @@ function wait_until_mouse_or_keyboard_event()
     done
 }
 ### END framework/wait_until_mouse_or_keyboard_event.sh
+
+# C
+if busctl --user get-property org.gnome.Mutter.DisplayConfig \
+    /org/gnome/Mutter/DisplayConfig org.gnome.Mutter.DisplayConfig \
+    PowerSaveMode &>/dev/null; then
+    MUTTER_PROPERTY_SUPPORTED=true
+fi
 
 if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     turn-off-screen-in-wayland
