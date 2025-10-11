@@ -1,11 +1,16 @@
 #!/bin/bash
+### ==== git-change-author ====
 ##########################################################################
 # git-change-author: Git Bulk Commit Author Rewriter                     #
 #                                                                        #
 #   Easily change the name and email of any of the commits in            #
-#   a git repository.                                                    #
+#   a git repository, while preserving original commit times and         #
+#   (re)signing commits with the new author's key (if configured).       #
 #                                                                        #
-#      ./git-change-author "Your Name" "email@address" <SHA1>            #
+#      ./git-change-author "Your Name" "email@address" [SHA1]            #
+#                                                                        #
+#      SHA1: The SHA1 of the *first* commit to change. If omitted,       #
+#            all commits in the history will be changed.                 #
 #                                                                        #
 # Part of HopeSeekr's BashScripts Collection                             #
 # https://github.com/hopeseekr/BashScripts/                              #
@@ -19,30 +24,105 @@
 
 if [[ -z "$1" || "$1" == "--help" || -z "$2" ]]; then
     echo '   Usage: git-change-author "Your Name" "email@address" [SHA1]'
+    echo '      SHA1: The SHA1 of the *first* commit to change. If omitted, all commits are changed.'
     exit 1
 fi
 
 AUTHOR="$1"
 EMAIL="$2"
-START_HASH="${3:---root}"
+START_HASH_PARAM="${3}" # This is the first commit the user wants to modify (inclusive)
 
-echo "On the next screen, you need to change 'pick' to 'edit' for every commit which you wish to alter."
+# --- Start of git-same-sig-time logic integration ---
+
+# Verify faketime is installed
+if ! command -v faketime &> /dev/null
+then
+    echo "'faketime' could not be found. Please install it first."
+    echo "  Ubuntu/Debian: sudo apt-get install faketime"
+    echo "  macOS: brew install libfaketime"
+    exit 1
+fi
+
+# Determine the base for rebase and commit count
+# START_HASH_ACTUAL will hold the validated SHA1 of the first commit to process, or be empty if all commits.
+START_HASH_ACTUAL=""
+if [[ -n "${START_HASH_PARAM}" ]]; then
+    # Validate START_HASH_PARAM is a valid commit
+    if ! git cat-file -t "${START_HASH_PARAM}" &> /dev/null || [[ "$(git cat-file -t "${START_HASH_PARAM}")" != "commit" ]]; then
+        echo "Error: '${START_HASH_PARAM}' is not a valid commit SHA1."
+        exit 1
+    fi
+    START_HASH_ACTUAL="${START_HASH_PARAM}"
+fi
+
+# Determine if we are starting from the root commit or a specific commit.
+# The root commit has no parents.
+ROOT_COMMIT_SHA=$(git rev-list --max-parents=0 HEAD)
+
+if [[ -z "${START_HASH_ACTUAL}" || "${START_HASH_ACTUAL}" == "${ROOT_COMMIT_SHA}" ]]; then
+    # Case 1: No SHA1 provided, or provided SHA1 is the root commit. Process all commits.
+    REBASE_BASE="--root"
+    COMMIT_COUNT=$(git rev-list --count HEAD)
+    echo "Changing author for all $COMMIT_COUNT commits from the beginning of history."
+else
+    # Case 2: Specific SHA1 provided (which is not the root). Process from this SHA1 onwards.
+    REBASE_BASE="${START_HASH_ACTUAL}^"
+    # Count commits from START_HASH_ACTUAL (inclusive) to HEAD.
+    # git log SHA1^..HEAD counts commits reachable from HEAD but not SHA1^ (i.e., SHA1 and its descendants).
+    COMMIT_COUNT=$(git log --oneline "${START_HASH_ACTUAL}^..HEAD" | wc -l)
+    echo "Changing author for $COMMIT_COUNT commits starting from ${START_HASH_ACTUAL} up to HEAD."
+fi
+
+if [ "$COMMIT_COUNT" -eq 0 ]; then
+    echo "No commits found to process. Exiting."
+    exit 0
+fi
+
 echo ""
-echo -n "Press ENTER to continue..."
-read
+echo "Initiating interactive rebase to change commit authors, preserve original commit times, and re-sign commits."
+echo "All relevant commits ($COMMIT_COUNT) will automatically be marked for 'edit'."
+echo ""
 
+# Use GIT_SEQUENCE_EDITOR to automatically change 'pick' to 'edit' for all commits.
+# --rebase-merges is crucial for preserving merge commits properly.
+GIT_SEQUENCE_EDITOR="sed -i -re 's/^pick/edit/'" git rebase --rebase-merges -i ${REBASE_BASE}
 
-git rebase --rebase-merges -i ${START_HASH}
+# The rebase loop. It will iterate for each commit marked 'edit'.
+for i in $(eval echo {1.."$COMMIT_COUNT"}); do
+    echo "Processing commit $i of $COMMIT_COUNT..."
 
-while [ "$?" -eq 0 ]; do
-    git -c user.name="${AUTHOR}" -c user.email="${EMAIL}" commit --amend --no-edit --author "${AUTHOR} <${EMAIL}>"
+    # Get the original commit date/time and timezone.
+    # This format is compatible with faketime: "YYYY-MM-DD HH:MM:SS +ZZZZ"
+    COMMIT_DATETIME_ZONE=$(git log -1 --pretty=format:%ad --date=format:"%Y-%m-%d %H:%M:%S %z" HEAD)
+    
+    # Use faketime to set the current time to the original commit time.
+    # Then, amend the commit with the new author details, re-sign it (-S),
+    # and keep the original commit message (--no-edit).
+    faketime "${COMMIT_DATETIME_ZONE}" git \
+        -c user.name="${AUTHOR}" \
+        -c user.email="${EMAIL}" \
+        commit --amend -S --no-edit --author "${AUTHOR} <${EMAIL}>"
+    
+    if [ "$?" -ne 0 ]; then
+        echo "Error amending commit $i. Aborting rebase."
+        git rebase --abort
+        exit 1
+    fi
+
+    # Continue the rebase to the next commit.
     git rebase --continue
+    if [ "$?" -ne 0 ]; then
+        # This can happen if it's the last commit and rebase finishes successfully,
+        # or if there's an actual conflict/issue during continue.
+        # Break the loop in case rebase is done or encountered an unhandled error.
+        echo "Rebase continue command returned non-zero. Assuming rebase is complete or encountered an unhandled error."
+        break 
+    fi
 done
 
-# Reset the git commit times so that GitHub, et. al., will show the original date and not now.
-git rebase --rebase-merges --committer-date-is-author-date "${START_HASH}"
-
 echo ""
 echo ""
+echo "Git rebase completed. All processed commits now have the new author, preserved original dates,"
+echo "and have been re-signed with the new author's GPG key (if configured)."
 echo "Don't forget to run \`git push -f\`... preferably on a test branch first!"
 
