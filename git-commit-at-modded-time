@@ -1,4 +1,5 @@
 #!/bin/bash
+### ==== git-commit-at-modded-time ====
 ##########################################################################
 # git-commit-at-modded-time: Use a file's modified time as the git time. #
 #                                                                        #
@@ -27,20 +28,37 @@ then
     exit
 fi
 
-# Grab all of the pertinent files in the repo and sort by age, descending.
-# We want to commit the oldest first to perserve the timeline.
-
 export EDITOR=vim
-# instantcheckmate@theodore.phpexperts.pro
 
-# Filter through each of them:
-echo "$@" | while read file; do
-	MODDED_AT=$(date -r "$file" '+%Y-%m-%d %H:%M:%S %Z')
-	COMMIT_TIME=$(date -r "$file" '+%A %-d %B %Y %-H:%M:%S %Z')
-
-	git add "$file"
-	< /dev/tty faketime "${MODDED_AT}" git commit -m "Modded @ ${COMMIT_TIME}." -e
+# Find the newest modified date among all files
+NEWEST_TIMESTAMP=0
+for file in "$@"; do
+    if [ -f "$file" ]; then
+        FILE_TIMESTAMP=$(stat -c %Y "$file")
+        if [ "$FILE_TIMESTAMP" -gt "$NEWEST_TIMESTAMP" ]; then
+            NEWEST_TIMESTAMP=$FILE_TIMESTAMP
+        fi
+    fi
 done
+
+if [ "$NEWEST_TIMESTAMP" -eq 0 ]; then
+    echo "No valid files provided."
+    exit 1
+fi
+
+# Convert timestamp to required formats
+MODDED_AT=$(date -d @"$NEWEST_TIMESTAMP" '+%Y-%m-%d %H:%M:%S %Z')
+COMMIT_TIME=$(date -d @"$NEWEST_TIMESTAMP" '+%A %-d %B %Y %-H:%M:%S %Z')
+
+# Add all files
+for file in "$@"; do
+    if [ -f "$file" ]; then
+        git add "$file"
+    fi
+done
+
+# Commit once with the newest timestamp
+faketime "${MODDED_AT}" git commit -m "Modded @ ${COMMIT_TIME}." -e
 
 # Mexico = Extremely hot in the summer.
 # Panama = Hot in the summer.
