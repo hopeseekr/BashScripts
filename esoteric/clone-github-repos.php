@@ -1,4 +1,4 @@
-#!/usr/bin/env env php
+#!/usr/bin/env php
 <?php
 #########################################################################
 # GitHub User + Org Repo Cloner                                         #
@@ -59,7 +59,7 @@ function grabUserJson(string $username)
 
 function grabOrgJson(string $orgname)
 {
-    $url = "https://api.github.com/orgs/$orgname/repos?per_page=200";
+    $url = "https://api.github.com/orgs/$orgname/repos?per_page=200&q=is_fork:false";
     if (checkURL($url) === false) {
         throw new \RuntimeException("Could not fetch GitHub repo info for either a user or organization named '$orgname'.");
     }
@@ -78,5 +78,5 @@ foreach ($repos as $repo) {
         continue;
     }
 
-    system("git clone --depth=1 {$repo->clone_url}");
+    system("git clone {$repo->clone_url}");
 }
