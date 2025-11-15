@@ -1,4 +1,4 @@
-### v1.0.0 @ 2020-09-30
+GG### v1.0.0 @ 2020-09-30
 * **[2020-09-20 10:47:15 CDT]** - Initial:
     * **[ls-by-min]** Sort `ls` by file size, descending.
     * **[stream-to-youtube.sh]** Live Screencast directly to YouTube from the CLI (via ffmpeg).
@@ -142,3 +142,11 @@ Behavioral changes:
 * **[2025-09-30 18:51:33 CDT]** [tar-stats] Much more work, but still not ready.
 * **[2025-09-30 20:52:11 CDT]** [image-mp3-to-video] Combines an image with an mp3 to produce an H264 video.
 * **[2025-09-30 20:54:18 CDT]** [turn-off-nvidia] Added the README documentation.
+
+## v3.1.0 @ 2025-11-14
+
+* **[2025-10-11 00:54:45 CDT]** [git-change-author] Now no need for rebase window and maintains commit timestamps like `git-same-sig-time`.
+* **[2025-11-14 17:33:38 CST]** [git-commit-at-modded-time] Added support for more than 1 file.
+* **[2025-11-14 22:58:55 CST]** [change-maker-lite] Dramatically refactored + added correct DST time zone.
+* **[2025-11-14 23:01:12 CST]** [clone-github-repos] Do not shallow clone.
+

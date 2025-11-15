@@ -9,10 +9,17 @@ that improve my experience with Linux substantially!
 
 They are sorted by how much utility they provide me.
 
-Translations: [中文](README.cn.md), [हिन्दी](README.hi.md)
+Translations: [中文](README.cn.md), [हिन्दी](README.hi.md), [espanol](README.es.md)
 
 Recent Changes
 ==============
+## v3.1.0 @ 2025-11-14
+
+* **[2025-11-14 23:01:12 CST]** [clone-github-repos] Do not shallow clone.
+* **[2025-11-14 22:58:55 CST]** [change-maker-lite] Dramatically refactored + added correct DST time zone.
+* **[2025-11-14 17:33:38 CST]** [git-commit-at-modded-time] Added support for more than 1 file.
+* **[2025-10-11 00:54:45 CDT]** [git-change-author] Now no need for rebase window and maintains commit timestamps like `git-same-sig-time`.
+
 ## v3.0.0 @ 2025-09-30
 
 * **[2025-09-30 20:54:18 CDT]** [turn-off-nvidia] Added the README documentation.

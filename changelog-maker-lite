@@ -21,48 +21,22 @@
 # License: Creative Commons Attribution v4.0 International              #
 #########################################################################
 
-# Determine the git log range/parameters
-GIT_LOG_RANGE=""
-if [ -n "$1" ]; then
-    GIT_LOG_RANGE="$1"
-else
-    # Find the initial commit. If not found, default to showing *all* history from HEAD.
-    INITIAL_COMMIT=$(git rev-list --max-parents=0 HEAD 2>/dev/null)
-    if [ -n "$INITIAL_COMMIT" ]; then
-        GIT_LOG_RANGE="${INITIAL_COMMIT}..HEAD"
-    else
-        # This covers cases with no history or detached HEAD
-        GIT_LOG_RANGE="HEAD"
-    fi
-fi
+# Determine the git log range.
+range="${1:-$(git rev-list --max-parents=0 HEAD 2>/dev/null)..HEAD}"
 
-# The core logic seems fine, but let's ensure the `read` loop isn't prematurely terminating.
-# The `--reverse` flag should be correct for chronological order *after* the filter.
-# Test the raw git log output first:
-# git log --pretty=format:'%at|%ai|%s' --reverse "${GIT_LOG_RANGE}"
+# Use a hybrid approach for maximum reliability:
+# 1. `git log` formats the date/time string to avoid using `cut`.
+# 2. It also provides the Unix epoch timestamp (%at).
+# 3. A loop processes each line, using the reliable `date` command to get
+#    the timezone abbreviation from the epoch timestamp.
+# This avoids the non-portable behavior of `%Z` inside `git log`.
 
-GIT_LOG_COMMAND="git log --pretty=format:'%at|%ai|%s' --reverse ${GIT_LOG_RANGE}"
-# For debugging: uncomment the line below to see what git log command is run
-# echo "Running command: ${GIT_LOG_COMMAND}" >&2
+git log --date=format:'%Y-%m-%d %H:%M:%S' \
+    --pretty=format:'%at|%ad|%s' "$range" | \
+while IFS='|' read -r epoch datetime subject || [[ -n "$subject" ]]; do
+    # Skip potentially empty lines from git log's output
+    if [[ -z "$epoch" ]]; then continue; fi
 
-# Get commit timestamp with Unix epoch and timezone offset
-# %at = author date (Unix timestamp)
-# %ai = author date in ISO format (includes timezone offset)
-# %s = subject
-while IFS='|' read -r epoch isotime subject || [[ -n "$subject" ]]; do
-    # The || [[ -n "$subject" ]] part is a common idiom to ensure the last line is
-    # processed even if it doesn't end with a newline.
-
-    # If all fields are empty, it might be an empty output, skip.
-    if [ -z "$epoch" ] && [ -z "$isotime" ] && [ -z "$subject" ]; then
-        continue
-    fi
-
-    # Extract just the date and time part (without timezone)
-    datetime=$(echo "$isotime" | cut -d' ' -f1,2)
-
-    # Use date command with the Unix timestamp to get the timezone abbreviation
-    tz_abbr=$(date -d "@$epoch" +"%Z" 2>/dev/null) # Redirect stderr for date in case of malformed epoch
-
+    tz_abbr=$(date -d "@$epoch" +"%Z")
     echo "* **[$datetime $tz_abbr]** $subject"
-done < <(eval "$GIT_LOG_COMMAND")
+done
