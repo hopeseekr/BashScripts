@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
+### ==== changelog-maker-lite ====
 #########################################################################
 # ChangeLog Maker (lite)                                                #
 #                                                                       #
 #   Quickly creates CHANGELOG.md entries suitable for GitHub from       #
 #   the repo's commit log.                                              #
+#                                                                       #
+#   It expects to be passed a git revision range, typically             #
+#   'LAST_VERSION..' to get all commits since LAST_VERSION,             #
+#   or 'FIRST_VERSION..LAST_VERSION' for a specific range.             #
+#   If no argument is provided, it will generate a changelog for        #
+#   ALL commits in the repository.                                      #
 #                                                                       #
 # Part of HopeSeekr's BashScripts Collection                            #
 # https://github.com/hopeseekr/BashScripts/                             #
@@ -14,11 +21,48 @@
 # License: Creative Commons Attribution v4.0 International              #
 #########################################################################
 
-if [ -z "$1" ]; then
-    echo "Error: You must provide a git hash/tag/etc"
-    echo "       e.g., changelog-maker-lite v1.0.0.."
-    exit 1
+# Determine the git log range/parameters
+GIT_LOG_RANGE=""
+if [ -n "$1" ]; then
+    GIT_LOG_RANGE="$1"
+else
+    # Find the initial commit. If not found, default to showing *all* history from HEAD.
+    INITIAL_COMMIT=$(git rev-list --max-parents=0 HEAD 2>/dev/null)
+    if [ -n "$INITIAL_COMMIT" ]; then
+        GIT_LOG_RANGE="${INITIAL_COMMIT}..HEAD"
+    else
+        # This covers cases with no history or detached HEAD
+        GIT_LOG_RANGE="HEAD"
+    fi
 fi
 
-# @see https://stackoverflow.com/a/12900372/430062
-git log --pretty=shortlog --date=iso --reverse "$1" | awk '{print "* **["$3" "$4" CDT]** " substr($0, index($0, $9))}'
+# The core logic seems fine, but let's ensure the `read` loop isn't prematurely terminating.
+# The `--reverse` flag should be correct for chronological order *after* the filter.
+# Test the raw git log output first:
+# git log --pretty=format:'%at|%ai|%s' --reverse "${GIT_LOG_RANGE}"
+
+GIT_LOG_COMMAND="git log --pretty=format:'%at|%ai|%s' --reverse ${GIT_LOG_RANGE}"
+# For debugging: uncomment the line below to see what git log command is run
+# echo "Running command: ${GIT_LOG_COMMAND}" >&2
+
+# Get commit timestamp with Unix epoch and timezone offset
+# %at = author date (Unix timestamp)
+# %ai = author date in ISO format (includes timezone offset)
+# %s = subject
+while IFS='|' read -r epoch isotime subject || [[ -n "$subject" ]]; do
+    # The || [[ -n "$subject" ]] part is a common idiom to ensure the last line is
+    # processed even if it doesn't end with a newline.
+
+    # If all fields are empty, it might be an empty output, skip.
+    if [ -z "$epoch" ] && [ -z "$isotime" ] && [ -z "$subject" ]; then
+        continue
+    fi
+
+    # Extract just the date and time part (without timezone)
+    datetime=$(echo "$isotime" | cut -d' ' -f1,2)
+
+    # Use date command with the Unix timestamp to get the timezone abbreviation
+    tz_abbr=$(date -d "@$epoch" +"%Z" 2>/dev/null) # Redirect stderr for date in case of malformed epoch
+
+    echo "* **[$datetime $tz_abbr]** $subject"
+done < <(eval "$GIT_LOG_COMMAND")
