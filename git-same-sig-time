@@ -1,4 +1,5 @@
 #!/bin/bash
+### ==== git-same-sig-time ====
 #############################################################################
 # git-same-sig-time: Unifies the GPG signature time with the commit's time. #
 #                                                                           #
@@ -30,12 +31,33 @@ if [ "$?" -eq 1 ]; then
     exit 1
 fi
 
-# Get the count of git commits including and after the target commit.
-COMMIT_COUNT=$(git log --oneline "$1"^.. | wc -l)
+# Check if the target commit is the root commit
+TARGET_COMMIT="$1"
+PARENT_COMMIT="${TARGET_COMMIT}^"
+
+# Test if parent exists (returns error for root commit)
+if git rev-parse --verify "$PARENT_COMMIT" >/dev/null 2>&1; then
+    # Not a root commit: use standard rebase range
+    IS_ROOT=false
+    COMMIT_COUNT=$(git log --oneline "$PARENT_COMMIT".. | wc -l)
+    REBASE_BASE="$PARENT_COMMIT"
+else
+    # Root commit: need special handling
+    IS_ROOT=true
+    COMMIT_COUNT=$(git log --oneline | wc -l)
+    echo "Detected root commit. Using --root rebase strategy."
+fi
+
 echo "Commit count: $COMMIT_COUNT"
 
-GIT_SEQUENCE_EDITOR="sed -i -re 's/^pick/edit/'" git rebase -i "$1"^
+# Perform interactive rebase with appropriate base
+if [ "$IS_ROOT" = true ]; then
+    GIT_SEQUENCE_EDITOR="sed -i -re 's/^pick/edit/'" git rebase -i --root
+else
+    GIT_SEQUENCE_EDITOR="sed -i -re 's/^pick/edit/'" git rebase -i "$REBASE_BASE"
+fi
 
+# Amend each commit with faketime matching the commit's original time
 for a in $(eval echo {1.."$COMMIT_COUNT"}); do
     faketime "$(git pretty -1 | awk '{print $3" "$4" "$5}')" git commit --amend -S --no-edit
     git rebase --continue
