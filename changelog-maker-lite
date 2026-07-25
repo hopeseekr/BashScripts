@@ -74,8 +74,10 @@ format_commit_date() {
 }
 
 # 1. Get commit hashes
+# Include merge commits so version tags that tip a merge still open a section.
+# Merge bodies are skipped later; only non-merge commits become changelog bullets.
 echo "Analyzing range: ${RANGE_ARG:-all commits}..." >&2
-LOG_OPTS=("--format=%H" "--no-merges")
+LOG_OPTS=("--format=%H")
 [ "$REVERSE" = true ] && LOG_OPTS+=("--reverse")
 
 mapfile -t RANGE_COMMITS < <(git log "${LOG_OPTS[@]}" $RANGE_ARG 2>/dev/null || true)
@@ -117,9 +119,20 @@ for HASH in "${RANGE_COMMITS[@]}"; do
 
     FIRST_COMMIT=false
 
+    # Walk merges only for tag headers; keep the changelog body merge-free.
+    if git rev-parse -q --verify "${HASH}^2" >/dev/null 2>&1; then
+        continue
+    fi
+
     # %at = Unix epoch, %ad = date honoring $DATE_OPT, %h = short hash, %s = subject
     IFS='|' read -r EPOCH DATE_STR SHORT_HASH MSG \
         < <(git log -1 --format="%at|%ad|%h|%s" "$DATE_OPT" "$HASH")
+
+    # Pure version-bump subjects only restate the section header (e.g. "Version 6.2.0").
+    # Keep descriptive ones like "Version 5.0.0: Resurrection Improvements".
+    if [[ "$MSG" =~ ^Version\ [0-9]+\.[0-9]+\.[0-9]+\.?$ ]]; then
+        continue
+    fi
 
     DISPLAY_DATE=$(format_commit_date "$EPOCH" "$DATE_STR")
     if [ "$SHOW_COMMITS" = true ]; then
