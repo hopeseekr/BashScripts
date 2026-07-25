@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 ### ==== changelog-maker-lite ====
+
 #########################################################################
 # ChangeLog Maker (lite)                                                #
 #                                                                       #
@@ -8,7 +9,7 @@
 #                                                                       #
 #   It expects to be passed a git revision range, typically             #
 #   'LAST_VERSION..' to get all commits since LAST_VERSION,             #
-#   or 'FIRST_VERSION..LAST_VERSION' for a specific range.             #
+#   or 'FIRST_VERSION..LAST_VERSION' for a specific range.              #
 #   If no argument is provided, it will generate a changelog for        #
 #   ALL commits in the repository.                                      #
 #                                                                       #
@@ -21,22 +22,103 @@
 # License: Creative Commons Attribution v4.0 International              #
 #########################################################################
 
-# Determine the git log range.
-range="${1:-$(git rev-list --max-parents=0 HEAD 2>/dev/null)..HEAD}"
+set -euo pipefail
 
-# Use a hybrid approach for maximum reliability:
-# 1. `git log` formats the date/time string to avoid using `cut`.
-# 2. It also provides the Unix epoch timestamp (%at).
-# 3. A loop processes each line, using the reliable `date` command to get
-#    the timezone abbreviation from the epoch timestamp.
-# This avoids the non-portable behavior of `%Z` inside `git log`.
+# Parse arguments
+REVERSE=false
+DATE_FORMAT=""
+POSITIONAL_ARGS=()
 
-git log --date=format:'%Y-%m-%d %H:%M:%S' \
-    --pretty=format:'%at|%ad|%s' "$range" | \
-while IFS='|' read -r epoch datetime subject || [[ -n "$subject" ]]; do
-    # Skip potentially empty lines from git log's output
-    if [[ -z "$epoch" ]]; then continue; fi
-
-    tz_abbr=$(date -d "@$epoch" +"%Z")
-    echo "* **[$datetime $tz_abbr]** $subject"
+for arg in "$@"; do
+  case $arg in
+    --reverse)
+      REVERSE=true
+      ;;
+    --date=*)
+      DATE_FORMAT="${arg#--date=}"
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$arg")
+      ;;
+  esac
 done
+
+# 1st non-flag arg is the range, 2nd is the label for the untagged leading section
+RANGE_ARG="${POSITIONAL_ARGS[0]:-}"
+LAST_VERSION="${POSITIONAL_ARGS[1]:-LATEST}"
+
+# Default rendering is local wall-clock time plus its timezone abbreviation,
+# e.g. "2025-10-11 00:54:45 EEST". format-local: makes git do the conversion, so
+# the abbreviation we bolt on below always describes the time it sits next to.
+if [ -n "$DATE_FORMAT" ]; then
+    DATE_OPT="--date=$DATE_FORMAT"
+else
+    DATE_OPT="--date=format-local:%Y-%m-%d %H:%M:%S"
+fi
+
+format_commit_date() {
+    local epoch="$1"
+    local date_str="$2"
+
+    # A caller-supplied --date= format is used verbatim.
+    [ -n "$DATE_FORMAT" ] && { echo "$date_str"; return; }
+
+    # git's %Z is not portable, so derive the abbreviation from the epoch instead.
+    local tz_abbr
+    tz_abbr=$(date -d "@$epoch" +"%Z" 2>/dev/null || echo "")
+    echo "$date_str${tz_abbr:+ $tz_abbr}"
+}
+
+# 1. Get commit hashes
+echo "Analyzing range: ${RANGE_ARG:-all commits}..." >&2
+LOG_OPTS=("--format=%H" "--no-merges")
+[ "$REVERSE" = true ] && LOG_OPTS+=("--reverse")
+
+mapfile -t RANGE_COMMITS < <(git log "${LOG_OPTS[@]}" $RANGE_ARG 2>/dev/null || true)
+
+if [ ${#RANGE_COMMITS[@]} -eq 0 ]; then
+    echo "Error: Invalid range or no commits found for '$RANGE_ARG'" >&2
+    exit 1
+fi
+
+# 2. Map commit hashes to version tags
+declare -A HASH_TO_TAG
+while read -r tag; do
+    T_HASH=$(git rev-parse "$tag"^{commit} 2>/dev/null || true)
+    [ -n "$T_HASH" ] && HASH_TO_TAG["$T_HASH"]="$tag"
+done < <(git tag -l 'v*' --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$')
+
+# 3. Build the output
+FIRST_COMMIT=true
+
+for HASH in "${RANGE_COMMITS[@]}"; do
+    TAG_NAME="${HASH_TO_TAG[$HASH]:-}"
+
+    # Header logic
+    if [ -n "$TAG_NAME" ]; then
+        # Only annotated tags have a message (lightweight tags resolve to "commit")
+        TAG_TYPE=$(git cat-file -t "$TAG_NAME" 2>/dev/null || echo "commit")
+        if [ "$TAG_TYPE" = "tag" ]; then
+            TAG_MSG=$(git tag -l --format='%(contents:subject)' "$TAG_NAME" | head -n 1)
+        else
+            TAG_MSG=""
+        fi
+        [ "$FIRST_COMMIT" = false ] && echo ""
+        echo "## $TAG_NAME${TAG_MSG:+: $TAG_MSG}"
+        echo ""
+    elif [ "$FIRST_COMMIT" = true ]; then
+        echo "## ${LAST_VERSION}"
+        echo ""
+    fi
+
+    FIRST_COMMIT=false
+
+    # %at = Unix epoch, %ad = date honoring $DATE_OPT, %s = subject
+    IFS='|' read -r EPOCH DATE_STR MSG \
+        < <(git log -1 --format="%at|%ad|%s" "$DATE_OPT" "$HASH")
+
+    DISPLAY_DATE=$(format_commit_date "$EPOCH" "$DATE_STR")
+    echo "* **[$DISPLAY_DATE]** $MSG"
+done
+
+echo -e "\nChangelog generation complete." >&2
