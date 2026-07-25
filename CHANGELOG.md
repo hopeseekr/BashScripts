@@ -1,4 +1,4 @@
-GG### v1.0.0 @ 2020-09-30
+### v1.0.0 @ 2020-09-30
 * **[2020-09-20 10:47:15 CDT]** - Initial:
     * **[ls-by-min]** Sort `ls` by file size, descending.
     * **[stream-to-youtube.sh]** Live Screencast directly to YouTube from the CLI (via ffmpeg).
@@ -150,3 +150,10 @@ Behavioral changes:
 * **[2025-11-14 22:58:55 CST]** [change-maker-lite] Dramatically refactored + added correct DST time zone.
 * **[2025-11-14 23:01:12 CST]** [clone-github-repos] Do not shallow clone.
 
+## v3.2.0
+
+* **[2026-05-31 12:51:59 COT]** [cpu-speed] Added a utility to see the speed of your CPU cores.
+* **[2026-06-12 15:24:16 COT]** [git-same-sig-time] Now handles the root git commit.
+* **[2026-07-25 22:13:54 EEST]** [changelog-maker-lite] Rewrote to emit version-tagged sections.
+* **[2026-07-25 22:18:11 EEST]** [changelog-maker-lite] Added --commits to append the short hash to each entry.
+* **[2026-07-25 22:29:57 EEST]** [changelog-maker-lite] Fixed version sections for tags on merge commits.

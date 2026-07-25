@@ -13,6 +13,14 @@ Translations: [中文](README.cn.md), [हिन्दी](README.hi.md), [espan
 
 Recent Changes
 ==============
+## v3.2.0
+
+* **[2026-07-25 22:29:57 EEST]** [changelog-maker-lite] Fixed version sections for tags on merge commits.
+* **[2026-07-25 22:18:11 EEST]** [changelog-maker-lite] Added --commits to append the short hash to each entry.
+* **[2026-07-25 22:13:54 EEST]** [changelog-maker-lite] Rewrote to emit version-tagged sections.
+* **[2026-06-12 15:24:16 COT]** [git-same-sig-time] Now handles the root git commit.
+* **[2026-05-31 12:51:59 COT]** [cpu-speed] Added a utility to see the speed of your CPU cores.
+
 ## v3.1.0 @ 2025-11-14
 
 * **[2025-11-14 23:01:12 CST]** [clone-github-repos] Do not shallow clone.
