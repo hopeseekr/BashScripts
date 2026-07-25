@@ -27,12 +27,16 @@ set -euo pipefail
 # Parse arguments
 REVERSE=false
 DATE_FORMAT=""
+SHOW_COMMITS=false
 POSITIONAL_ARGS=()
 
 for arg in "$@"; do
   case $arg in
     --reverse)
       REVERSE=true
+      ;;
+    --commits)
+      SHOW_COMMITS=true
       ;;
     --date=*)
       DATE_FORMAT="${arg#--date=}"
@@ -113,12 +117,16 @@ for HASH in "${RANGE_COMMITS[@]}"; do
 
     FIRST_COMMIT=false
 
-    # %at = Unix epoch, %ad = date honoring $DATE_OPT, %s = subject
-    IFS='|' read -r EPOCH DATE_STR MSG \
-        < <(git log -1 --format="%at|%ad|%s" "$DATE_OPT" "$HASH")
+    # %at = Unix epoch, %ad = date honoring $DATE_OPT, %h = short hash, %s = subject
+    IFS='|' read -r EPOCH DATE_STR SHORT_HASH MSG \
+        < <(git log -1 --format="%at|%ad|%h|%s" "$DATE_OPT" "$HASH")
 
     DISPLAY_DATE=$(format_commit_date "$EPOCH" "$DATE_STR")
-    echo "* **[$DISPLAY_DATE]** $MSG"
+    if [ "$SHOW_COMMITS" = true ]; then
+        echo "* **[$DISPLAY_DATE]** ($SHORT_HASH) $MSG"
+    else
+        echo "* **[$DISPLAY_DATE]** $MSG"
+    fi
 done
 
 echo -e "\nChangelog generation complete." >&2
